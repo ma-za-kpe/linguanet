@@ -1,0 +1,224 @@
+'use client';
+
+import { useAccount, useBalance, useReadContract, useWriteContract } from 'wagmi';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
+import { useState, useEffect, useCallback } from 'react';
+import { formatUnits } from 'viem';
+import { getContractAddress } from '../wagmi-config';
+import LinguaNetCoreABI from '../../contracts/abis/LinguaNetCore.json';
+import { getENSName, registerENSName, generateENSName } from '../ens';
+
+/**
+ * Custom hook for blockchain interactions
+ */
+export function useBlockchain() {
+  const { address, isConnected, isConnecting } = useAccount();
+  const { openConnectModal } = useConnectModal();
+  const [ensName, setEnsName] = useState<string | null>(null);
+  const [isRegistering, setIsRegistering] = useState(false);
+
+  // Get USDC balance
+  const { data: balance } = useBalance({
+    address: address,
+    token: getContractAddress('usdcToken') as `0x${string}`,
+  });
+
+  // Get contributor stats
+  const { data: contributorStats } = useReadContract({
+    address: getContractAddress('linguanetCore') as `0x${string}`,
+    abi: LinguaNetCoreABI.abi,
+    functionName: 'getContributorStats',
+    args: address ? [address] : undefined,
+  }) as { data: readonly [bigint, bigint, bigint] | undefined };
+
+  // Load ENS name
+  useEffect(() => {
+    if (address) {
+      getENSName(address).then(name => setEnsName(name));
+    }
+  }, [address]);
+
+  // Register ENS for new users
+  const registerUserENS = useCallback(async (phoneNumber: string) => {
+    if (!address) return { success: false, error: 'No wallet connected' };
+
+    setIsRegistering(true);
+    try {
+      const newENSName = generateENSName(phoneNumber);
+      const result = await registerENSName(newENSName, address);
+      
+      if (result.success) {
+        setEnsName(newENSName);
+      }
+      
+      return result;
+    } finally {
+      setIsRegistering(false);
+    }
+  }, [address]);
+
+  return {
+    // Wallet state
+    address,
+    isConnected,
+    isConnecting,
+    openConnectModal,
+    
+    // ENS
+    ensName,
+    isRegistering,
+    registerUserENS,
+    
+    // Balances
+    usdcBalance: balance ? formatUnits(balance.value, balance.decimals) : '0',
+    
+    // Stats
+    contributorStats: contributorStats ? {
+      submissions: Number(contributorStats[0]),
+      earnings: formatUnits(contributorStats[1] as bigint, 6),
+      reputation: Number(contributorStats[2]),
+    } : null,
+  };
+}
+
+/**
+ * Hook for submitting audio recordings
+ */
+export function useSubmitAudio() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  
+  const { writeContractAsync } = useWriteContract();
+  const contractAddress = getContractAddress('linguanetCore') as `0x${string}`;
+
+  const submitAudio = useCallback(async (
+    language: string,
+    cid: string,
+    duration: number
+  ) => {
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      // In production, this would upload to Filecoin first
+      // For now, we'll use a mock CID
+      const mockCid = `Qm${Math.random().toString(36).substring(2, 15)}`;
+
+      const hash = await writeContractAsync({
+        address: contractAddress,
+        abi: LinguaNetCoreABI.abi,
+        functionName: 'submitAudio',
+        args: [language, mockCid, BigInt(duration)],
+      });
+
+      // Wait for confirmation
+      return { success: true, txHash: hash, cid: mockCid };
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Submission failed';
+      setError(message);
+      return { success: false, error: message };
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [writeContractAsync, contractAddress]);
+
+  return {
+    submitAudio,
+    isSubmitting,
+    error,
+  };
+}
+
+/**
+ * Hook for validating audio
+ */
+export function useValidateAudio() {
+  const [isValidating, setIsValidating] = useState(false);
+  const { writeContractAsync } = useWriteContract();
+  const contractAddress = getContractAddress('linguanetCore') as `0x${string}`;
+
+  const validateAudio = useCallback(async (cid: string, isValid: boolean) => {
+    setIsValidating(true);
+
+    try {
+      const hash = await writeContractAsync({
+        address: contractAddress,
+        abi: LinguaNetCoreABI.abi,
+        functionName: 'validateAudio',
+        args: [cid, isValid],
+      });
+
+      return { success: true, txHash: hash };
+    } catch (err) {
+      return { 
+        success: false, 
+        error: err instanceof Error ? err.message : 'Validation failed' 
+      };
+    } finally {
+      setIsValidating(false);
+    }
+  }, [writeContractAsync, contractAddress]);
+
+  return {
+    validateAudio,
+    isValidating,
+  };
+}
+
+/**
+ * Hook for withdrawing earnings
+ */
+export function useWithdraw() {
+  const [isWithdrawing, setIsWithdrawing] = useState(false);
+  const { writeContractAsync } = useWriteContract();
+  const contractAddress = getContractAddress('linguanetCore') as `0x${string}`;
+
+  const withdraw = useCallback(async () => {
+    setIsWithdrawing(true);
+    try {
+      const hash = await writeContractAsync({
+        address: contractAddress,
+        abi: LinguaNetCoreABI.abi,
+        functionName: 'withdrawEarnings',
+        args: [],
+      });
+      return { success: true, txHash: hash };
+    } catch (err) {
+      return { 
+        success: false, 
+        error: err instanceof Error ? err.message : 'Withdrawal failed' 
+      };
+    } finally {
+      setIsWithdrawing(false);
+    }
+  }, [writeContractAsync, contractAddress]);
+
+  const withdrawToMobileMoney = useCallback(async (
+    phoneNumber: string,
+    provider: string
+  ) => {
+    setIsWithdrawing(true);
+    try {
+      const hash = await writeContractAsync({
+        address: contractAddress,
+        abi: LinguaNetCoreABI.abi,
+        functionName: 'withdrawToMobileMoney',
+        args: [phoneNumber, provider],
+      });
+      return { success: true, txHash: hash };
+    } catch (err) {
+      return { 
+        success: false, 
+        error: err instanceof Error ? err.message : 'Mobile money withdrawal failed' 
+      };
+    } finally {
+      setIsWithdrawing(false);
+    }
+  }, [writeContractAsync, contractAddress]);
+
+  return {
+    withdraw,
+    withdrawToMobileMoney,
+    isWithdrawing,
+  };
+}
