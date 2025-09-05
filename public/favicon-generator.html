@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Favicon Generator for LinguaNet</title>
+</head>
+<body>
+    <h1>LinguaNet Favicon Generator</h1>
+    <p>Use this to generate PNG favicons from the SVG</p>
+    
+    <!-- 16x16 -->
+    <canvas id="canvas16" width="16" height="16"></canvas>
+    <a id="download16" download="favicon-16x16.png">Download 16x16</a><br>
+    
+    <!-- 32x32 -->
+    <canvas id="canvas32" width="32" height="32"></canvas>
+    <a id="download32" download="favicon-32x32.png">Download 32x32</a><br>
+    
+    <!-- 96x96 -->
+    <canvas id="canvas96" width="96" height="96"></canvas>
+    <a id="download96" download="favicon-96x96.png">Download 96x96</a><br>
+    
+    <!-- 192x192 -->
+    <canvas id="canvas192" width="192" height="192"></canvas>
+    <a id="download192" download="android-chrome-192x192.png">Download 192x192</a><br>
+    
+    <!-- 512x512 -->
+    <canvas id="canvas512" width="512" height="512"></canvas>
+    <a id="download512" download="android-chrome-512x512.png">Download 512x512</a><br>
+
+    <script>
+        function drawFavicon(canvasId, size) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            
+            // Background gradient
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, '#667eea');
+            gradient.addColorStop(1, '#764ba2');
+            
+            // Draw rounded rectangle background
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            const radius = size * 0.15;
+            ctx.moveTo(radius, 0);
+            ctx.lineTo(size - radius, 0);
+            ctx.quadraticCurveTo(size, 0, size, radius);
+            ctx.lineTo(size, size - radius);
+            ctx.quadraticCurveTo(size, size, size - radius, size);
+            ctx.lineTo(radius, size);
+            ctx.quadraticCurveTo(0, size, 0, size - radius);
+            ctx.lineTo(0, radius);
+            ctx.quadraticCurveTo(0, 0, radius, 0);
+            ctx.closePath();
+            ctx.fill();
+            
+            // Draw simplified globe for small sizes
+            const centerX = size / 2;
+            const centerY = size / 2;
+            const globeRadius = size * 0.35;
+            
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = Math.max(1, size * 0.02);
+            ctx.globalAlpha = 0.9;
+            
+            // Outer circle
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, globeRadius, 0, Math.PI * 2);
+            ctx.stroke();
+            
+            // Sound wave (simplified for small icons)
+            ctx.strokeStyle = '#4ECDC4';
+            ctx.lineWidth = Math.max(1, size * 0.025);
+            ctx.beginPath();
+            ctx.moveTo(centerX + globeRadius * 0.8, centerY);
+            ctx.quadraticCurveTo(
+                centerX + globeRadius * 1.2, centerY - globeRadius * 0.3,
+                centerX + globeRadius * 1.6, centerY
+            );
+            ctx.stroke();
+            
+            // Convert to PNG and set download link
+            canvas.toBlob(function(blob) {
+                const url = URL.createObjectURL(blob);
+                document.getElementById('download' + size).href = url;
+            });
+        }
+        
+        // Generate all sizes
+        drawFavicon('canvas16', 16);
+        drawFavicon('canvas32', 32);
+        drawFavicon('canvas96', 96);
+        drawFavicon('canvas192', 192);
+        drawFavicon('canvas512', 512);
+    </script>
+</body>
+</html>
