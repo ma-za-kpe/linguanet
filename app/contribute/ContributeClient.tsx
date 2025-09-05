@@ -11,11 +11,25 @@ import {
 import { WalletButton } from '@/components/WalletButton';
 import { useBlockchain, useSubmitAudio, useValidateAudio, useWithdraw } from '@/lib/hooks/useBlockchain';
 import { formatENSDisplay, generateENSName } from '@/lib/ens';
-import './contribute.css';
-import './contribute-enhanced.css';
+import './contribute-linguadao.css';
 
-type Mode = 'contributor' | 'validator';
-type RecordingState = 'idle' | 'recording' | 'processing' | 'success' | 'error';
+type RecordingState = 'idle' | 'recording' | 'review' | 'success' | 'error';
+
+// Languages with rarity multipliers
+const languages = [
+  { code: 'twi', name: 'Twi', flag: '🇬🇭', multiplier: 2, status: 'vulnerable' },
+  { code: 'yoruba', name: 'Yoruba', flag: '🇳🇬', multiplier: 2, status: 'vulnerable' },
+  { code: 'swahili', name: 'Swahili', flag: '🇰🇪', multiplier: 1.5, status: 'stable' },
+  { code: 'wolof', name: 'Wolof', flag: '🇸🇳', multiplier: 3, status: 'endangered' },
+  { code: 'fon', name: 'Fon', flag: '🇧🇯', multiplier: 4, status: 'critical' },
+  { code: 'ewe', name: 'Ewe', flag: '🇹🇬', multiplier: 3, status: 'endangered' },
+  { code: 'ga', name: 'Ga', flag: '🇬🇭', multiplier: 4, status: 'critical' },
+  { code: 'hausa', name: 'Hausa', flag: '🇳🇬', multiplier: 1.5, status: 'stable' },
+  { code: 'zulu', name: 'Zulu', flag: '🇿🇦', multiplier: 2, status: 'vulnerable' },
+  { code: 'amharic', name: 'Amharic', flag: '🇪🇹', multiplier: 2, status: 'vulnerable' },
+  { code: 'tigrinya', name: 'Tigrinya', flag: '🇪🇷', multiplier: 3, status: 'endangered' },
+  { code: 'oromo', name: 'Oromo', flag: '🇪🇹', multiplier: 2, status: 'vulnerable' },
+];
 
 export default function ContributeClient() {
   // Web3 hooks
@@ -34,735 +48,433 @@ export default function ContributeClient() {
   const { withdrawToMobileMoney, isWithdrawing } = useWithdraw();
 
   // State Management
-  const [mode, setMode] = useState<Mode>('contributor');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [isOnboarding, setIsOnboarding] = useState(true);
   const [recordingState, setRecordingState] = useState<RecordingState>('idle');
   const [recordingTime, setRecordingTime] = useState(0);
-  const [audioWaveform, setAudioWaveform] = useState<number[]>([]);
-  const [selectedLanguage, setSelectedLanguage] = useState('twi');
-  
-  // Validator State
-  const [validationQueue, setValidationQueue] = useState([
-    { id: 1, contributor: 'kofi.linguanet.eth', duration: 32, status: 'pending', cid: 'QmXyz123' },
-    { id: 2, contributor: 'ama.linguanet.eth', duration: 28, status: 'pending', cid: 'QmAbc456' },
-    { id: 3, contributor: 'kwame.linguanet.eth', duration: 30, status: 'pending', cid: 'QmDef789' }
-  ]);
-  const [currentValidation, setCurrentValidation] = useState(0);
-  const [validationStreak, setValidationStreak] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState('');
+  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
+  const [qualityScore, setQualityScore] = useState(0);
+  const [miningReward, setMiningReward] = useState(0);
+
+  // Mock stats for demo
+  const [linguaBalance] = useState('5,420');
+  const [voiceShares] = useState(12);
+  const [guardianTier] = useState('Expert');
+  const [stakingBoost] = useState(1.5);
+  const [totalEarned] = useState('1,284');
+  const [contributionsCount] = useState(87);
 
   // Refs
   const timerRef = useRef<NodeJS.Timeout | undefined>(undefined);
-  const waveformRef = useRef<NodeJS.Timeout | undefined>(undefined);
+  const mediaRecorderRef = useRef<MediaRecorder | undefined>(undefined);
+  const audioChunksRef = useRef<Blob[]>([]);
 
-  // Check wallet connection on mount
-  useEffect(() => {
-    if (isConnected && address) {
-      setIsOnboarding(false);
-    }
-  }, [isConnected, address]);
-
-  // Handle Phone Login with ENS
-  const handleLogin = async () => {
-    if (phoneNumber.length >= 10) {
-      if (!isConnected) {
-        // Show wallet connect modal
-        alert('Please connect your wallet first');
-        return;
-      }
-
-      // Register ENS name
-      const result = await registerUserENS(phoneNumber);
-      if (result.success) {
-        setIsOnboarding(false);
-      } else {
-        alert(`Failed to register ENS: ${result.error}`);
-      }
-    }
+  // Calculate mining rewards
+  const calculateReward = () => {
+    const language = languages.find(l => l.code === selectedLanguage);
+    if (!language) return 0;
+    
+    const baseReward = 100; // Base $LINGUA tokens
+    const quality = qualityScore || 0.9; // Default high quality
+    const rarity = language.multiplier;
+    const staking = stakingBoost;
+    
+    return Math.floor(baseReward * quality * rarity * staking);
   };
 
-  // Recording Functions with blockchain integration
-  const startRecording = () => {
-    setRecordingState('recording');
-    setRecordingTime(0);
-    
-    // Timer
-    timerRef.current = setInterval(() => {
-      setRecordingTime(prev => {
-        if (prev >= 30) {
-          stopRecording();
-          return prev;
-        }
-        return prev + 1;
-      });
-    }, 1000);
-
-    // Simulate waveform
-    waveformRef.current = setInterval(() => {
-      const waves = Array.from({ length: 30 }, () => 
-        Math.random() * 50 + 25
-      );
-      setAudioWaveform(waves);
-    }, 100);
-  };
-
-  const stopRecording = async () => {
-    clearInterval(timerRef.current);
-    clearInterval(waveformRef.current);
-    
-    if (recordingTime < 30) {
-      setRecordingState('error');
-      setTimeout(() => setRecordingState('idle'), 2000);
+  // Recording Functions
+  const startRecording = async () => {
+    if (!selectedLanguage) {
+      alert('Please select a language first');
       return;
     }
 
-    setRecordingState('processing');
-    
-    // Submit to blockchain
-    const result = await submitAudio(selectedLanguage, '', recordingTime);
-    
-    if (result.success) {
-      setRecordingState('success');
-      setTimeout(() => {
-        setRecordingState('idle');
-        setRecordingTime(0);
-        setAudioWaveform([]);
-      }, 3000);
-    } else {
-      setRecordingState('error');
-      alert(`Submission failed: ${result.error}`);
-      setTimeout(() => setRecordingState('idle'), 2000);
-    }
-  };
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
 
-  // Validator Functions with blockchain
-  const handleValidation = async (isValid: boolean) => {
-    const current = validationQueue[currentValidation];
-    if (current) {
-      // Submit validation to blockchain
-      const result = await validateAudio(current.cid, isValid);
-      
-      if (result.success) {
-        // Update status
-        const updated = [...validationQueue];
-        updated[currentValidation].status = isValid ? 'approved' : 'rejected';
-        setValidationQueue(updated);
+      mediaRecorder.ondataavailable = (event) => {
+        audioChunksRef.current.push(event.data);
+      };
+
+      mediaRecorder.onstop = () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' });
+        setAudioBlob(audioBlob);
+        stream.getTracks().forEach(track => track.stop());
         
-        if (isValid) {
-          setValidationStreak(prev => prev + 1);
-        }
+        // Calculate mock quality score
+        const mockQuality = 0.85 + Math.random() * 0.15;
+        setQualityScore(mockQuality);
         
-        // Move to next
-        setTimeout(() => {
-          if (currentValidation < validationQueue.length - 1) {
-            setCurrentValidation(prev => prev + 1);
+        // Calculate reward
+        const reward = calculateReward();
+        setMiningReward(reward);
+        
+        setRecordingState('review');
+      };
+
+      mediaRecorder.start();
+      setRecordingState('recording');
+      setRecordingTime(0);
+
+      // Timer
+      timerRef.current = setInterval(() => {
+        setRecordingTime(prev => {
+          if (prev >= 30) {
+            stopRecording();
+            return 30;
           }
-        }, 1000);
-      } else {
-        alert(`Validation failed: ${result.error}`);
-      }
+          return prev + 1;
+        });
+      }, 1000);
+    } catch (error) {
+      console.error('Failed to start recording:', error);
+      alert('Failed to access microphone. Please check permissions.');
     }
   };
 
-  const playAudio = () => {
-    setIsPlaying(true);
-    // Simulate audio playback
-    setTimeout(() => setIsPlaying(false), 3000);
-  };
-
-  // Withdrawal with mobile money
-  const handleWithdraw = async () => {
-    if (!phoneNumber) {
-      alert('Please enter your phone number');
-      return;
-    }
-
-    const provider = 'MTN'; // Detect based on phone number in production
-    const result = await withdrawToMobileMoney(phoneNumber, provider);
-    
-    if (result.success) {
-      alert(`Withdrawal initiated! Transaction: ${result.txHash}`);
-    } else {
-      alert(`Withdrawal failed: ${result.error}`);
+  const stopRecording = () => {
+    clearInterval(timerRef.current);
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+      mediaRecorderRef.current.stop();
     }
   };
+
+  const submitRecording = async () => {
+    setRecordingState('success');
+    // In production, submit to blockchain here
+    setTimeout(() => {
+      setRecordingState('idle');
+      setRecordingTime(0);
+      setAudioBlob(null);
+      setSelectedLanguage('');
+    }, 3000);
+  };
+
+  const discardRecording = () => {
+    setRecordingState('idle');
+    setRecordingTime(0);
+    setAudioBlob(null);
+    setQualityScore(0);
+    setMiningReward(0);
+  };
+
 
   return (
     <div className="contribute-container">
-      {/* Wallet Connection Header */}
-      <div className="wallet-header" style={{
-        position: 'fixed',
-        top: 20,
-        right: 20,
-        zIndex: 1000,
-      }}>
-        <WalletButton />
+      {/* Header Section */}
+      <div className="contribute-header">
+        <h1>🎙️ Voice Mining Protocol</h1>
+        <p>Preserve languages, earn $LINGUA tokens</p>
+        <div className="wallet-section">
+          <WalletButton />
+        </div>
       </div>
 
-      <AnimatePresence mode="wait">
-        {/* Onboarding Screen */}
-        {isOnboarding ? (
-          <motion.div
-            key="onboarding"
-            className="onboarding-screen"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-          >
-            <motion.div 
-              className="onboarding-card"
-              initial={{ y: 50, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.2, duration: 0.6 }}
-            >
-              {/* Logo Section */}
-              <div className="app-logo">
-                <motion.div 
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                >
-                  🌍
-                </motion.div>
-              </div>
-              
-              <h1>LinguaNet</h1>
-              <p>Decentralized African Language Marketplace</p>
-              
-              {/* Progress Bar */}
-              <div className="progress-bar">
-                <div 
-                  className="progress-fill" 
-                  style={{ width: isConnected ? '50%' : '0%' }}
-                />
-              </div>
-              
-              <div className="login-form">
-                {/* Step Indicators */}
-                <div className={`step-indicator ${!isConnected ? 'active' : ''}`}>
-                  <div className="step-number">1</div>
-                  <span className="step-text">Connect Wallet</span>
-                </div>
-                
-                {!isConnected ? (
-                  <>
-                    <div className="wallet-connection-area">
-                      <div className="wallet-status not-connected">
-                        <div className="status-icon"></div>
-                        <span className="status-text">No wallet connected</span>
-                      </div>
-                      
-                      <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.4 }}
-                      >
-                        <WalletButton />
-                      </motion.div>
-                      
-                      <div style={{ 
-                        textAlign: 'center', 
-                        marginTop: '20px',
-                        color: '#a1a1aa',
-                        fontSize: '13px'
-                      }}>
-                        Don&apos;t have a wallet? 
-                        <a 
-                          href="https://metamask.io" 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          style={{ color: '#7c3aed', textDecoration: 'underline' }}
-                        >
-                          Get MetaMask
-                        </a>
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className={`step-indicator active`}>
-                      <div className="step-number">2</div>
-                      <span className="step-text">Register Account</span>
-                    </div>
-                    
-                    <div className="wallet-status">
-                      <div className="status-icon"></div>
-                      <span className="status-text">
-                        Wallet: {address?.slice(0, 6)}...{address?.slice(-4)}
-                      </span>
-                    </div>
-                    
-                    <div className="phone-input-group">
-                      <FiSmartphone className="phone-icon" />
-                      <input
-                        type="tel"
-                        placeholder="Enter phone number (e.g., 0241234567)"
-                        value={phoneNumber}
-                        onChange={(e) => setPhoneNumber(e.target.value)}
-                        className="phone-input"
-                        maxLength={15}
-                      />
-                    </div>
-                    
-                    {phoneNumber.length >= 10 && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        style={{
-                          padding: '12px',
-                          background: 'rgba(124, 58, 237, 0.1)',
-                          borderRadius: '8px',
-                          marginBottom: '20px',
-                          fontSize: '13px',
-                          color: '#a1a1aa'
-                        }}
-                      >
-                        Your ENS name will be: <strong style={{ color: '#7c3aed' }}>
-                          {generateENSName(phoneNumber).split('.')[0]}
-                        </strong>.linguanet.eth
-                      </motion.div>
-                    )}
-                    
-                    <motion.button
-                      className="login-button"
-                      onClick={handleLogin}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      disabled={phoneNumber.length < 10 || isRegistering}
-                    >
-                      {isRegistering ? (
-                        <>
-                          <div className="spinner" />
-                          Creating your account...
-                        </>
-                      ) : (
-                        <>
-                          Continue to App
-                          <FiArrowRight />
-                        </>
-                      )}
-                    </motion.button>
-                  </>
-                )}
-              </div>
+      {/* Stats Dashboard */}
+      {isConnected && (
+        <div className="stats-dashboard">
+          <div className="stat-card">
+            <div className="stat-icon">💰</div>
+            <div className="stat-content">
+              <div className="stat-value">{linguaBalance}</div>
+              <div className="stat-label">$LINGUA Balance</div>
+            </div>
+          </div>
+          
+          <div className="stat-card">
+            <div className="stat-icon">🎨</div>
+            <div className="stat-content">
+              <div className="stat-value">{voiceShares}</div>
+              <div className="stat-label">Voice Share NFTs</div>
+            </div>
+          </div>
+          
+          <div className="stat-card highlight">
+            <div className="stat-icon">⚔️</div>
+            <div className="stat-content">
+              <div className="stat-value">{guardianTier}</div>
+              <div className="stat-label">Guardian Tier</div>
+              <div className="stat-bonus">+50% Mining Boost</div>
+            </div>
+          </div>
+          
+          <div className="stat-card">
+            <div className="stat-icon">📊</div>
+            <div className="stat-content">
+              <div className="stat-value">{totalEarned}</div>
+              <div className="stat-label">Total Earned</div>
+            </div>
+          </div>
+        </div>
+      )}
 
-              {/* Enhanced Features Grid */}
-              <div className="onboarding-features">
-                <motion.div 
-                  className="feature"
-                  whileHover={{ scale: 1.05 }}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5 }}
-                >
-                  <FiMic />
-                  <div className="feature-title">Record</div>
-                  <div className="feature-description">30 seconds of audio</div>
-                </motion.div>
-                
-                <motion.div 
-                  className="feature"
-                  whileHover={{ scale: 1.05 }}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.6 }}
-                >
-                  <FiZap />
-                  <div className="feature-title">Earn</div>
-                  <div className="feature-description">$3 USDC instantly</div>
-                </motion.div>
-                
-                <motion.div 
-                  className="feature"
-                  whileHover={{ scale: 1.05 }}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.7 }}
-                >
-                  <FiSmartphone />
-                  <div className="feature-title">Withdraw</div>
-                  <div className="feature-description">To Mobile Money</div>
-                </motion.div>
+      {/* Language Selection */}
+      <div className="language-section">
+        <h2>Select Language to Mine</h2>
+        <div className="language-grid">
+          {languages.map(lang => (
+            <div
+              key={lang.code}
+              className={`language-card ${lang.status} ${selectedLanguage === lang.code ? 'selected' : ''}`}
+              onClick={() => setSelectedLanguage(lang.code)}
+            >
+              <div className="language-flag">{lang.flag}</div>
+              <div className="language-name">{lang.name}</div>
+              <div className="language-multiplier">{lang.multiplier}x</div>
+              <div className={`language-status ${lang.status}`}>
+                {lang.status}
               </div>
-              
-              {/* Trust Badges */}
-              <motion.div 
-                className="trust-badges"
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Recording Section */}
+      <div className="recording-section">
+        <h2>Voice Mining Station</h2>
+        <p className="recording-instructions">
+          Record 30 seconds of natural speech in your selected language
+        </p>
+
+        {/* Mining Formula Display */}
+        {selectedLanguage && (
+          <div className="mining-formula">
+            <div className="formula-display">
+              <div className="formula-part">100 $LINGUA</div>
+              <span className="operator">×</span>
+              <div className="formula-part">Quality {qualityScore ? qualityScore.toFixed(2) : '0.90'}</div>
+              <span className="operator">×</span>
+              <div className="formula-part">
+                {languages.find(l => l.code === selectedLanguage)?.multiplier}x Rarity
+              </div>
+              <span className="operator">×</span>
+              <div className="formula-part">{stakingBoost}x Staking</div>
+              <span className="equals">=</span>
+              <div className="result">
+                {calculateReward()} $LINGUA
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="recording-interface">
+          <AnimatePresence mode="wait">
+            {/* Idle State */}
+            {recordingState === 'idle' && (
+              <motion.div
+                key="idle"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.8 }}
+                exit={{ opacity: 0 }}
               >
-                <div className="trust-badge">
-                  <FiShield />
-                  <span>Secured by Base L2</span>
+                <button
+                  className="record-button start"
+                  onClick={startRecording}
+                  disabled={!selectedLanguage || !isConnected}
+                >
+                  <FiMic /> Start Recording
+                </button>
+                {!selectedLanguage && (
+                  <p style={{ marginTop: '20px', color: '#a1a1aa' }}>
+                    Please select a language above to begin mining
+                  </p>
+                )}
+              </motion.div>
+            )}
+
+            {/* Recording State */}
+            {recordingState === 'recording' && (
+              <motion.div
+                key="recording"
+                className="recording-active"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                <div className="recording-indicator">
+                  <div className="pulse-ring"></div>
+                  <div className="pulse-ring delay-1"></div>
+                  <div className="pulse-ring delay-2"></div>
+                  <div className="mic-icon">🎤</div>
                 </div>
-                <div className="trust-badge">
-                  <FiGlobe />
-                  <span>12 African Languages</span>
+                
+                <div className="recording-timer">{recordingTime}s / 30s</div>
+                
+                <div className="recording-progress">
+                  <div 
+                    className="progress-fill" 
+                    style={{ width: `${(recordingTime / 30) * 100}%` }}
+                  />
+                </div>
+                
+                <button
+                  className="record-button stop"
+                  onClick={stopRecording}
+                >
+                  <FiMicOff /> Stop Recording
+                </button>
+              </motion.div>
+            )}
+
+            {/* Review State */}
+            {recordingState === 'review' && (
+              <motion.div
+                key="review"
+                className="review-section"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+              >
+                <h3>🎯 Mining Results</h3>
+                
+                <div className="mining-results">
+                  <div className="result-item">
+                    <span className="result-label">Language</span>
+                    <span className="result-value">
+                      {languages.find(l => l.code === selectedLanguage)?.name}
+                    </span>
+                  </div>
+                  <div className="result-item">
+                    <span className="result-label">Duration</span>
+                    <span className="result-value">{recordingTime} seconds</span>
+                  </div>
+                  <div className="result-item">
+                    <span className="result-label">Quality Score</span>
+                    <span className="result-value">{(qualityScore * 100).toFixed(0)}%</span>
+                  </div>
+                  <div className="result-item highlight">
+                    <span className="result-label">Mining Reward</span>
+                    <span className="result-value">{miningReward} $LINGUA</span>
+                  </div>
+                </div>
+                
+                <div className="review-actions">
+                  {audioBlob && (
+                    <audio 
+                      controls 
+                      src={URL.createObjectURL(audioBlob)}
+                    />
+                  )}
+                  
+                  <div className="action-buttons">
+                    <button 
+                      className="action-button discard"
+                      onClick={discardRecording}
+                    >
+                      <FiX /> Discard
+                    </button>
+                    <button 
+                      className="action-button submit"
+                      onClick={submitRecording}
+                    >
+                      <FiCheck /> Submit to Blockchain
+                    </button>
+                  </div>
                 </div>
               </motion.div>
-            </motion.div>
-          </motion.div>
-        ) : (
-          /* Main App */
-          <motion.div
-            key="main-app"
-            className="main-app"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
-            {/* Header */}
-            <header className="app-header">
-              <div className="user-info">
-                <div className="user-avatar">
-                  <FiUser />
-                </div>
-                <div>
-                  <div className="user-address">
-                    {ensName ? formatENSDisplay(ensName) : address?.slice(0, 6) + '...' + address?.slice(-4)}
-                  </div>
-                  <div className="user-phone">{phoneNumber}</div>
-                </div>
+            )}
+
+            {/* Success State */}
+            {recordingState === 'success' && (
+              <motion.div
+                key="success"
+                className="success-message"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                <div className="success-icon">✅</div>
+                <h3>Voice Data Minted!</h3>
+                <p>{miningReward} $LINGUA tokens earned</p>
+                <p className="nft-mint">Voice Share NFT #{voiceShares + 1} minted</p>
+              </motion.div>
+            )}
+
+            {/* Error State */}
+            {recordingState === 'error' && (
+              <motion.div
+                key="error"
+                className="error-message"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                style={{ textAlign: 'center', padding: '40px' }}
+              >
+                <FiX size={48} style={{ color: '#ef4444', marginBottom: '16px' }} />
+                <p style={{ color: '#ef4444' }}>Recording failed. Please try again.</p>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+
+      {/* Features Section */}
+      {!isConnected && (
+        <div className="features-section">
+          <div className="feature-card">
+            <div className="feature-icon">🎙️</div>
+            <h3>Voice Mining</h3>
+            <p>Record language data and earn $LINGUA tokens instantly</p>
+            <button className="feature-button">Learn More</button>
+          </div>
+          
+          <div className="feature-card">
+            <div className="feature-icon">🎨</div>
+            <h3>Voice Share NFTs</h3>
+            <p>Own a piece of the AI models you help train</p>
+            <button className="feature-button">View Collection</button>
+          </div>
+          
+          <div className="feature-card">
+            <div className="feature-icon">⚔️</div>
+            <h3>Guardian Tiers</h3>
+            <p>Progress through tiers and earn multipliers</p>
+            <button className="feature-button">View Tiers</button>
+          </div>
+          
+          <div className="feature-card">
+            <div className="feature-icon">🛡️</div>
+            <h3>Language Insurance</h3>
+            <p>Protect endangered languages with DeFi insurance</p>
+            <button className="feature-button">Get Coverage</button>
+          </div>
+        </div>
+      )}
+
+      {/* Connect Prompt for non-connected users */}
+      {!isConnected && (
+        <div className="connect-prompt">
+          <div className="connect-card">
+            <div className="connect-icon">🌍</div>
+            <h2>Join LinguaDAO</h2>
+            <p>Connect your wallet to start mining voices and preserving languages</p>
+            
+            <div className="benefits-list">
+              <div className="benefit">
+                <FiCheck style={{ color: '#22c55e' }} />
+                Earn up to 1,200 $LINGUA per recording
               </div>
-              
-              <div className="balance-info">
-                <div className="balance-amount">
-                  <FiDollarSign />
-                  <span>{usdcBalance}</span>
-                  <span className="currency">USDC</span>
-                </div>
-                {parseFloat(usdcBalance) > 0 && (
-                  <motion.button
-                    className="withdraw-button"
-                    onClick={handleWithdraw}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    disabled={isWithdrawing}
-                  >
-                    {isWithdrawing ? 'Processing...' : 'Withdraw to MTN'}
-                  </motion.button>
-                )}
+              <div className="benefit">
+                <FiCheck style={{ color: '#22c55e' }} />
+                Get Voice Share NFTs with revenue rights
               </div>
-            </header>
-
-            {/* Language Selector */}
-            <div className="language-selector" style={{ margin: '20px 0' }}>
-              <select 
-                value={selectedLanguage} 
-                onChange={(e) => setSelectedLanguage(e.target.value)}
-                style={{
-                  padding: '10px',
-                  fontSize: '16px',
-                  borderRadius: '8px',
-                  border: '1px solid #333',
-                  backgroundColor: '#1a1a1a',
-                  color: 'white',
-                }}
-              >
-                <option value="twi">🇬🇭 Twi</option>
-                <option value="swahili">🇰🇪 Swahili</option>
-                <option value="yoruba">🇳🇬 Yoruba</option>
-                <option value="hausa">🇳🇬 Hausa</option>
-                <option value="amharic">🇪🇹 Amharic</option>
-                <option value="zulu">🇿🇦 Zulu</option>
-              </select>
+              <div className="benefit">
+                <FiCheck style={{ color: '#22c55e' }} />
+                Join DAO governance and shape the future
+              </div>
+              <div className="benefit">
+                <FiCheck style={{ color: '#22c55e' }} />
+                Help preserve endangered languages
+              </div>
             </div>
-
-            {/* Mode Switcher */}
-            <div className="mode-switcher">
-              <motion.button
-                className={`mode-button ${mode === 'contributor' ? 'active' : ''}`}
-                onClick={() => setMode('contributor')}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <FiMic /> Contributor
-              </motion.button>
-              <motion.button
-                className={`mode-button ${mode === 'validator' ? 'active' : ''}`}
-                onClick={() => setMode('validator')}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <FiAward /> Validator
-              </motion.button>
-            </div>
-
-            {/* Content Area */}
-            <AnimatePresence mode="wait">
-              {mode === 'contributor' ? (
-                /* Contributor Mode */
-                <motion.div
-                  key="contributor"
-                  className="contributor-mode"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
-                >
-                  <div className="record-section">
-                    <h2>Earn $3 in 30 Seconds</h2>
-                    <p>Record yourself speaking {selectedLanguage}</p>
-
-                    {/* Stats from blockchain */}
-                    {contributorStats && (
-                      <div className="contributor-stats">
-                        <div className="stat">
-                          <span>Submissions:</span>
-                          <strong>{contributorStats.submissions}</strong>
-                        </div>
-                        <div className="stat">
-                          <span>Total Earned:</span>
-                          <strong>${contributorStats.earnings}</strong>
-                        </div>
-                        <div className="stat">
-                          <span>Reputation:</span>
-                          <strong>{contributorStats.reputation}</strong>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Recording Interface */}
-                    <div className="recording-interface">
-                      {recordingState === 'recording' && (
-                        <div className="waveform">
-                          {audioWaveform.map((height, i) => (
-                            <motion.div
-                              key={i}
-                              className="wave-bar"
-                              animate={{ height: `${height}%` }}
-                              transition={{ duration: 0.1 }}
-                            />
-                          ))}
-                        </div>
-                      )}
-
-                      <div className="recording-timer">
-                        {recordingState === 'recording' && (
-                          <motion.div
-                            className="timer-display"
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                          >
-                            {recordingTime}s / 30s
-                          </motion.div>
-                        )}
-                      </div>
-
-                      {/* Status Messages */}
-                      <AnimatePresence mode="wait">
-                        {(recordingState === 'processing' || isSubmitting) && (
-                          <motion.div
-                            className="status-message processing"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -20 }}
-                          >
-                            <div className="spinner" />
-                            Submitting to blockchain...
-                          </motion.div>
-                        )}
-
-                        {recordingState === 'success' && (
-                          <motion.div
-                            className="status-message success"
-                            initial={{ opacity: 0, scale: 0.5 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.5 }}
-                          >
-                            <FiCheckCircle size={48} />
-                            <h3>Success!</h3>
-                            <p>$3 USDC added to your balance</p>
-                          </motion.div>
-                        )}
-
-                        {recordingState === 'error' && (
-                          <motion.div
-                            className="status-message error"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                          >
-                            <FiX size={48} />
-                            <p>Recording too short. Minimum 30 seconds required.</p>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-
-                      {/* Record Button */}
-                      <motion.button
-                        className={`record-button ${recordingState === 'recording' ? 'recording' : ''}`}
-                        onClick={recordingState === 'recording' ? stopRecording : startRecording}
-                        disabled={recordingState === 'processing' || recordingState === 'success' || isSubmitting}
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                      >
-                        {recordingState === 'recording' ? (
-                          <>
-                            <FiMicOff /> Stop Recording
-                          </>
-                        ) : (
-                          <>
-                            <FiMic /> Start Recording
-                          </>
-                        )}
-                      </motion.button>
-                    </div>
-
-                    {/* Instructions */}
-                    <div className="instructions">
-                      <h3>Recording Tips:</h3>
-                      <ul>
-                        <li>Speak clearly in {selectedLanguage}</li>
-                        <li>Record for at least 30 seconds</li>
-                        <li>Find a quiet environment</li>
-                        <li>Use natural speech patterns</li>
-                      </ul>
-                    </div>
-                  </div>
-                </motion.div>
-              ) : (
-                /* Validator Mode */
-                <motion.div
-                  key="validator"
-                  className="validator-mode"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                >
-                  <div className="validation-section">
-                    <div className="validator-header">
-                      <h2>Validate & Earn</h2>
-                      <div className="validator-stats">
-                        <div className="stat">
-                          <FiAward />
-                          <span>Streak: {validationStreak}</span>
-                        </div>
-                        <div className="stat">
-                          <FiDollarSign />
-                          <span>$0.50 per validation</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Current Validation */}
-                    {validationQueue[currentValidation] && (
-                      <motion.div
-                        className="validation-card"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        key={currentValidation}
-                      >
-                        <div className="validation-info">
-                          <h3>Audio #{currentValidation + 1}</h3>
-                          <p>Contributor: {validationQueue[currentValidation].contributor}</p>
-                          <p>Duration: {validationQueue[currentValidation].duration}s</p>
-                          <p>CID: {validationQueue[currentValidation].cid}</p>
-                        </div>
-
-                        <motion.button
-                          className="play-audio-button"
-                          onClick={playAudio}
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                        >
-                          {isPlaying ? (
-                            <>
-                              <FiPause /> Playing...
-                            </>
-                          ) : (
-                            <>
-                              <FiPlay /> Play Audio
-                            </>
-                          )}
-                        </motion.button>
-
-                        <div className="validation-actions">
-                          <motion.button
-                            className="validate-button approve"
-                            onClick={() => handleValidation(true)}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            disabled={validationQueue[currentValidation].status !== 'pending' || isValidating}
-                          >
-                            <FiCheck /> Valid {selectedLanguage}
-                          </motion.button>
-                          <motion.button
-                            className="validate-button reject"
-                            onClick={() => handleValidation(false)}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            disabled={validationQueue[currentValidation].status !== 'pending' || isValidating}
-                          >
-                            <FiX /> Not {selectedLanguage}
-                          </motion.button>
-                        </div>
-
-                        {validationQueue[currentValidation].status !== 'pending' && (
-                          <motion.div
-                            className={`validation-result ${validationQueue[currentValidation].status}`}
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                          >
-                            {validationQueue[currentValidation].status === 'approved' ? (
-                              <>
-                                <FiCheckCircle /> Approved! +$0.50
-                              </>
-                            ) : (
-                              <>
-                                <FiX /> Rejected
-                              </>
-                            )}
-                          </motion.div>
-                        )}
-                      </motion.div>
-                    )}
-
-                    {/* Queue Status */}
-                    <div className="queue-status">
-                      <h3>Validation Queue</h3>
-                      <div className="queue-items">
-                        {validationQueue.map((item, index) => (
-                          <div
-                            key={item.id}
-                            className={`queue-item ${
-                              index === currentValidation ? 'current' : ''
-                            } ${item.status}`}
-                          >
-                            <span>#{index + 1}</span>
-                            <span>{item.contributor}</span>
-                            <span>{item.status}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Success Particles Effect */}
-      {recordingState === 'success' && (
-        <div className="particles">
-          {[...Array(20)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="particle"
-              initial={{ 
-                x: 0, 
-                y: 0,
-                opacity: 1
-              }}
-              animate={{ 
-                x: (Math.random() - 0.5) * 200,
-                y: (Math.random() - 0.5) * 200,
-                opacity: 0
-              }}
-              transition={{ duration: 1 }}
-            />
-          ))}
+            
+            <button className="connect-button-large">
+              Connect Wallet to Start Mining
+            </button>
+          </div>
         </div>
       )}
     </div>

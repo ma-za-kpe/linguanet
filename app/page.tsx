@@ -5,31 +5,37 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { 
   FiMic, FiDollarSign, FiUsers, FiDatabase, 
-  FiGlobe, FiAward, FiCode,
-  FiArrowRight, FiPlay, FiCheckCircle
+  FiGlobe, FiAward, FiCode, FiShield,
+  FiArrowRight, FiPlay, FiCheckCircle,
+  FiTrendingUp, FiLock, FiBarChart2, FiPieChart
 } from 'react-icons/fi';
 import './home.css';
 import './home-enhanced.css';
+import './linguadao.css';
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState<'contributor' | 'validator' | 'company'>('contributor');
+  const [activeTab, setActiveTab] = useState<'voice-mining' | 'liquidity' | 'governance' | 'insurance'>('voice-mining');
   const [stats, setStats] = useState({
-    languages: 12,
-    contributors: 127,
-    audioClips: 419,
-    earned: 1257
+    totalValueLocked: 2847650,
+    linguaPrice: 0.42,
+    languages: 27,
+    voiceShares: 12847,
+    insurancePools: 8,
+    dailyVolume: 127450
   });
 
-  // Animate stats on mount
+  // Animate stats
   useEffect(() => {
     const interval = setInterval(() => {
       setStats(prev => ({
+        totalValueLocked: prev.totalValueLocked + Math.floor(Math.random() * 10000),
+        linguaPrice: prev.linguaPrice + (Math.random() * 0.02 - 0.01),
         languages: prev.languages,
-        contributors: Math.min(prev.contributors + Math.floor(Math.random() * 3), 500),
-        audioClips: Math.min(prev.audioClips + Math.floor(Math.random() * 7), 2000),
-        earned: Math.min(prev.earned + Math.floor(Math.random() * 15), 10000)
+        voiceShares: prev.voiceShares + Math.floor(Math.random() * 10),
+        insurancePools: prev.insurancePools,
+        dailyVolume: prev.dailyVolume + Math.floor(Math.random() * 1000)
       }));
-    }, 3000);
+    }, 5000);
     return () => clearInterval(interval);
   }, []);
 
@@ -65,33 +71,14 @@ export default function Home() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          {/* Animated Logo */}
+          {/* Protocol Badge */}
           <motion.div 
-            className="hero-logo"
-            initial={{ scale: 0, rotate: -180 }}
-            animate={{ scale: 1, rotate: 0 }}
-            transition={{ 
-              type: "spring",
-              stiffness: 260,
-              damping: 20,
-              duration: 1.5 
-            }}
+            className="protocol-badge"
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.3, type: "spring" }}
           >
-            <motion.div 
-              animate={{ 
-                rotate: [0, 10, -10, 0],
-                scale: [1, 1.1, 1.1, 1]
-              }}
-              transition={{ 
-                duration: 4,
-                repeat: Infinity,
-                repeatType: "reverse"
-              }}
-              className="logo-inner"
-            >
-              🌍
-            </motion.div>
-            <div className="logo-glow"></div>
+            <FiShield /> Decentralized Protocol
           </motion.div>
           
           <motion.h1 
@@ -100,39 +87,30 @@ export default function Home() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 1 }}
           >
-            <span className="gradient-text">LinguaNet</span>
-            <motion.span 
-              className="title-sparkle"
-              animate={{ 
-                opacity: [0, 1, 0],
-                scale: [0.8, 1.2, 0.8]
-              }}
-              transition={{ 
-                duration: 2,
-                repeat: Infinity,
-                delay: 1
-              }}
-            >
-              ✨
-            </motion.span>
+            <span className="gradient-text">LinguaDAO</span>
           </motion.h1>
           
           <p className="hero-subtitle">
-            Decentralized African Language Data Marketplace on Base L2
+            The First Decentralized Language Preservation Protocol
+          </p>
+          
+          <p className="hero-description">
+            Own the future of AI by preserving human languages. Stake, mine, govern, and earn 
+            from the world's most valuable linguistic data marketplace.
           </p>
 
-          {/* Live Stats Grid */}
-          <div className="hero-stats">
+          {/* Token Stats Grid */}
+          <div className="token-stats">
             <motion.div 
-              className="stat-card"
+              className="stat-card highlight"
               whileHover={{ scale: 1.05 }}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.1 }}
             >
-              <FiGlobe className="stat-icon" />
-              <div className="stat-value">{stats.languages}</div>
-              <div className="stat-label">Languages</div>
+              <div className="stat-label">TVL</div>
+              <div className="stat-value">${(stats.totalValueLocked / 1000000).toFixed(2)}M</div>
+              <div className="stat-change">+12.5%</div>
             </motion.div>
             
             <motion.div 
@@ -142,9 +120,9 @@ export default function Home() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
             >
-              <FiUsers className="stat-icon" />
-              <div className="stat-value">{stats.contributors.toLocaleString()}</div>
-              <div className="stat-label">Contributors</div>
+              <div className="stat-label">$LINGUA Price</div>
+              <div className="stat-value">${stats.linguaPrice.toFixed(3)}</div>
+              <div className="stat-change positive">+5.2%</div>
             </motion.div>
             
             <motion.div 
@@ -154,21 +132,21 @@ export default function Home() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3 }}
             >
-              <FiMic className="stat-icon" />
-              <div className="stat-value">{stats.audioClips.toLocaleString()}</div>
-              <div className="stat-label">Audio Clips</div>
+              <div className="stat-label">Voice NFTs</div>
+              <div className="stat-value">{stats.voiceShares.toLocaleString()}</div>
+              <div className="stat-change">+127 today</div>
             </motion.div>
             
             <motion.div 
-              className="stat-card highlight"
+              className="stat-card"
               whileHover={{ scale: 1.05 }}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.4 }}
             >
-              <FiDollarSign className="stat-icon" />
-              <div className="stat-value">${stats.earned.toLocaleString()}</div>
-              <div className="stat-label">Earned by Contributors</div>
+              <div className="stat-label">24h Volume</div>
+              <div className="stat-value">${(stats.dailyVolume / 1000).toFixed(0)}K</div>
+              <div className="stat-change">+18.7%</div>
             </motion.div>
           </div>
 
@@ -188,23 +166,11 @@ export default function Home() {
                 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <motion.span
-                  animate={{ rotate: [0, 10, -10, 0] }}
-                  transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 3 }}
-                >
-                  <FiMic />
-                </motion.span>
-                Start Recording
-                <motion.span 
-                  className="button-arrow"
-                  animate={{ x: [0, 5, 0] }}
-                  transition={{ duration: 1, repeat: Infinity }}
-                >
-                  →
-                </motion.span>
+                <FiMic /> Start Voice Mining
+                <span className="button-badge">Earn $LINGUA</span>
               </motion.button>
             </Link>
-            <Link href="/dashboard">
+            <Link href="/governance">
               <motion.button 
                 className="cta-button secondary"
                 whileHover={{ 
@@ -213,122 +179,309 @@ export default function Home() {
                 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <FiDatabase /> Browse Datasets
+                <FiLock /> Join DAO
               </motion.button>
             </Link>
           </motion.div>
 
           <div className="hackathon-badge">
-            🏆 ETHAccra 2025 Hackathon Project
+            🏆 ETHAccra 2025 | Built with Scaffold-ETH 2
           </div>
         </motion.div>
       </section>
 
-      {/* How It Works Section */}
-      <section className="how-it-works">
+      {/* Tokenomics Section */}
+      <section className="tokenomics-section">
         <motion.div 
           className="section-header"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
         >
-          <h2>How LinguaNet Works</h2>
-          <p>Three roles, one mission: Preserve languages, power AI</p>
+          <h2>Revolutionary Token Economics</h2>
+          <p>Dual token system creating sustainable value for language preservation</p>
         </motion.div>
 
-        <div className="role-tabs">
-          <button 
-            className={`role-tab ${activeTab === 'contributor' ? 'active' : ''}`}
-            onClick={() => setActiveTab('contributor')}
+        <div className="tokenomics-grid">
+          <motion.div 
+            className="token-card lingua"
+            whileHover={{ scale: 1.02 }}
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
           >
-            <FiMic /> Contributor
+            <div className="token-header">
+              <div className="token-icon">🎯</div>
+              <h3>$LINGUA Token</h3>
+              <div className="token-type">Governance & Utility</div>
+            </div>
+            <div className="token-stats">
+              <div className="token-stat">
+                <span>Total Supply</span>
+                <strong>1B</strong>
+              </div>
+              <div className="token-stat">
+                <span>Circulating</span>
+                <strong>127M</strong>
+              </div>
+              <div className="token-stat">
+                <span>Market Cap</span>
+                <strong>$53.3M</strong>
+              </div>
+            </div>
+            <div className="token-distribution">
+              <h4>Distribution</h4>
+              <div className="distribution-item">
+                <div className="distribution-bar" style={{width: '40%', background: 'linear-gradient(90deg, #7c3aed, #9333ea)'}}>
+                  <span>40%</span>
+                </div>
+                <label>Voice Mining Rewards</label>
+              </div>
+              <div className="distribution-item">
+                <div className="distribution-bar" style={{width: '20%', background: 'linear-gradient(90deg, #22c55e, #10b981)'}}>
+                  <span>20%</span>
+                </div>
+                <label>Preservation Treasury</label>
+              </div>
+              <div className="distribution-item">
+                <div className="distribution-bar" style={{width: '15%', background: 'linear-gradient(90deg, #3b82f6, #2563eb)'}}>
+                  <span>15%</span>
+                </div>
+                <label>Team & Advisors</label>
+              </div>
+              <div className="distribution-item">
+                <div className="distribution-bar" style={{width: '15%', background: 'linear-gradient(90deg, #f59e0b, #f97316)'}}>
+                  <span>15%</span>
+                </div>
+                <label>Ecosystem Grants</label>
+              </div>
+              <div className="distribution-item">
+                <div className="distribution-bar" style={{width: '10%', background: 'linear-gradient(90deg, #ec4899, #db2777)'}}>
+                  <span>10%</span>
+                </div>
+                <label>Initial Liquidity</label>
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div 
+            className="token-card voice"
+            whileHover={{ scale: 1.02 }}
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+          >
+            <div className="token-header">
+              <div className="token-icon">🎤</div>
+              <h3>Voice Share NFTs</h3>
+              <div className="token-type">Ownership & Revenue Rights</div>
+            </div>
+            <div className="nft-features">
+              <div className="nft-feature">
+                <FiPieChart />
+                <div>
+                  <strong>Revenue Sharing</strong>
+                  <p>70% of AI model sales distributed to NFT holders</p>
+                </div>
+              </div>
+              <div className="nft-feature">
+                <FiTrendingUp />
+                <div>
+                  <strong>Rarity Tiers</strong>
+                  <p>1-5 based on language endangerment level</p>
+                </div>
+              </div>
+              <div className="nft-feature">
+                <FiAward />
+                <div>
+                  <strong>Guardian Status</strong>
+                  <p>Unlock multipliers: Novice → Expert → Master → Guardian</p>
+                </div>
+              </div>
+              <div className="nft-feature">
+                <FiBarChart2 />
+                <div>
+                  <strong>Tradeable Assets</strong>
+                  <p>Buy, sell, or stake NFTs in liquidity pools</p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Protocol Features */}
+      <section className="protocol-section">
+        <motion.div 
+          className="section-header"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+        >
+          <h2>Protocol Mechanics</h2>
+          <p>Four pillars of sustainable language preservation</p>
+        </motion.div>
+
+        <div className="protocol-tabs">
+          <button 
+            className={activeTab === 'voice-mining' ? 'active' : ''}
+            onClick={() => setActiveTab('voice-mining')}
+          >
+            <FiMic /> Voice Mining
           </button>
           <button 
-            className={`role-tab ${activeTab === 'validator' ? 'active' : ''}`}
-            onClick={() => setActiveTab('validator')}
+            className={activeTab === 'liquidity' ? 'active' : ''}
+            onClick={() => setActiveTab('liquidity')}
           >
-            <FiAward /> Validator
+            <FiBarChart2 /> Language Pools
           </button>
           <button 
-            className={`role-tab ${activeTab === 'company' ? 'active' : ''}`}
-            onClick={() => setActiveTab('company')}
+            className={activeTab === 'governance' ? 'active' : ''}
+            onClick={() => setActiveTab('governance')}
           >
-            <FiCode /> AI Company
+            <FiUsers /> Governance
+          </button>
+          <button 
+            className={activeTab === 'insurance' ? 'active' : ''}
+            onClick={() => setActiveTab('insurance')}
+          >
+            <FiShield /> Insurance
           </button>
         </div>
 
         <motion.div 
           className="tab-content"
           key={activeTab}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -20 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
         >
-          {activeTab === 'contributor' && (
-            <div className="role-content">
-              <div className="role-steps">
-                <motion.div 
-                  className="step"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.1 }}
-                >
-                  <div className="step-number">1</div>
-                  <div>
-                    <h3>Connect Wallet & Register</h3>
-                    <p>Connect any Web3 wallet and register with your phone number to get a .linguanet.eth ENS name</p>
-                  </div>
-                </motion.div>
-                
-                <motion.div 
-                  className="step"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.2 }}
-                >
-                  <div className="step-number">2</div>
-                  <div>
-                    <h3>Record 30 Seconds</h3>
-                    <p>Speak naturally in Twi, Swahili, Yoruba, or any of our supported African languages</p>
-                  </div>
-                </motion.div>
-                
-                <motion.div 
-                  className="step"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.3 }}
-                >
-                  <div className="step-number">3</div>
-                  <div>
-                    <h3>Earn $3 USDC Instantly</h3>
-                    <p>Get paid immediately in USDC on Base L2 after AI quality verification</p>
-                  </div>
-                </motion.div>
-                
-                <motion.div 
-                  className="step"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.4 }}
-                >
-                  <div className="step-number">4</div>
-                  <div>
-                    <h3>Withdraw to Mobile Money</h3>
-                    <p>Cash out to MTN Mobile Money, M-Pesa, or AirtelTigo instantly</p>
-                  </div>
-                </motion.div>
+          {activeTab === 'voice-mining' && (
+            <div className="mining-content">
+              <div className="mining-formula">
+                <h3>Mining Rewards Formula</h3>
+                <div className="formula-display">
+                  <span className="formula-part">Quality Score</span>
+                  <span className="operator">×</span>
+                  <span className="formula-part">Language Multiplier</span>
+                  <span className="operator">×</span>
+                  <span className="formula-part">Staking Boost</span>
+                  <span className="operator">=</span>
+                  <span className="formula-result">$LINGUA Earned</span>
+                </div>
               </div>
               
-              <div className="role-demo">
-                <div className="phone-mockup">
-                  <div className="phone-screen">
-                    <div className="demo-header">kofi.linguanet.eth</div>
-                    <div className="demo-balance">$12.50 USDC</div>
-                    <div className="demo-record-button">🎤 Record Twi</div>
-                    <div className="demo-status">
-                      <FiCheckCircle style={{ color: '#22c55e' }} />
-                      <span> Quality: 94%</span>
+              <div className="language-multipliers">
+                <h4>Language Rarity Multipliers</h4>
+                <div className="multiplier-grid">
+                  <div className="multiplier-item critical">
+                    <span className="multiplier">4x</span>
+                    <span className="language">Xhosa, Wolof</span>
+                    <span className="status">Critically Endangered</span>
+                  </div>
+                  <div className="multiplier-item endangered">
+                    <span className="multiplier">3x</span>
+                    <span className="language">Twi, Yoruba, Igbo</span>
+                    <span className="status">Endangered</span>
+                  </div>
+                  <div className="multiplier-item vulnerable">
+                    <span className="multiplier">2x</span>
+                    <span className="language">Swahili, Hausa</span>
+                    <span className="status">Vulnerable</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mining-steps">
+                <div className="step">
+                  <div className="step-icon">🎙️</div>
+                  <h4>Record</h4>
+                  <p>30 seconds in your native language</p>
+                </div>
+                <div className="step">
+                  <div className="step-icon">🤖</div>
+                  <h4>AI Validation</h4>
+                  <p>Quality score 0-100</p>
+                </div>
+                <div className="step">
+                  <div className="step-icon">🎯</div>
+                  <h4>Mint NFT</h4>
+                  <p>Voice Share with revenue rights</p>
+                </div>
+                <div className="step">
+                  <div className="step-icon">💰</div>
+                  <h4>Earn</h4>
+                  <p>$LINGUA + future revenue share</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'liquidity' && (
+            <div className="liquidity-content">
+              <h3>Automated Market Maker for Language Data</h3>
+              <p>Trade access rights to language datasets through dedicated liquidity pools</p>
+              
+              <div className="pool-grid">
+                <div className="pool-card">
+                  <div className="pool-header">
+                    <span className="pool-pair">TWI/USDC</span>
+                    <span className="pool-apy">127% APY</span>
+                  </div>
+                  <div className="pool-stats">
+                    <div>
+                      <label>Liquidity</label>
+                      <strong>$847K</strong>
+                    </div>
+                    <div>
+                      <label>Volume 24h</label>
+                      <strong>$42K</strong>
+                    </div>
+                    <div>
+                      <label>Price</label>
+                      <strong>$0.73</strong>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="pool-card">
+                  <div className="pool-header">
+                    <span className="pool-pair">YORUBA/USDC</span>
+                    <span className="pool-apy">95% APY</span>
+                  </div>
+                  <div className="pool-stats">
+                    <div>
+                      <label>Liquidity</label>
+                      <strong>$623K</strong>
+                    </div>
+                    <div>
+                      <label>Volume 24h</label>
+                      <strong>$31K</strong>
+                    </div>
+                    <div>
+                      <label>Price</label>
+                      <strong>$0.61</strong>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="pool-card">
+                  <div className="pool-header">
+                    <span className="pool-pair">SWAHILI/USDC</span>
+                    <span className="pool-apy">72% APY</span>
+                  </div>
+                  <div className="pool-stats">
+                    <div>
+                      <label>Liquidity</label>
+                      <strong>$1.2M</strong>
+                    </div>
+                    <div>
+                      <label>Volume 24h</label>
+                      <strong>$78K</strong>
+                    </div>
+                    <div>
+                      <label>Price</label>
+                      <strong>$0.42</strong>
                     </div>
                   </div>
                 </div>
@@ -336,145 +489,132 @@ export default function Home() {
             </div>
           )}
 
-          {activeTab === 'validator' && (
-            <div className="role-content">
-              <div className="role-steps">
-                <motion.div 
-                  className="step"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.1 }}
-                >
-                  <div className="step-number">1</div>
+          {activeTab === 'governance' && (
+            <div className="governance-content">
+              <h3>Community-Driven Protocol Evolution</h3>
+              
+              <div className="governance-stats">
+                <div className="gov-stat">
+                  <FiUsers />
                   <div>
-                    <h3>Become a Validator</h3>
-                    <p>Submit 10 quality recordings to unlock validator status and earn from verification</p>
+                    <strong>2,847</strong>
+                    <span>DAO Members</span>
                   </div>
-                </motion.div>
-                
-                <motion.div 
-                  className="step"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.2 }}
-                >
-                  <div className="step-number">2</div>
+                </div>
+                <div className="gov-stat">
+                  <FiCheckCircle />
                   <div>
-                    <h3>Review Audio Clips</h3>
-                    <p>Listen to submissions and verify they match the claimed language with good quality</p>
+                    <strong>127</strong>
+                    <span>Proposals Passed</span>
                   </div>
-                </motion.div>
-                
-                <motion.div 
-                  className="step"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.3 }}
-                >
-                  <div className="step-number">3</div>
+                </div>
+                <div className="gov-stat">
+                  <FiLock />
                   <div>
-                    <h3>Earn $0.50 per Validation</h3>
-                    <p>Get paid for each accurate validation, with bonuses for streak performance</p>
+                    <strong>42M</strong>
+                    <span>$LINGUA Staked</span>
                   </div>
-                </motion.div>
-                
-                <motion.div 
-                  className="step"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.4 }}
-                >
-                  <div className="step-number">4</div>
-                  <div>
-                    <h3>Build EFP Reputation</h3>
-                    <p>Gain on-chain attestations and unlock premium validation opportunities</p>
-                  </div>
-                </motion.div>
+                </div>
               </div>
               
-              <div className="role-demo">
-                <div className="validation-interface">
-                  <div className="validation-header">Validation Queue: 23 clips</div>
-                  <div className="validation-item">
-                    <span>ama.linguanet.eth - 32s</span>
-                    <button className="play-btn"><FiPlay /></button>
+              <div className="active-proposals">
+                <h4>Active Proposals</h4>
+                <div className="proposal">
+                  <div className="proposal-header">
+                    <span className="proposal-id">#128</span>
+                    <span className="proposal-status voting">Voting</span>
                   </div>
-                  <div className="validation-buttons">
-                    <button className="approve">✓ Valid Twi</button>
-                    <button className="reject">✗ Not Twi</button>
+                  <h5>Add Amharic to Critical Endangerment List</h5>
+                  <div className="proposal-votes">
+                    <div className="vote-bar">
+                      <div className="vote-yes" style={{width: '73%'}}>73% Yes</div>
+                      <div className="vote-no" style={{width: '27%'}}>27% No</div>
+                    </div>
                   </div>
-                  <div className="validation-streak">🔥 Streak: 47</div>
+                </div>
+                
+                <div className="proposal">
+                  <div className="proposal-header">
+                    <span className="proposal-id">#129</span>
+                    <span className="proposal-status pending">Pending</span>
+                  </div>
+                  <h5>Increase Voice Mining Rewards by 15%</h5>
+                  <div className="proposal-time">Voting starts in 2 days</div>
                 </div>
               </div>
             </div>
           )}
 
-          {activeTab === 'company' && (
-            <div className="role-content">
-              <div className="role-steps">
-                <motion.div 
-                  className="step"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.1 }}
-                >
-                  <div className="step-number">1</div>
-                  <div>
-                    <h3>Browse Datasets</h3>
-                    <p>Filter by language, quality score, duration, and number of unique speakers</p>
+          {activeTab === 'insurance' && (
+            <div className="insurance-content">
+              <h3>Language Extinction Insurance</h3>
+              <p>World's first DeFi protocol protecting against language loss</p>
+              
+              <div className="insurance-mechanism">
+                <div className="insurance-flow">
+                  <div className="flow-step">
+                    <FiLock />
+                    <h4>Stake $LINGUA</h4>
+                    <p>Communities stake to insure their language</p>
                   </div>
-                </motion.div>
-                
-                <motion.div 
-                  className="step"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.2 }}
-                >
-                  <div className="step-number">2</div>
-                  <div>
-                    <h3>Preview Samples</h3>
-                    <p>Listen to verified audio clips and view transcriptions before purchase</p>
+                  <div className="flow-arrow">→</div>
+                  <div className="flow-step">
+                    <FiBarChart2 />
+                    <h4>Monitor Speakers</h4>
+                    <p>Oracle tracks active speaker count</p>
                   </div>
-                </motion.div>
-                
-                <motion.div 
-                  className="step"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.3 }}
-                >
-                  <div className="step-number">3</div>
-                  <div>
-                    <h3>Purchase with USDC</h3>
-                    <p>Pay securely on Base L2 with instant settlement and transparent pricing</p>
+                  <div className="flow-arrow">→</div>
+                  <div className="flow-step">
+                    <FiShield />
+                    <h4>Trigger Payout</h4>
+                    <p>10x coverage if speakers drop below threshold</p>
                   </div>
-                </motion.div>
-                
-                <motion.div 
-                  className="step"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.4 }}
-                >
-                  <div className="step-number">4</div>
-                  <div>
-                    <h3>Access via API</h3>
-                    <p>Stream data from Filecoin storage or download complete datasets with metadata</p>
-                  </div>
-                </motion.div>
+                </div>
               </div>
               
-              <div className="role-demo">
-                <div className="dashboard-mockup">
-                  <div className="dataset-card">
-                    <div className="dataset-header">🇬🇭 Twi Dataset</div>
-                    <div className="dataset-stats">
-                      <span>2,847 clips</span>
-                      <span>94% quality</span>
+              <div className="insurance-pools">
+                <h4>Active Insurance Pools</h4>
+                <div className="insurance-grid">
+                  <div className="insurance-card">
+                    <div className="insurance-header">
+                      <span className="language">Xhosa</span>
+                      <span className="risk high">High Risk</span>
                     </div>
-                    <div className="dataset-price">$2,847 USDC</div>
-                    <button className="purchase-btn">Purchase Dataset</button>
+                    <div className="insurance-stats">
+                      <div>
+                        <label>Coverage</label>
+                        <strong>$2.4M</strong>
+                      </div>
+                      <div>
+                        <label>Premium</label>
+                        <strong>8.5% APR</strong>
+                      </div>
+                      <div>
+                        <label>Threshold</label>
+                        <strong>100 speakers</strong>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="insurance-card">
+                    <div className="insurance-header">
+                      <span className="language">Wolof</span>
+                      <span className="risk medium">Medium Risk</span>
+                    </div>
+                    <div className="insurance-stats">
+                      <div>
+                        <label>Coverage</label>
+                        <strong>$1.8M</strong>
+                      </div>
+                      <div>
+                        <label>Premium</label>
+                        <strong>5.2% APR</strong>
+                      </div>
+                      <div>
+                        <label>Threshold</label>
+                        <strong>150 speakers</strong>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -483,96 +623,61 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* Technology Section */}
-      <section className="technology-section">
+      {/* Revenue Model Section */}
+      <section className="revenue-section">
         <motion.div 
           className="section-header"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
         >
-          <h2>Built for Africa, Powered by Ethereum</h2>
-          <p>Leveraging cutting-edge blockchain technology for real-world impact</p>
+          <h2>Sustainable Revenue Model</h2>
+          <p>Multiple revenue streams creating value for all stakeholders</p>
         </motion.div>
 
-        <div className="tech-grid">
-          <motion.div 
-            className="tech-card"
-            whileHover={{ scale: 1.05 }}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-          >
-            <div className="tech-icon">⚡</div>
-            <h3>Base L2</h3>
-            <p>Fast, cheap transactions at $0.01 per submission with instant finality</p>
-          </motion.div>
+        <div className="revenue-flow">
+          <div className="revenue-source">
+            <h3>Revenue Sources</h3>
+            <div className="source-item">
+              <FiDatabase />
+              <div>
+                <strong>AI Companies</strong>
+                <p>Pay for diverse language datasets</p>
+              </div>
+            </div>
+            <div className="source-item">
+              <FiBarChart2 />
+              <div>
+                <strong>Trading Fees</strong>
+                <p>0.3% on all AMM transactions</p>
+              </div>
+            </div>
+            <div className="source-item">
+              <FiShield />
+              <div>
+                <strong>Insurance Premiums</strong>
+                <p>Risk-based pricing for coverage</p>
+              </div>
+            </div>
+          </div>
           
-          <motion.div 
-            className="tech-card"
-            whileHover={{ scale: 1.05 }}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-          >
-            <div className="tech-icon">🔐</div>
-            <h3>ENS Identity</h3>
-            <p>Human-readable names like kofi.linguanet.eth for every contributor</p>
-          </motion.div>
-          
-          <motion.div 
-            className="tech-card"
-            whileHover={{ scale: 1.05 }}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
-          >
-            <div className="tech-icon">💾</div>
-            <h3>Filecoin Storage</h3>
-            <p>Permanent, decentralized storage ensuring data preservation forever</p>
-          </motion.div>
-          
-          <motion.div 
-            className="tech-card"
-            whileHover={{ scale: 1.05 }}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.4 }}
-          >
-            <div className="tech-icon">🤖</div>
-            <h3>AI Quality Check</h3>
-            <p>TensorFlow.js validates audio quality in real-time on-device</p>
-          </motion.div>
-          
-          <motion.div 
-            className="tech-card"
-            whileHover={{ scale: 1.05 }}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.5 }}
-          >
-            <div className="tech-icon">📱</div>
-            <h3>Mobile Money</h3>
-            <p>Direct withdrawal to MTN, M-Pesa, and AirtelTigo accounts</p>
-          </motion.div>
-          
-          <motion.div 
-            className="tech-card"
-            whileHover={{ scale: 1.05 }}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.6 }}
-          >
-            <div className="tech-icon">🏅</div>
-            <h3>EFP Reputation</h3>
-            <p>On-chain attestations for quality contributors and validators</p>
-          </motion.div>
+          <div className="revenue-distribution">
+            <h3>Distribution</h3>
+            <div className="distribution-chart">
+              <div className="chart-segment contributors" style={{height: '70%'}}>
+                <span>70%</span>
+                <label>Voice Contributors</label>
+              </div>
+              <div className="chart-segment stakers" style={{height: '20%'}}>
+                <span>20%</span>
+                <label>$LINGUA Stakers</label>
+              </div>
+              <div className="chart-segment treasury" style={{height: '10%'}}>
+                <span>10%</span>
+                <label>DAO Treasury</label>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -580,54 +685,26 @@ export default function Home() {
       <section className="cta-section">
         <motion.div 
           className="cta-content"
-          initial={{ opacity: 0, y: 50 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <h2>Ready to Make an Impact?</h2>
-          <p>Join the movement to preserve languages and democratize AI</p>
-          
-          <div className="cta-buttons">
+          <h2>Join the Language Revolution</h2>
+          <p>Be part of the first community-owned AI training protocol</p>
+          <div className="final-cta">
             <Link href="/contribute">
-              <motion.button 
-                className="cta-button primary large"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Start Earning Now <FiArrowRight />
-              </motion.button>
+              <button className="cta-button primary large">
+                <FiMic /> Start Mining $LINGUA
+              </button>
             </Link>
-          </div>
-
-          <div className="cta-links">
-            <Link href="/pitch" className="cta-link">
-              <FiPlay /> View Pitch Deck
-            </Link>
-            <Link href="/dashboard" className="cta-link">
-              <FiDatabase /> AI Company Dashboard
+            <Link href="/pitch">
+              <button className="cta-button secondary large">
+                <FiPlay /> View Pitch Deck
+              </button>
             </Link>
           </div>
         </motion.div>
       </section>
-
-      {/* Footer */}
-      <footer className="footer">
-        <div className="footer-content">
-          <div className="footer-logo">
-            🌍 LinguaNet
-          </div>
-          <div className="footer-tagline">
-            ETHAccra 2025 | Preserving Languages, Powering AI
-          </div>
-          <div className="footer-bounties">
-            <span className="bounty-badge">ENS</span>
-            <span className="bounty-badge">Base</span>
-            <span className="bounty-badge">Filecoin</span>
-            <span className="bounty-badge">EFP</span>
-            <span className="bounty-badge">Buidl Guidl</span>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

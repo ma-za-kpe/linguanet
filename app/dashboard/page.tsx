@@ -2,547 +2,484 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  FiDownload, FiPlay, FiPause, FiShoppingCart, 
-  FiCheck, FiDatabase, FiGlobe, FiTrendingUp,
-  FiMic, FiUsers, FiDollarSign, FiCode
-} from 'react-icons/fi';
-import './dashboard.css';
+import './dashboard-linguadao.css';
 
-// Realistic mock data for African languages
-const mockDatasets = {
-  twi: {
-    language: 'Twi',
-    country: 'Ghana',
-    flag: '🇬🇭',
-    clips: 2847,
-    duration: '23.7 hours',
-    contributors: 156,
-    quality: 94,
-    price: 2847,
-    growth: '+18%',
-    samples: [
-      { id: 1, contributor: 'kofi.linguanet.eth', duration: '32s', quality: 96, text: 'Ɛte sɛn? Mepɛ sɛ mekyerɛ wo Twi kasa' },
-      { id: 2, contributor: 'ama.linguanet.eth', duration: '28s', quality: 92, text: 'Akwaaba! Yɛfrɛ me Ama' },
-      { id: 3, contributor: 'kwame.linguanet.eth', duration: '30s', quality: 95, text: 'Me papa wɔ Kumasi' },
-      { id: 4, contributor: 'abena.linguanet.eth', duration: '35s', quality: 98, text: 'Medaase paa, nana' }
-    ]
-  },
-  swahili: {
-    language: 'Swahili',
-    country: 'Kenya/Tanzania',
-    flag: '🇰🇪',
-    clips: 4592,
-    duration: '38.3 hours',
-    contributors: 287,
-    quality: 91,
-    price: 4592,
-    growth: '+25%',
-    samples: [
-      { id: 1, contributor: 'juma.linguanet.eth', duration: '30s', quality: 93, text: 'Habari yako? Naitwa Juma' },
-      { id: 2, contributor: 'fatuma.linguanet.eth', duration: '27s', quality: 90, text: 'Karibu Tanzania, nchi yetu' },
-      { id: 3, contributor: 'hassan.linguanet.eth', duration: '33s', quality: 94, text: 'Ninatoka Dar es Salaam' }
-    ]
-  },
-  yoruba: {
-    language: 'Yoruba',
-    country: 'Nigeria',
-    flag: '🇳🇬',
-    clips: 3764,
-    duration: '31.4 hours',
-    contributors: 412,
-    quality: 93,
-    price: 3764,
-    growth: '+32%',
-    samples: [
-      { id: 1, contributor: 'tunde.linguanet.eth', duration: '29s', quality: 95, text: 'Ẹ káàárọ̀, ẹ ṣé dáadáa?' },
-      { id: 2, contributor: 'folake.linguanet.eth', duration: '31s', quality: 92, text: 'Orúkọ mi ni Folake' },
-      { id: 3, contributor: 'segun.linguanet.eth', duration: '34s', quality: 96, text: 'Mo wá láti ìlú Lagos' }
-    ]
-  },
-  hausa: {
-    language: 'Hausa',
-    country: 'Nigeria/Niger',
-    flag: '🇳🇬',
-    clips: 2156,
-    duration: '18.0 hours',
-    contributors: 178,
-    quality: 89,
-    price: 2156,
-    growth: '+22%',
-    samples: [
-      { id: 1, contributor: 'musa.linguanet.eth', duration: '28s', quality: 88, text: 'Sannu, ina kwana?' },
-      { id: 2, contributor: 'amina.linguanet.eth', duration: '30s', quality: 90, text: 'Sunana Amina, daga Kano' }
-    ]
-  },
-  amharic: {
-    language: 'Amharic',
-    country: 'Ethiopia',
-    flag: '🇪🇹',
-    clips: 1823,
-    duration: '15.2 hours',
-    contributors: 134,
-    quality: 92,
-    price: 1823,
-    growth: '+15%',
-    samples: [
-      { id: 1, contributor: 'tadesse.linguanet.eth', duration: '32s', quality: 93, text: 'ሰላም እንደምን አለህ?' },
-      { id: 2, contributor: 'marta.linguanet.eth', duration: '29s', quality: 91, text: 'ከአዲስ አበባ ነኝ' }
-    ]
-  },
-  zulu: {
-    language: 'Zulu',
-    country: 'South Africa',
-    flag: '🇿🇦',
-    clips: 2938,
-    duration: '24.5 hours',
-    contributors: 198,
-    quality: 95,
-    price: 2938,
-    growth: '+28%',
-    samples: [
-      { id: 1, contributor: 'sipho.linguanet.eth', duration: '31s', quality: 96, text: 'Sawubona, unjani?' },
-      { id: 2, contributor: 'nomsa.linguanet.eth', duration: '28s', quality: 94, text: 'Ngiphuma eThekwini' }
-    ]
-  },
-  igbo: {
-    language: 'Igbo',
-    country: 'Nigeria',
-    flag: '🇳🇬',
-    clips: 1642,
-    duration: '13.7 hours',
-    contributors: 89,
-    quality: 90,
-    price: 1642,
-    growth: '+19%',
-    samples: [
-      { id: 1, contributor: 'chidi.linguanet.eth', duration: '33s', quality: 91, text: 'Nnọọ, kedu ka ị mere?' },
-      { id: 2, contributor: 'ngozi.linguanet.eth', duration: '30s', quality: 89, text: 'Aha m bụ Ngozi' }
-    ]
-  },
-  wolof: {
-    language: 'Wolof',
-    country: 'Senegal',
-    flag: '🇸🇳',
-    clips: 1287,
-    duration: '10.7 hours',
-    contributors: 76,
-    quality: 88,
-    price: 1287,
-    growth: '+12%',
-    samples: [
-      { id: 1, contributor: 'amadou.linguanet.eth', duration: '29s', quality: 87, text: 'Asalaam aleekum, nanga def?' },
-      { id: 2, contributor: 'fatou.linguanet.eth', duration: '31s', quality: 89, text: 'Maa ngi fi, jërëjëf' }
-    ]
-  },
-  lingala: {
-    language: 'Lingala',
-    country: 'DRC/Congo',
-    flag: '🇨🇩',
-    clips: 976,
-    duration: '8.1 hours',
-    contributors: 54,
-    quality: 86,
-    price: 976,
-    growth: '+10%',
-    samples: [
-      { id: 1, contributor: 'jean.linguanet.eth', duration: '30s', quality: 85, text: 'Mbote, sango nini?' },
-      { id: 2, contributor: 'marie.linguanet.eth', duration: '28s', quality: 87, text: 'Nkombo na ngai Marie' }
-    ]
-  },
-  luganda: {
-    language: 'Luganda',
-    country: 'Uganda',
-    flag: '🇺🇬',
-    clips: 1456,
-    duration: '12.1 hours',
-    contributors: 92,
-    quality: 91,
-    price: 1456,
-    growth: '+16%',
-    samples: [
-      { id: 1, contributor: 'kato.linguanet.eth', duration: '32s', quality: 92, text: 'Oli otya? Nze Kato' },
-      { id: 2, contributor: 'nakato.linguanet.eth', duration: '29s', quality: 90, text: 'Nva mu Kampala' }
-    ]
-  },
-  shona: {
-    language: 'Shona',
-    country: 'Zimbabwe',
-    flag: '🇿🇼',
-    clips: 823,
-    duration: '6.9 hours',
-    contributors: 43,
-    quality: 87,
-    price: 823,
-    growth: '+14%',
-    samples: [
-      { id: 1, contributor: 'tendai.linguanet.eth', duration: '30s', quality: 88, text: 'Makadii? Ndiri bho' }
-    ]
-  },
-  tigrinya: {
-    language: 'Tigrinya',
-    country: 'Eritrea',
-    flag: '🇪🇷',
-    clips: 658,
-    duration: '5.5 hours',
-    contributors: 31,
-    quality: 85,
-    price: 658,
-    growth: '+8%',
-    samples: []
-  }
+// Mock data for LinguaDAO Protocol
+const mockProtocolData = {
+  tvl: 15847293,
+  linguaPrice: 0.42,
+  linguaChange: 12.5,
+  totalStaked: 8924156,
+  stakingAPY: 28.5,
+  voiceNFTs: 4287,
+  activeGuardians: 892,
+  languagesCovered: 47,
+  dailyVolume: 287456,
+  volumeChange: 8.3
 };
 
-export default function Dashboard() {
-  const [selectedLanguage, setSelectedLanguage] = useState('twi');
-  const [playingSample, setPlayingSample] = useState<number | null>(null);
-  const [isPurchasing, setIsPurchasing] = useState(false);
-  const [purchaseComplete, setPurchaseComplete] = useState(false);
-  const [stats, setStats] = useState({
-    totalClips: 0,
-    totalContributors: 0,
-    totalValue: 0,
-    growthRate: 0
-  });
+// Language Pools Data
+const languagePools = [
+  { 
+    code: 'TWI', name: 'Twi', flag: '🇬🇭', 
+    tvl: 2847000, apy: 42.5, volume24h: 45780,
+    status: 'vulnerable', multiplier: 2
+  },
+  { 
+    code: 'YOR', name: 'Yoruba', flag: '🇳🇬', 
+    tvl: 3124000, apy: 38.2, volume24h: 52340,
+    status: 'vulnerable', multiplier: 2
+  },
+  { 
+    code: 'FON', name: 'Fon', flag: '🇧🇯', 
+    tvl: 892000, apy: 85.3, volume24h: 12450,
+    status: 'critical', multiplier: 4
+  },
+  { 
+    code: 'EWE', name: 'Ewe', flag: '🇹🇬', 
+    tvl: 1234000, apy: 62.7, volume24h: 23400,
+    status: 'endangered', multiplier: 3
+  },
+  { 
+    code: 'GA', name: 'Ga', flag: '🇬🇭', 
+    tvl: 567000, apy: 92.1, volume24h: 8900,
+    status: 'critical', multiplier: 4
+  },
+  { 
+    code: 'WOL', name: 'Wolof', flag: '🇸🇳', 
+    tvl: 1456000, apy: 55.8, volume24h: 28700,
+    status: 'endangered', multiplier: 3
+  }
+];
 
-  const dataset = mockDatasets[selectedLanguage as keyof typeof mockDatasets];
+// Governance Proposals
+const proposals = [
+  {
+    id: 'LIP-042',
+    title: 'Increase Critical Language Multiplier to 5x',
+    status: 'active',
+    description: 'Proposal to increase mining rewards for critical languages from 4x to 5x to incentivize preservation',
+    forVotes: 892451,
+    againstVotes: 234122,
+    endsIn: '2 days'
+  },
+  {
+    id: 'LIP-041',
+    title: 'Add Tigre Language Support',
+    status: 'active',
+    description: 'Add Tigre (Eritrea) to supported languages with 3.5x endangered multiplier',
+    forVotes: 567234,
+    againstVotes: 123456,
+    endsIn: '4 days'
+  },
+  {
+    id: 'LIP-040',
+    title: 'Treasury Allocation for Marketing',
+    status: 'passed',
+    description: 'Allocate 500,000 $LINGUA from treasury for African university partnerships',
+    forVotes: 1234567,
+    againstVotes: 234567,
+    endsIn: 'Executed'
+  }
+];
+
+// Guardian Leaderboard
+const topGuardians = [
+  { rank: 1, name: 'kofi.dao', tier: 'Master Guardian', contributions: 1847, lingua: 247800 },
+  { rank: 2, name: 'amara.eth', tier: 'Master Guardian', contributions: 1523, lingua: 198400 },
+  { rank: 3, name: 'fatima.dao', tier: 'Expert Guardian', contributions: 1289, lingua: 156700 },
+  { rank: 4, name: 'kwame.eth', tier: 'Expert Guardian', contributions: 987, lingua: 134200 },
+  { rank: 5, name: 'aisha.dao', tier: 'Guardian', contributions: 756, lingua: 98500 }
+];
+
+// Insurance Pools
+const insurancePools = [
+  {
+    language: 'Fon', flag: '🇧🇯', status: 'critical',
+    coverage: 2500000, premium: 0.8, payout: 10,
+    speakers: 2100000, trend: -15
+  },
+  {
+    language: 'Ga', flag: '🇬🇭', status: 'critical',
+    coverage: 1800000, premium: 0.75, payout: 10,
+    speakers: 580000, trend: -12
+  },
+  {
+    language: 'Ewe', flag: '🇹🇬', status: 'endangered',
+    coverage: 3200000, premium: 0.5, payout: 8,
+    speakers: 3700000, trend: -8
+  }
+];
+
+// Recent Activity
+const recentActivity = [
+  { type: 'mining', time: 'Just now', description: '247 $LINGUA mined for Fon recording', value: '247 $LINGUA' },
+  { type: 'governance', time: '2 min ago', description: 'New vote on LIP-042', value: '+1 vote' },
+  { type: 'trade', time: '5 min ago', description: 'Swap 1000 TWI for 420 USDC', value: '420 USDC' },
+  { type: 'insurance', time: '8 min ago', description: 'Coverage purchased for Ga language', value: '0.75% premium' },
+  { type: 'mining', time: '12 min ago', description: 'Voice NFT #4288 minted', value: 'NFT #4288' },
+  { type: 'governance', time: '15 min ago', description: 'LIP-040 executed', value: '500K $LINGUA' }
+];
+
+export default function Dashboard() {
+  const [selectedView, setSelectedView] = useState('overview');
+  const [animatedTVL, setAnimatedTVL] = useState(0);
 
   useEffect(() => {
-    // Calculate stats with animation
-    const total = Object.values(mockDatasets).reduce((acc, d) => ({
-      clips: acc.clips + d.clips,
-      contributors: acc.contributors + d.contributors,
-      value: acc.value + d.price
-    }), { clips: 0, contributors: 0, value: 0 });
+    // Animate TVL counter
+    const duration = 2000;
+    const steps = 60;
+    const increment = mockProtocolData.tvl / steps;
+    let current = 0;
+    
+    const timer = setInterval(() => {
+      current += increment;
+      if (current >= mockProtocolData.tvl) {
+        setAnimatedTVL(mockProtocolData.tvl);
+        clearInterval(timer);
+      } else {
+        setAnimatedTVL(Math.floor(current));
+      }
+    }, duration / steps);
 
-    setStats({
-      totalClips: total.clips,
-      totalContributors: total.contributors,
-      totalValue: total.value,
-      growthRate: 127
-    });
+    return () => clearInterval(timer);
   }, []);
 
-  const handlePurchase = async () => {
-    setIsPurchasing(true);
-    // Simulate purchase process
-    setTimeout(() => {
-      setIsPurchasing(false);
-      setPurchaseComplete(true);
-      setTimeout(() => setPurchaseComplete(false), 3000);
-    }, 2000);
+  const formatNumber = (num: number) => {
+    return new Intl.NumberFormat('en-US').format(num);
   };
 
-  const handlePlaySample = (sampleId: number) => {
-    if (playingSample === sampleId) {
-      setPlayingSample(null);
-    } else {
-      setPlayingSample(sampleId);
-      // Auto-stop after 3 seconds (demo)
-      setTimeout(() => setPlayingSample(null), 3000);
-    }
+  const formatCurrency = (num: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(num);
   };
 
   return (
     <div className="dashboard-container">
-      {/* Header */}
-      <motion.header 
-        className="dashboard-header"
-        initial={{ y: -50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
+      {/* Protocol Header */}
+      <motion.div 
+        className="protocol-header"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
       >
-        <div className="header-content">
-          <div className="logo-section">
-            <motion.div 
-              className="logo"
-              animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            >
-              🌍
-            </motion.div>
-            <div>
-              <h1>LinguaNet</h1>
-              <p>AI Company Dashboard</p>
-            </div>
+        <h1 className="protocol-title">🌍 LinguaDAO Protocol</h1>
+        <p className="protocol-subtitle">Decentralized Language Preservation & DeFi</p>
+      </motion.div>
+
+      {/* Main Metrics Grid */}
+      <motion.div 
+        className="metrics-grid"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2 }}
+      >
+        <div className="metric-card highlight">
+          <div className="metric-header">
+            <span className="metric-label">Total Value Locked</span>
+            <span className="metric-change positive">+{mockProtocolData.volumeChange}%</span>
           </div>
-          <div className="header-stats">
-            <div className="stat-card">
-              <FiDatabase />
-              <div>
-                <span className="stat-value">{stats.totalClips}</span>
-                <span className="stat-label">Total Clips</span>
-              </div>
-            </div>
-            <div className="stat-card">
-              <FiUsers />
-              <div>
-                <span className="stat-value">{stats.totalContributors}</span>
-                <span className="stat-label">Contributors</span>
-              </div>
-            </div>
-            <div className="stat-card">
-              <FiDollarSign />
-              <div>
-                <span className="stat-value">${stats.totalValue}</span>
-                <span className="stat-label">Dataset Value</span>
-              </div>
-            </div>
-            <div className="stat-card growth">
-              <FiTrendingUp />
-              <div>
-                <span className="stat-value">+{stats.growthRate}%</span>
-                <span className="stat-label">This Week</span>
-              </div>
-            </div>
+          <div className="metric-value">{formatCurrency(animatedTVL)}</div>
+          <div className="metric-detail">Across {languagePools.length} language pools</div>
+        </div>
+
+        <div className="metric-card">
+          <div className="metric-header">
+            <span className="metric-label">$LINGUA Price</span>
+            <span className="metric-change positive">+{mockProtocolData.linguaChange}%</span>
+          </div>
+          <div className="metric-value">${mockProtocolData.linguaPrice}</div>
+          <div className="metric-detail">24h Volume: {formatCurrency(mockProtocolData.dailyVolume)}</div>
+        </div>
+
+        <div className="metric-card">
+          <div className="metric-header">
+            <span className="metric-label">Total Staked</span>
+          </div>
+          <div className="metric-value">{formatNumber(mockProtocolData.totalStaked)}</div>
+          <div className="metric-detail">APY: {mockProtocolData.stakingAPY}%</div>
+        </div>
+
+        <div className="metric-card">
+          <div className="metric-header">
+            <span className="metric-label">Voice NFTs</span>
+          </div>
+          <div className="metric-value">{formatNumber(mockProtocolData.voiceNFTs)}</div>
+          <div className="metric-detail">{mockProtocolData.activeGuardians} Active Guardians</div>
+        </div>
+      </motion.div>
+
+      {/* Language Pools Section */}
+      <motion.div 
+        className="pools-section"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+      >
+        <div className="section-header">
+          <h2 className="section-title">💧 Language Liquidity Pools</h2>
+          <div className="view-toggle">
+            <button className="toggle-button active">All Pools</button>
+            <button className="toggle-button">My Positions</button>
           </div>
         </div>
-      </motion.header>
 
-      <div className="dashboard-content">
-        {/* Language Selector */}
+        <div className="pools-grid">
+          {languagePools.map((pool, index) => (
+            <motion.div 
+              key={pool.code}
+              className="pool-card"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.1 * index }}
+            >
+              <div className="pool-info">
+                <div className="pool-icon">{pool.flag}</div>
+                <div className="pool-details">
+                  <h3>{pool.name}</h3>
+                  <span className="pool-pair">{pool.code}/USDC</span>
+                </div>
+              </div>
+
+              <div className="pool-tvl">
+                <span className="value">{formatCurrency(pool.tvl)}</span>
+                <span className="label">TVL</span>
+              </div>
+
+              <div className="pool-apy">
+                <span className="value">{pool.apy}%</span>
+                <span className="label">APY</span>
+              </div>
+
+              <div className="pool-volume">
+                <span className="value">{formatCurrency(pool.volume24h)}</span>
+                <span className="label">24h Volume</span>
+              </div>
+
+              <div className="pool-actions">
+                <button className="pool-button">Add</button>
+                <button className="pool-button">Swap</button>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* Governance and Leaderboard */}
+      <div className="governance-section">
+        {/* Proposals */}
         <motion.div 
-          className="language-selector"
-          initial={{ x: -50, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ delay: 0.2 }}
+          className="proposals-container"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
         >
-          <h2>Available Languages</h2>
-          <div className="language-grid">
-            {Object.entries(mockDatasets).map(([key, data]) => (
-              <motion.div
-                key={key}
-                className={`language-card ${selectedLanguage === key ? 'active' : ''}`}
-                onClick={() => setSelectedLanguage(key)}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+          <div className="proposals-header">
+            <h2>🗳️ Governance Proposals</h2>
+            <button className="new-proposal-button">Create Proposal</button>
+          </div>
+
+          <div className="proposal-list">
+            {proposals.map((proposal, index) => (
+              <motion.div 
+                key={proposal.id}
+                className="proposal-card"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 * index }}
               >
-                <div className="language-flag">{data.flag}</div>
-                <h3>{data.language}</h3>
-                <div className="language-info">
-                  <span><FiMic /> {data.clips} clips</span>
-                  <span><FiUsers /> {data.contributors}</span>
+                <div className="proposal-header-info">
+                  <div>
+                    <div className="proposal-id">{proposal.id}</div>
+                    <div className="proposal-title">{proposal.title}</div>
+                  </div>
+                  <span className={`proposal-status ${proposal.status}`}>
+                    {proposal.status}
+                  </span>
                 </div>
-                <div className="quality-bar">
-                  <div className="quality-fill" style={{ width: `${data.quality}%` }} />
+
+                <p className="proposal-description">{proposal.description}</p>
+
+                <div className="proposal-voting">
+                  <div className="vote-option for">
+                    <div className="vote-label">For</div>
+                    <div className="vote-count">{formatNumber(proposal.forVotes)}</div>
+                    <div className="vote-percentage">
+                      {Math.round(proposal.forVotes / (proposal.forVotes + proposal.againstVotes) * 100)}%
+                    </div>
+                  </div>
+                  <div className="vote-option against">
+                    <div className="vote-label">Against</div>
+                    <div className="vote-count">{formatNumber(proposal.againstVotes)}</div>
+                    <div className="vote-percentage">
+                      {Math.round(proposal.againstVotes / (proposal.forVotes + proposal.againstVotes) * 100)}%
+                    </div>
+                  </div>
                 </div>
-                <div className="language-footer">
-                  <span className="language-price">${data.price} USDC</span>
-                  <span className="growth-rate">{data.growth}</span>
+
+                <div className="proposal-progress">
+                  <div 
+                    className="progress-for" 
+                    style={{ 
+                      width: `${proposal.forVotes / (proposal.forVotes + proposal.againstVotes) * 100}%` 
+                    }}
+                  />
+                  <div 
+                    className="progress-against" 
+                    style={{ 
+                      width: `${proposal.againstVotes / (proposal.forVotes + proposal.againstVotes) * 100}%` 
+                    }}
+                  />
+                </div>
+
+                <div className="proposal-footer">
+                  <span>Ends: {proposal.endsIn}</span>
+                  <span>Quorum: ✅ Met</span>
                 </div>
               </motion.div>
             ))}
           </div>
         </motion.div>
 
-        {/* Dataset Details */}
+        {/* Guardian Leaderboard */}
         <motion.div 
-          className="dataset-details"
-          initial={{ x: 50, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ delay: 0.3 }}
+          className="leaderboard-container"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
         >
-          <div className="details-header">
-            <h2>{dataset.flag} {dataset.language} Dataset</h2>
-            <div className="dataset-badges">
-              <span className="badge verified"><FiCheck /> Verified</span>
-              <span className="badge native">Native Speakers</span>
-              <span className="badge quality">Quality: {dataset.quality}%</span>
-            </div>
+          <div className="leaderboard-header">
+            <h2>⚔️ Top Guardians</h2>
+            <p className="leaderboard-subtitle">Language preservation leaders</p>
           </div>
 
-          {/* Dataset Stats */}
-          <div className="dataset-stats">
-            <div className="stat">
-              <FiMic />
-              <div>
-                <strong>{dataset.clips}</strong>
-                <span>Audio Clips</span>
-              </div>
-            </div>
-            <div className="stat">
-              <FiGlobe />
-              <div>
-                <strong>{dataset.duration}</strong>
-                <span>Total Duration</span>
-              </div>
-            </div>
-            <div className="stat">
-              <FiUsers />
-              <div>
-                <strong>{dataset.contributors}</strong>
-                <span>Contributors</span>
-              </div>
-            </div>
-            <div className="stat">
-              <FiDollarSign />
-              <div>
-                <strong>${dataset.price}</strong>
-                <span>USDC Price</span>
-              </div>
-            </div>
+          <div className="guardian-list">
+            {topGuardians.map((guardian, index) => (
+              <motion.div 
+                key={guardian.rank}
+                className="guardian-card"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.1 * index }}
+              >
+                <div className={`guardian-rank ${guardian.rank <= 3 ? `top-${guardian.rank}` : ''}`}>
+                  {guardian.rank}
+                </div>
+                <div className="guardian-info">
+                  <div className="guardian-name">{guardian.name}</div>
+                  <div className="guardian-tier">{guardian.tier}</div>
+                </div>
+                <div className="guardian-stats">
+                  <div className="guardian-contributions">
+                    {formatNumber(guardian.lingua)} $LINGUA
+                  </div>
+                  <div className="guardian-label">{guardian.contributions} contributions</div>
+                </div>
+              </motion.div>
+            ))}
           </div>
-
-          {/* Sample Clips */}
-          {dataset.samples.length > 0 && (
-            <div className="samples-section">
-              <h3>Sample Clips</h3>
-              <div className="samples-list">
-                {dataset.samples.map((sample) => (
-                  <motion.div
-                    key={sample.id}
-                    className="sample-card"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: sample.id * 0.1 }}
-                  >
-                    <div className="sample-info">
-                      <span className="contributor">{sample.contributor}</span>
-                      <span className="duration">{sample.duration}</span>
-                      <span className="quality">Quality: {sample.quality}%</span>
-                    </div>
-                    {sample.text && (
-                      <div className="sample-text">&ldquo;{sample.text}&rdquo;</div>
-                    )}
-                    <motion.button
-                      className="play-button"
-                      onClick={() => handlePlaySample(sample.id)}
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                    >
-                      {playingSample === sample.id ? (
-                        <><FiPause /> Playing...</>
-                      ) : (
-                        <><FiPlay /> Play</>
-                      )}
-                    </motion.button>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Purchase Section */}
-          <div className="purchase-section">
-            <div className="purchase-info">
-              <h3>Ready to Train Your AI?</h3>
-              <p>Get instant access to verified {dataset.language} audio data</p>
-              <div className="purchase-features">
-                <span><FiCheck /> Filecoin Storage</span>
-                <span><FiCheck /> JSON with CIDs</span>
-                <span><FiCheck /> API Access</span>
-                <span><FiCheck /> Commercial License</span>
-              </div>
-            </div>
-            
-            <div className="purchase-action">
-              <AnimatePresence mode="wait">
-                {!purchaseComplete ? (
-                  <motion.button
-                    key="purchase"
-                    className="purchase-button"
-                    onClick={handlePurchase}
-                    disabled={isPurchasing}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    {isPurchasing ? (
-                      <div className="loading-spinner" />
-                    ) : (
-                      <>
-                        <FiShoppingCart />
-                        Purchase Dataset - ${dataset.price} USDC
-                      </>
-                    )}
-                  </motion.button>
-                ) : (
-                  <motion.div
-                    key="success"
-                    className="success-message"
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    exit={{ scale: 0 }}
-                  >
-                    <FiCheck /> Purchase Complete!
-                    <button className="download-button">
-                      <FiDownload /> Download Dataset
-                    </button>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          </div>
-
-          {/* API Section */}
-          <motion.div 
-            className="api-section"
-            initial={{ y: 50, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.5 }}
-          >
-            <h3><FiCode /> API Access</h3>
-            <div className="api-endpoint">
-              <code>GET https://api.linguanet.ai/v1/dataset/{selectedLanguage}</code>
-              <button className="copy-button">Copy</button>
-            </div>
-            <div className="api-example">
-              <pre>{`{
-  "language": "${dataset.language}",
-  "clips": ${dataset.clips},
-  "files": [
-    {
-      "cid": "QmX7h3qF4...",
-      "contributor": "kofi.linguanet.eth",
-      "duration": 32,
-      "quality": 96
-    }
-    ...
-  ]
-}`}</pre>
-            </div>
-          </motion.div>
         </motion.div>
       </div>
 
-      {/* Live Activity Feed */}
+      {/* Insurance Pools */}
       <motion.div 
-        className="activity-feed"
-        initial={{ y: 50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
+        className="insurance-section"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6 }}
       >
-        <h3>🔴 Live Activity</h3>
-        <div className="activity-items">
-          <div className="activity-item new">
-            <span className="activity-time">Just now</span>
-            <span>🇳🇬 New Yoruba clip added by tunde.linguanet.eth</span>
-          </div>
-          <div className="activity-item">
-            <span className="activity-time">2 min ago</span>
-            <span>🇬🇭 New Twi clip added by ama.linguanet.eth</span>
-          </div>
-          <div className="activity-item">
-            <span className="activity-time">5 min ago</span>
-            <span>✅ Validation completed: 15 Swahili clips approved</span>
-          </div>
-          <div className="activity-item">
-            <span className="activity-time">8 min ago</span>
-            <span>🇿🇦 Zulu dataset purchased by Google AI Africa</span>
-          </div>
-          <div className="activity-item">
-            <span className="activity-time">12 min ago</span>
-            <span>🇪🇹 25 new Amharic clips from Addis Ababa</span>
-          </div>
-          <div className="activity-item">
-            <span className="activity-time">18 min ago</span>
-            <span>💰 $4,592 USDC paid to Swahili contributors</span>
-          </div>
-          <div className="activity-item">
-            <span className="activity-time">25 min ago</span>
-            <span>🇸🇳 Wolof validation queue: 45 clips pending</span>
-          </div>
+        <div className="section-header">
+          <h2 className="section-title">🛡️ Language Extinction Insurance</h2>
+        </div>
+
+        <div className="insurance-grid">
+          {insurancePools.map((pool, index) => (
+            <motion.div 
+              key={pool.language}
+              className={`insurance-card ${pool.status}`}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.1 * index }}
+            >
+              <div className="insurance-header">
+                <div className="insurance-language">
+                  <span className="insurance-flag">{pool.flag}</span>
+                  <span className="insurance-name">{pool.language}</span>
+                </div>
+                <span className={`risk-level ${pool.status}`}>{pool.status}</span>
+              </div>
+
+              <div className="insurance-metrics">
+                <div className="insurance-metric">
+                  <div className="insurance-metric-label">Coverage Pool</div>
+                  <div className="insurance-metric-value">{formatCurrency(pool.coverage)}</div>
+                </div>
+                <div className="insurance-metric">
+                  <div className="insurance-metric-label">Speakers</div>
+                  <div className="insurance-metric-value">
+                    {formatNumber(pool.speakers)}
+                    <span style={{ fontSize: '12px', color: '#ef4444', marginLeft: '8px' }}>
+                      {pool.trend}%
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="insurance-payout">
+                <div className="payout-label">Max Payout (on trigger)</div>
+                <div className="payout-amount">{pool.payout}x Premium</div>
+              </div>
+
+              <div className="insurance-actions">
+                <button className="insurance-button">
+                  Buy Coverage ({pool.premium}%)
+                </button>
+                <button className="insurance-button claim">
+                  Provide Liquidity
+                </button>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* Activity Feed */}
+      <motion.div 
+        className="activity-section"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.7 }}
+      >
+        <div className="activity-header">
+          <h2>
+            <span className="live-indicator" />
+            Live Protocol Activity
+          </h2>
+        </div>
+
+        <div className="activity-list">
+          {recentActivity.map((activity, index) => (
+            <motion.div 
+              key={index}
+              className="activity-item"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.05 * index }}
+            >
+              <span className="activity-time">{activity.time}</span>
+              <div className={`activity-type ${activity.type}`}>
+                {activity.type === 'mining' && '⛏️'}
+                {activity.type === 'governance' && '🗳️'}
+                {activity.type === 'trade' && '💱'}
+                {activity.type === 'insurance' && '🛡️'}
+              </div>
+              <span className="activity-description">{activity.description}</span>
+              <span className="activity-value">{activity.value}</span>
+            </motion.div>
+          ))}
         </div>
       </motion.div>
     </div>
