@@ -4,7 +4,7 @@ import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FiMic, FiMicOff, FiDollarSign, FiCheck, FiX,
-  FiUser, FiAward, FiTrendingUp, FiSmartphone,
+  FiUser, FiAward, FiSmartphone,
   FiPlay, FiPause, FiCheckCircle
 } from 'react-icons/fi';
 import './contribute.css';
@@ -401,7 +401,7 @@ Status: Processing... (Demo Mode)`);
                       <h2>Validate & Earn</h2>
                       <div className="validator-stats">
                         <div className="stat">
-                          <FiTrendingUp />
+                          <FiAward />
                           <span>Streak: {validationStreak}</span>
                         </div>
                         <div className="stat">
