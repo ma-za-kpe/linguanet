@@ -1,11 +1,7 @@
-name: Deploy LinguaNet to Vercel
+name: "[DEPRECATED] Use ci.yml instead"
 
 on:
-  push:
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main ]
-  workflow_dispatch:
+  workflow_dispatch:  # Manual trigger only
 
 jobs:
   deploy:

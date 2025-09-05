@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FiMic, FiMicOff, FiDollarSign, FiCheck, FiX,
   FiUser, FiAward, FiTrendingUp, FiSmartphone,
-  FiPlay, FiPause, FiSkipForward, FiCheckCircle
+  FiPlay, FiPause, FiCheckCircle
 } from 'react-icons/fi';
 import './contribute.css';
 

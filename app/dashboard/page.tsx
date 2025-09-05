@@ -401,7 +401,7 @@ export default function Dashboard() {
                       <span className="quality">Quality: {sample.quality}%</span>
                     </div>
                     {sample.text && (
-                      <div className="sample-text">"{sample.text}"</div>
+                      <div className="sample-text">&ldquo;{sample.text}&rdquo;</div>
                     )}
                     <motion.button
                       className="play-button"

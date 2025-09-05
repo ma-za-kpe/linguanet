@@ -5,8 +5,8 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { 
   FiMic, FiDollarSign, FiUsers, FiDatabase, 
-  FiTrendingUp, FiGlobe, FiAward, FiCode,
-  FiArrowRight, FiCheck, FiPlay
+  FiGlobe, FiAward, FiCode,
+  FiArrowRight, FiPlay
 } from 'react-icons/fi';
 import './home.css';
 

@@ -46,12 +46,12 @@ const slides = [
           <div className="problem-card">
             <div className="problem-icon">🤖</div>
             <h3>AI Language Gap</h3>
-            <p>ChatGPT can't speak Twi, Swahili, or Yoruba. 500M+ Africans excluded from AI revolution.</p>
+            <p>ChatGPT can&apos;t speak Twi, Swahili, or Yoruba. 500M+ Africans excluded from AI revolution.</p>
           </div>
           <div className="problem-card">
             <div className="problem-icon">💸</div>
             <h3>Wasted Opportunity</h3>
-            <p>Native speakers can't monetize their linguistic knowledge. Youth unemployment at 60%.</p>
+            <p>Native speakers can&apos;t monetize their linguistic knowledge. Youth unemployment at 60%.</p>
           </div>
           <div className="problem-card">
             <div className="problem-icon">📉</div>
@@ -60,7 +60,7 @@ const slides = [
           </div>
         </div>
         <div className="impact-statement">
-          "In Ghana, 80+ languages spoken daily. In AI training data? Zero."
+          &ldquo;In Ghana, 80+ languages spoken daily. In AI training data? Zero.&rdquo;
         </div>
       </div>
     )
@@ -396,7 +396,7 @@ const slides = [
         </div>
         <div className="testimonial">
           <blockquote>
-            "This solves our biggest challenge - getting authentic African language data for our healthcare AI"
+            &ldquo;This solves our biggest challenge - getting authentic African language data for our healthcare AI&rdquo;
           </blockquote>
           <cite>- AI Startup Founder, Accra</cite>
         </div>
@@ -539,7 +539,7 @@ const slides = [
         </div>
         <div className="commitment">
           <p className="commitment-text">
-            "We're not just building technology. We're preserving culture and creating opportunity."
+            &ldquo;We&rsquo;re not just building technology. We&rsquo;re preserving culture and creating opportunity.&rdquo;
           </p>
         </div>
       </div>
