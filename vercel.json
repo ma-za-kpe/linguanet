@@ -1,0 +1,33 @@
+{
+  "version": 2,
+  "name": "linguanet",
+  "alias": ["linguanet.vercel.app"],
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/contribute",
+      "dest": "/contribute"
+    },
+    {
+      "src": "/dashboard", 
+      "dest": "/dashboard"
+    },
+    {
+      "src": "/pitch",
+      "dest": "/pitch"
+    }
+  ],
+  "env": {
+    "NEXT_TELEMETRY_DISABLED": "1"
+  },
+  "functions": {
+    "app/**": {
+      "maxDuration": 10
+    }
+  }
+}
