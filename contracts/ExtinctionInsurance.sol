@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.19;
+pragma solidity ^0.8.27;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "./interfaces/AggregatorV3Interface.sol";
 import "./VoiceSharesNFT.sol";
 import "./LinguaToken.sol";
 
@@ -69,7 +69,7 @@ contract ExtinctionInsurance is Ownable, ReentrancyGuard {
         address _usdcToken,
         address _linguaToken,
         address _voiceShares
-    ) {
+    ) Ownable(msg.sender) {
         usdcToken = IERC20(_usdcToken);
         linguaToken = LinguaToken(_linguaToken);
         voiceShares = VoiceSharesNFT(_voiceShares);
@@ -329,7 +329,7 @@ contract ExtinctionInsurance is Ownable, ReentrancyGuard {
         string memory language,
         uint256 coverageAmount
     ) external view returns (uint256) {
-        InsurancePool memory pool = insurancePools[language];
+        InsurancePool storage pool = insurancePools[language];
         require(pool.speakerThreshold > 0, "Pool doesn't exist");
         
         uint256 riskMultiplier = riskScores[language];

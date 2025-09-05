@@ -6,10 +6,17 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "compile": "hardhat compile",
+    "deploy": "tsx scripts/deploy.ts",
+    "deploy:local": "hardhat run scripts/deploy.ts --network hardhat",
+    "verify": "hardhat verify --network base-sepolia",
+    "test": "hardhat test",
+    "contracts": "tsx scripts/show-contracts.ts"
   },
   "dependencies": {
     "@ensdomains/eth-ens-namehash": "^2.0.15",
+    "@openzeppelin/contracts": "^5.4.0",
     "@rainbow-me/rainbowkit": "^2.2.8",
     "@tanstack/react-query": "^5.87.0",
     "@web3-storage/w3up-client": "^17.3.0",
@@ -26,13 +33,22 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@nomicfoundation/hardhat-toolbox": "^6.1.0",
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@typechain/ethers-v6": "^0.5.1",
+    "@typechain/hardhat": "^9.1.0",
+    "@types/node": "^20.19.13",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv": "^17.2.2",
     "eslint": "^9",
     "eslint-config-next": "15.5.2",
+    "hardhat": "^2.26.3",
+    "hardhat-gas-reporter": "^2.3.0",
+    "solidity-coverage": "^0.8.16",
     "tailwindcss": "^4",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.20.5",
     "typescript": "^5"
   }
 }

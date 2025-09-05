@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.19;
+pragma solidity ^0.8.27;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
 
 /**
  * @title Voice Shares NFT
@@ -13,9 +12,8 @@ import "@openzeppelin/contracts/utils/Counters.sol";
  * @dev Each NFT represents a voice contribution with associated metadata and revenue share
  */
 contract VoiceSharesNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
-    using Counters for Counters.Counter;
     
-    Counters.Counter private _tokenIdCounter;
+    uint256 private _tokenIdCounter;
     
     struct VoiceShare {
         address contributor;
@@ -30,59 +28,55 @@ contract VoiceSharesNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         uint256 rarityTier; // 1-5, based on language rarity
     }
     
-    // Token ID to Voice Share mapping
+    // Mapping from token ID to voice share data
     mapping(uint256 => VoiceShare) public voiceShares;
     
-    // Language to total shares mapping
-    mapping(string => uint256) public languageShareCounts;
-    
-    // Contributor to their NFT IDs
-    mapping(address => uint256[]) public contributorTokens;
-    
-    // Revenue distribution tracking
+    // Revenue tracking
     mapping(uint256 => uint256) public pendingRevenue;
-    uint256 public totalRevenueDistributed;
+    mapping(address => uint256) public totalRevenueByContributor;
     
-    // Guardian NFT tiers
-    enum GuardianTier { None, Novice, Expert, Master, Guardian }
-    mapping(address => GuardianTier) public guardianStatus;
-    mapping(address => uint256) public contributionStreak;
+    // Guardian tier system
+    mapping(address => uint256) public contributorTier; // 0: Novice, 1: Expert, 2: Master, 3: Guardian
+    mapping(address => uint256) public contributionCount;
+    
+    // Language stats
+    mapping(string => uint256) public languageContributions;
+    mapping(string => uint256) public languageRevenue;
     
     // Events
-    event VoiceShareMinted(
-        uint256 indexed tokenId,
-        address indexed contributor,
-        string language,
-        uint256 qualityScore
-    );
+    event VoiceShareMinted(uint256 indexed tokenId, address indexed contributor, string language, uint256 rarityTier);
     event RevenueDistributed(uint256 indexed tokenId, uint256 amount);
-    event GuardianTierUpgraded(address indexed contributor, GuardianTier newTier);
+    event TierUpgraded(address indexed contributor, uint256 newTier);
+    event ValidationCompleted(uint256 indexed tokenId, address indexed validator, uint256 qualityScore);
     
-    constructor() ERC721("LinguaDAO Voice Shares", "VOICE") {}
+    constructor(address initialOwner) 
+        ERC721("Voice Shares", "VOICE") 
+        Ownable(initialOwner) 
+    {}
     
     /**
      * @notice Mint a new Voice Share NFT
      * @param contributor Address of the voice contributor
-     * @param language Language code of the recording
+     * @param language Language code (e.g., "TWI", "YOR")
+     * @param audioIPFSHash IPFS hash of the audio recording
      * @param duration Duration of the recording in seconds
-     * @param qualityScore Quality score from AI validation
-     * @param audioIPFSHash IPFS hash of the audio file
-     * @param rarityTier Rarity tier based on language endangerment
+     * @param qualityScore Quality score from validation (0-100)
+     * @param rarityTier Rarity tier based on language (1-5)
      */
     function mintVoiceShare(
         address contributor,
         string memory language,
+        string memory audioIPFSHash,
         uint256 duration,
         uint256 qualityScore,
-        string memory audioIPFSHash,
         uint256 rarityTier
     ) public onlyOwner returns (uint256) {
         require(qualityScore <= 100, "Invalid quality score");
         require(rarityTier >= 1 && rarityTier <= 5, "Invalid rarity tier");
         require(duration >= 10 && duration <= 300, "Invalid duration");
         
-        uint256 tokenId = _tokenIdCounter.current();
-        _tokenIdCounter.increment();
+        uint256 tokenId = _tokenIdCounter;
+        _tokenIdCounter++;
         _safeMint(contributor, tokenId);
         
         VoiceShare memory newShare = VoiceShare({
@@ -99,25 +93,23 @@ contract VoiceSharesNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         });
         
         voiceShares[tokenId] = newShare;
-        languageShareCounts[language]++;
-        contributorTokens[contributor].push(tokenId);
         
-        // Update contribution streak
-        contributionStreak[contributor]++;
-        _updateGuardianTier(contributor);
+        // Update language stats
+        languageContributions[language]++;
+        contributionCount[contributor]++;
         
-        // Set metadata URI (could point to IPFS metadata)
-        _setTokenURI(tokenId, string(abi.encodePacked("ipfs://", audioIPFSHash, "/metadata.json")));
+        // Check for tier upgrade
+        _checkTierUpgrade(contributor);
         
-        emit VoiceShareMinted(tokenId, contributor, language, qualityScore);
+        emit VoiceShareMinted(tokenId, contributor, language, rarityTier);
         
         return tokenId;
     }
     
     /**
-     * @notice Distribute revenue to Voice Share holders
-     * @param tokenIds Array of token IDs to distribute to
-     * @param amounts Corresponding amounts for each token
+     * @notice Distribute revenue to NFT holders
+     * @param tokenIds Array of token IDs to distribute revenue to
+     * @param amounts Array of revenue amounts for each token
      */
     function distributeRevenue(
         uint256[] memory tokenIds,
@@ -126,131 +118,146 @@ contract VoiceSharesNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         require(tokenIds.length == amounts.length, "Mismatched arrays");
         
         for (uint256 i = 0; i < tokenIds.length; i++) {
-            require(_exists(tokenIds[i]), "Token does not exist");
+            require(_ownerOf(tokenIds[i]) != address(0), "Token does not exist");
             
             pendingRevenue[tokenIds[i]] += amounts[i];
             voiceShares[tokenIds[i]].revenueEarned += amounts[i];
-            totalRevenueDistributed += amounts[i];
+            
+            address owner = ownerOf(tokenIds[i]);
+            totalRevenueByContributor[owner] += amounts[i];
+            
+            string memory language = voiceShares[tokenIds[i]].language;
+            languageRevenue[language] += amounts[i];
             
             emit RevenueDistributed(tokenIds[i], amounts[i]);
         }
     }
     
     /**
-     * @notice Claim pending revenue for a Voice Share
+     * @notice Claim pending revenue for a token
      * @param tokenId Token ID to claim revenue for
      */
     function claimRevenue(uint256 tokenId) external {
         require(ownerOf(tokenId) == msg.sender, "Not token owner");
-        
         uint256 pending = pendingRevenue[tokenId];
         require(pending > 0, "No pending revenue");
         
         pendingRevenue[tokenId] = 0;
-        
-        // Transfer USDC or native token to the owner
-        // (Implementation would connect to payment contract)
+        // In production, this would transfer actual tokens
+        // For now, it's tracked internally
         
         emit RevenueDistributed(tokenId, pending);
     }
     
     /**
-     * @notice Update guardian tier based on contributions
-     * @param contributor Address to update tier for
+     * @notice Set validator status for a contributor
+     * @param contributor Address of the contributor
+     * @param tokenId Token ID they validated
+     * @param qualityScore Quality score assigned
      */
-    function _updateGuardianTier(address contributor) internal {
-        uint256 streak = contributionStreak[contributor];
-        GuardianTier currentTier = guardianStatus[contributor];
-        GuardianTier newTier = currentTier;
+    function setValidator(
+        address contributor,
+        uint256 tokenId,
+        uint256 qualityScore
+    ) external onlyOwner {
+        require(qualityScore <= 100, "Invalid quality score");
         
-        if (streak >= 100 && currentTier < GuardianTier.Guardian) {
-            newTier = GuardianTier.Guardian;
-        } else if (streak >= 50 && currentTier < GuardianTier.Master) {
-            newTier = GuardianTier.Master;
-        } else if (streak >= 25 && currentTier < GuardianTier.Expert) {
-            newTier = GuardianTier.Expert;
-        } else if (streak >= 10 && currentTier < GuardianTier.Novice) {
-            newTier = GuardianTier.Novice;
+        // Mark contributor as validator
+        if (contributionCount[contributor] >= 10) {
+            // Find their tokens and mark as validator
+            for (uint256 i = 0; i < balanceOf(contributor); i++) {
+                uint256 ownedTokenId = tokenOfOwnerByIndex(contributor, i);
+                voiceShares[ownedTokenId].isValidator = true;
+            }
         }
         
-        if (newTier != currentTier) {
-            guardianStatus[contributor] = newTier;
-            emit GuardianTierUpgraded(contributor, newTier);
-        }
+        emit ValidationCompleted(tokenId, contributor, qualityScore);
     }
     
     /**
-     * @notice Get multiplier bonus based on Guardian tier
+     * @notice Check and upgrade contributor tier
      * @param contributor Address to check
      */
-    function getGuardianMultiplier(address contributor) public view returns (uint256) {
-        GuardianTier tier = guardianStatus[contributor];
-        if (tier == GuardianTier.Guardian) return 200; // 2x
-        if (tier == GuardianTier.Master) return 175; // 1.75x
-        if (tier == GuardianTier.Expert) return 150; // 1.5x
-        if (tier == GuardianTier.Novice) return 125; // 1.25x
-        return 100; // 1x
+    function _checkTierUpgrade(address contributor) internal {
+        uint256 count = contributionCount[contributor];
+        uint256 currentTier = contributorTier[contributor];
+        uint256 newTier = currentTier;
+        
+        if (count >= 100 && currentTier < 3) {
+            newTier = 3; // Guardian
+        } else if (count >= 50 && currentTier < 2) {
+            newTier = 2; // Master
+        } else if (count >= 20 && currentTier < 1) {
+            newTier = 1; // Expert
+        }
+        
+        if (newTier > currentTier) {
+            contributorTier[contributor] = newTier;
+            emit TierUpgraded(contributor, newTier);
+        }
     }
     
     /**
-     * @notice Get all NFTs owned by a contributor
-     * @param contributor Address to query
+     * @notice Get all tokens owned by a specific address
+     * @param owner Address to query
      */
-    function getContributorTokens(address contributor) public view returns (uint256[] memory) {
-        return contributorTokens[contributor];
+    function getTokensByOwner(address owner) external view returns (uint256[] memory) {
+        uint256 balance = balanceOf(owner);
+        uint256[] memory tokens = new uint256[](balance);
+        
+        for (uint256 i = 0; i < balance; i++) {
+            tokens[i] = tokenOfOwnerByIndex(owner, i);
+        }
+        
+        return tokens;
     }
     
     /**
-     * @notice Get voice share statistics for a language
+     * @notice Get tokens for a specific language
      * @param language Language code to query
      */
-    function getLanguageStats(string memory language) public view returns (
-        uint256 totalShares,
-        uint256 totalDuration,
-        uint256 avgQuality
-    ) {
-        totalShares = languageShareCounts[language];
-        uint256 qualitySum = 0;
-        uint256 durationSum = 0;
+    function getTokensByLanguage(string memory language) external view returns (uint256[] memory) {
         uint256 count = 0;
         
-        for (uint256 i = 0; i < _tokenIdCounter.current(); i++) {
-            if (_exists(i) && keccak256(bytes(voiceShares[i].language)) == keccak256(bytes(language))) {
-                qualitySum += voiceShares[i].qualityScore;
-                durationSum += voiceShares[i].duration;
+        // First, count tokens for this language
+        for (uint256 i = 0; i < _tokenIdCounter; i++) {
+            if (_ownerOf(i) != address(0) && keccak256(bytes(voiceShares[i].language)) == keccak256(bytes(language))) {
                 count++;
             }
         }
         
-        totalDuration = durationSum;
-        avgQuality = count > 0 ? qualitySum / count : 0;
+        // Then collect them
+        uint256[] memory tokens = new uint256[](count);
+        uint256 index = 0;
+        
+        for (uint256 i = 0; i < _tokenIdCounter; i++) {
+            if (_ownerOf(i) != address(0) && keccak256(bytes(voiceShares[i].language)) == keccak256(bytes(language))) {
+                tokens[index] = i;
+                index++;
+            }
+        }
+        
+        return tokens;
     }
     
     // Required overrides for multiple inheritance
-    function _beforeTokenTransfer(
-        address from,
+    function _update(
         address to,
         uint256 tokenId,
-        uint256 batchSize
-    ) internal override(ERC721, ERC721Enumerable) {
-        super._beforeTokenTransfer(from, to, tokenId, batchSize);
+        address auth
+    ) internal override(ERC721, ERC721Enumerable) returns (address) {
+        return super._update(to, tokenId, auth);
     }
     
-    function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
-        super._burn(tokenId);
+    function _increaseBalance(address account, uint128 value) internal override(ERC721, ERC721Enumerable) {
+        super._increaseBalance(account, value);
     }
     
-    function tokenURI(uint256 tokenId)
-        public view override(ERC721, ERC721URIStorage)
-        returns (string memory)
-    {
+    function tokenURI(uint256 tokenId) public view override(ERC721, ERC721URIStorage) returns (string memory) {
         return super.tokenURI(tokenId);
     }
     
-    function supportsInterface(bytes4 interfaceId)
-        public view override(ERC721, ERC721Enumerable, ERC721URIStorage)
-        returns (bool)
-    {
+    function supportsInterface(bytes4 interfaceId) public view override(ERC721, ERC721Enumerable, ERC721URIStorage) returns (bool) {
         return super.supportsInterface(interfaceId);
     }
 }

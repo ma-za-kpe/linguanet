@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.19;
+pragma solidity ^0.8.27;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /**
@@ -83,7 +83,7 @@ contract LinguaNetCore is Ownable, ReentrancyGuard {
         string provider
     );
     
-    constructor(address _usdcToken) {
+    constructor(address _usdcToken) Ownable(msg.sender) {
         usdcToken = IERC20(_usdcToken);
         
         // Initialize supported languages

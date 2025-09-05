@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.19;
+pragma solidity ^0.8.27;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "./VoiceSharesNFT.sol";
 
 /**
@@ -57,7 +57,7 @@ contract LanguagePoolsAMM is Ownable, ReentrancyGuard {
     event DataSold(string language, address seller, uint256 dataIn, uint256 usdcOut);
     event PriceUpdated(string language, uint256 newPrice);
     
-    constructor(address _usdcToken, address _voiceShares) {
+    constructor(address _usdcToken, address _voiceShares) Ownable(msg.sender) {
         usdcToken = IERC20(_usdcToken);
         voiceShares = VoiceSharesNFT(_voiceShares);
     }

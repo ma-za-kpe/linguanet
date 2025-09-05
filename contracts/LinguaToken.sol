@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.19;
+pragma solidity ^0.8.27;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
@@ -42,7 +42,7 @@ contract LinguaToken is ERC20, ERC20Burnable, ERC20Votes, ERC20Permit, Ownable {
         address _teamVesting,
         address _ecosystem,
         address _liquidity
-    ) ERC20("LinguaDAO", "LINGUA") ERC20Permit("LinguaDAO") {
+    ) ERC20("LinguaDAO", "LINGUA") ERC20Permit("LinguaDAO") Ownable(msg.sender) {
         miningRewardsContract = _miningRewards;
         treasuryAddress = _treasury;
         teamVestingContract = _teamVesting;
@@ -119,19 +119,11 @@ contract LinguaToken is ERC20, ERC20Burnable, ERC20Votes, ERC20Permit, Ownable {
     }
     
     // Required overrides for multiple inheritance
-    function _afterTokenTransfer(
-        address from,
-        address to,
-        uint256 amount
-    ) internal override(ERC20, ERC20Votes) {
-        super._afterTokenTransfer(from, to, amount);
+    function _update(address from, address to, uint256 value) internal override(ERC20, ERC20Votes) {
+        super._update(from, to, value);
     }
     
-    function _mint(address to, uint256 amount) internal override(ERC20, ERC20Votes) {
-        super._mint(to, amount);
-    }
-    
-    function _burn(address account, uint256 amount) internal override(ERC20, ERC20Votes) {
-        super._burn(account, amount);
+    function nonces(address owner) public view override(ERC20Permit, Nonces) returns (uint256) {
+        return super.nonces(owner);
     }
 }
