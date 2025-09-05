@@ -34,8 +34,8 @@ export default function Contribute() {
   const [isPlaying, setIsPlaying] = useState(false);
 
   // Refs
-  const timerRef = useRef<NodeJS.Timeout>();
-  const waveformRef = useRef<NodeJS.Timeout>();
+  const timerRef = useRef<NodeJS.Timeout | undefined>(undefined);
+  const waveformRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
   // Simulate ENS address generation
   const generateENS = (phone: string) => {
