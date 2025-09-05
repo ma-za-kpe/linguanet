@@ -5,12 +5,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FiMic, FiMicOff, FiDollarSign, FiCheck, FiX,
   FiUser, FiAward, FiSmartphone,
-  FiPlay, FiPause, FiCheckCircle
+  FiPlay, FiPause, FiCheckCircle, FiShield,
+  FiZap, FiGlobe, FiArrowRight
 } from 'react-icons/fi';
 import { WalletButton } from '@/components/WalletButton';
 import { useBlockchain, useSubmitAudio, useValidateAudio, useWithdraw } from '@/lib/hooks/useBlockchain';
-import { formatENSDisplay } from '@/lib/ens';
+import { formatENSDisplay, generateENSName } from '@/lib/ens';
 import './contribute.css';
+import './contribute-enhanced.css';
 
 type Mode = 'contributor' | 'validator';
 type RecordingState = 'idle' | 'recording' | 'processing' | 'success' | 'error';
@@ -210,10 +212,11 @@ export default function ContributeClient() {
           >
             <motion.div 
               className="onboarding-card"
-              initial={{ y: 50 }}
-              animate={{ y: 0 }}
-              transition={{ delay: 0.2 }}
+              initial={{ y: 50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.2, duration: 0.6 }}
             >
+              {/* Logo Section */}
               <div className="app-logo">
                 <motion.div 
                   animate={{ rotate: 360 }}
@@ -222,52 +225,182 @@ export default function ContributeClient() {
                   🌍
                 </motion.div>
               </div>
+              
               <h1>LinguaNet</h1>
-              <p>Turn Your Voice into Value</p>
+              <p>Decentralized African Language Marketplace</p>
+              
+              {/* Progress Bar */}
+              <div className="progress-bar">
+                <div 
+                  className="progress-fill" 
+                  style={{ width: isConnected ? '50%' : '0%' }}
+                />
+              </div>
               
               <div className="login-form">
-                <h2>Connect & Register</h2>
+                {/* Step Indicators */}
+                <div className={`step-indicator ${!isConnected ? 'active' : ''}`}>
+                  <div className="step-number">1</div>
+                  <span className="step-text">Connect Wallet</span>
+                </div>
                 
                 {!isConnected ? (
-                  <div style={{ marginBottom: '20px' }}>
-                    <p>Step 1: Connect your wallet</p>
-                    <WalletButton />
-                  </div>
+                  <>
+                    <div className="wallet-connection-area">
+                      <div className="wallet-status not-connected">
+                        <div className="status-icon"></div>
+                        <span className="status-text">No wallet connected</span>
+                      </div>
+                      
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.4 }}
+                      >
+                        <WalletButton />
+                      </motion.div>
+                      
+                      <div style={{ 
+                        textAlign: 'center', 
+                        marginTop: '20px',
+                        color: '#a1a1aa',
+                        fontSize: '13px'
+                      }}>
+                        Don&apos;t have a wallet? 
+                        <a 
+                          href="https://metamask.io" 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          style={{ color: '#7c3aed', textDecoration: 'underline' }}
+                        >
+                          Get MetaMask
+                        </a>
+                      </div>
+                    </div>
+                  </>
                 ) : (
                   <>
-                    <p>Step 2: Register with phone number</p>
-                    <input
-                      type="tel"
-                      placeholder="Enter phone number"
-                      value={phoneNumber}
-                      onChange={(e) => setPhoneNumber(e.target.value)}
-                      className="phone-input"
-                    />
+                    <div className={`step-indicator active`}>
+                      <div className="step-number">2</div>
+                      <span className="step-text">Register Account</span>
+                    </div>
+                    
+                    <div className="wallet-status">
+                      <div className="status-icon"></div>
+                      <span className="status-text">
+                        Wallet: {address?.slice(0, 6)}...{address?.slice(-4)}
+                      </span>
+                    </div>
+                    
+                    <div className="phone-input-group">
+                      <FiSmartphone className="phone-icon" />
+                      <input
+                        type="tel"
+                        placeholder="Enter phone number (e.g., 0241234567)"
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value)}
+                        className="phone-input"
+                        maxLength={15}
+                      />
+                    </div>
+                    
+                    {phoneNumber.length >= 10 && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        style={{
+                          padding: '12px',
+                          background: 'rgba(124, 58, 237, 0.1)',
+                          borderRadius: '8px',
+                          marginBottom: '20px',
+                          fontSize: '13px',
+                          color: '#a1a1aa'
+                        }}
+                      >
+                        Your ENS name will be: <strong style={{ color: '#7c3aed' }}>
+                          {generateENSName(phoneNumber).split('.')[0]}
+                        </strong>.linguanet.eth
+                      </motion.div>
+                    )}
+                    
                     <motion.button
                       className="login-button"
                       onClick={handleLogin}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
                       disabled={phoneNumber.length < 10 || isRegistering}
                     >
-                      <FiSmartphone /> 
-                      {isRegistering ? 'Registering...' : 'Continue'}
+                      {isRegistering ? (
+                        <>
+                          <div className="spinner" />
+                          Creating your account...
+                        </>
+                      ) : (
+                        <>
+                          Continue to App
+                          <FiArrowRight />
+                        </>
+                      )}
                     </motion.button>
                   </>
                 )}
               </div>
 
+              {/* Enhanced Features Grid */}
               <div className="onboarding-features">
-                <div className="feature">
-                  <FiMic /> Record 30 seconds
-                </div>
-                <div className="feature">
-                  <FiDollarSign /> Earn $3 instantly
-                </div>
-                <div className="feature">
-                  <FiSmartphone /> Withdraw to Mobile Money
-                </div>
+                <motion.div 
+                  className="feature"
+                  whileHover={{ scale: 1.05 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 }}
+                >
+                  <FiMic />
+                  <div className="feature-title">Record</div>
+                  <div className="feature-description">30 seconds of audio</div>
+                </motion.div>
+                
+                <motion.div 
+                  className="feature"
+                  whileHover={{ scale: 1.05 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6 }}
+                >
+                  <FiZap />
+                  <div className="feature-title">Earn</div>
+                  <div className="feature-description">$3 USDC instantly</div>
+                </motion.div>
+                
+                <motion.div 
+                  className="feature"
+                  whileHover={{ scale: 1.05 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.7 }}
+                >
+                  <FiSmartphone />
+                  <div className="feature-title">Withdraw</div>
+                  <div className="feature-description">To Mobile Money</div>
+                </motion.div>
               </div>
+              
+              {/* Trust Badges */}
+              <motion.div 
+                className="trust-badges"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.8 }}
+              >
+                <div className="trust-badge">
+                  <FiShield />
+                  <span>Secured by Base L2</span>
+                </div>
+                <div className="trust-badge">
+                  <FiGlobe />
+                  <span>12 African Languages</span>
+                </div>
+              </motion.div>
             </motion.div>
           </motion.div>
         ) : (
