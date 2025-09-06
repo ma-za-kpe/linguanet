@@ -21,57 +21,59 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: 'LinguaNet - Turn Your Voice into Value | Preserve Languages, Power AI',
-    template: '%s | LinguaNet'
+    default: 'LinguaDAO - The First Decentralized Language Preservation Protocol',
+    template: '%s | LinguaDAO'
   },
-  description: 'LinguaNet transforms smartphones into AI data factories. Record audio in African languages like Twi, earn instant USDC rewards, and help preserve endangered languages while powering inclusive AI development.',
+  description: 'LinguaDAO is the first decentralized language preservation protocol. Save endangered African languages through blockchain-powered voice mining. Earn $LINGUA tokens, own Voice Share NFTs, and participate in the future of linguistic heritage preservation.',
   keywords: [
-    'LinguaNet',
+    'LinguaDAO',
+    'decentralized language preservation',
     'African languages',
-    'AI training data',
+    'language extinction',
+    'Proof of Voice',
+    'Voice Share NFTs',
+    '$LINGUA token',
+    'language preservation protocol',
+    'endangered languages',
     'Twi language',
+    'Yoruba',
+    'Swahili',
     'blockchain',
-    'USDC payments',
-    'language preservation',
-    'mobile money',
-    'MTN Mobile Money',
-    'M-Pesa',
-    'Base blockchain',
-    'ENS domains',
-    'Filecoin storage',
-    'Ghana tech',
-    'West Africa',
-    'ETHAccra 2025',
-    'decentralized marketplace',
-    'voice recording',
-    'language data',
-    'AI datasets'
+    'Base L2',
+    'DeFi',
+    'language AMM',
+    'extinction insurance',
+    'voice mining',
+    'cultural preservation',
+    'Web3 Africa',
+    'linguistic heritage',
+    'DAO governance'
   ],
   authors: [
-    { name: 'LinguaNet Team', url: 'https://linguanet.ai' }
+    { name: 'LinguaDAO Team', url: 'https://linguadao.africa' }
   ],
-  creator: 'LinguaNet',
-  publisher: 'LinguaNet',
+  creator: 'LinguaDAO',
+  publisher: 'LinguaDAO',
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://linguanet.vercel.app'),
+  metadataBase: new URL('https://linguadao.vercel.app'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
-    title: 'LinguaNet - Turn Your Voice into Value',
-    description: 'Record audio in African languages, earn instant USDC rewards. Preserve languages, power AI.',
-    url: 'https://linguanet.vercel.app',
-    siteName: 'LinguaNet',
+    title: 'LinguaDAO - The First Decentralized Language Preservation Protocol',
+    description: 'Save endangered African languages through blockchain. Earn rewards, own NFTs, preserve cultural heritage forever.',
+    url: 'https://linguadao.vercel.app',
+    siteName: 'LinguaDAO',
     images: [
       {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'LinguaNet - Decentralized Language Data Marketplace',
+        alt: 'LinguaDAO - Decentralized Language Preservation Protocol',
       }
     ],
     locale: 'en_US',
@@ -79,9 +81,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'LinguaNet - Turn Your Voice into Value',
-    description: 'Record audio in African languages, earn instant USDC rewards. Preserve languages, power AI.',
-    creator: '@linguanet',
+    title: 'LinguaDAO - Decentralized Language Preservation',
+    description: 'The first protocol where preserving culture pays. Save endangered languages, earn rewards, own the future.',
+    creator: '@LinguaDAO',
     images: ['/twitter-image.png'],
   },
   robots: {
@@ -125,14 +127,16 @@ export const metadata: Metadata = {
   referrer: 'origin-when-cross-origin',
   colorScheme: 'dark light',
   generator: 'Next.js',
-  applicationName: 'LinguaNet',
+  applicationName: 'LinguaDAO',
   appLinks: {
     web: {
-      url: 'https://linguanet.vercel.app',
+      url: 'https://linguadao.vercel.app',
       should_fallback: true,
     },
   },
 };
+
+import { Providers } from '@/lib/providers';
 
 export default function RootLayout({
   children,
@@ -149,9 +153,9 @@ export default function RootLayout({
             __html: JSON.stringify({
               '@context': 'https://schema.org',
               '@type': 'WebApplication',
-              name: 'LinguaNet',
-              description: 'Decentralized language data marketplace for AI training',
-              url: 'https://linguanet.vercel.app',
+              name: 'LinguaDAO',
+              description: 'The First Decentralized Language Preservation Protocol',
+              url: 'https://linguadao.vercel.app',
               applicationCategory: 'BusinessApplication',
               operatingSystem: 'Web',
               offers: {
@@ -166,8 +170,8 @@ export default function RootLayout({
               },
               author: {
                 '@type': 'Organization',
-                name: 'LinguaNet',
-                url: 'https://linguanet.vercel.app',
+                name: 'LinguaDAO',
+                url: 'https://linguadao.vercel.app',
               },
             }),
           }}
@@ -202,7 +206,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );

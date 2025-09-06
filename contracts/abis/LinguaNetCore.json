@@ -1,0 +1,118 @@
+{
+  "abi": [
+    {
+      "inputs": [
+        { "internalType": "address", "name": "_usdcToken", "type": "address" },
+        { "internalType": "address", "name": "_ensRegistry", "type": "address" }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        { "indexed": true, "internalType": "address", "name": "contributor", "type": "address" },
+        { "indexed": false, "internalType": "string", "name": "language", "type": "string" },
+        { "indexed": false, "internalType": "string", "name": "cid", "type": "string" },
+        { "indexed": false, "internalType": "uint256", "name": "reward", "type": "uint256" }
+      ],
+      "name": "AudioSubmitted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        { "indexed": true, "internalType": "address", "name": "validator", "type": "address" },
+        { "indexed": false, "internalType": "string", "name": "cid", "type": "string" },
+        { "indexed": false, "internalType": "bool", "name": "isValid", "type": "bool" },
+        { "indexed": false, "internalType": "uint256", "name": "reward", "type": "uint256" }
+      ],
+      "name": "AudioValidated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        { "indexed": true, "internalType": "address", "name": "buyer", "type": "address" },
+        { "indexed": false, "internalType": "string", "name": "language", "type": "string" },
+        { "indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256" }
+      ],
+      "name": "DatasetPurchased",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        { "internalType": "string", "name": "_language", "type": "string" },
+        { "internalType": "string", "name": "_cid", "type": "string" },
+        { "internalType": "uint256", "name": "_duration", "type": "uint256" }
+      ],
+      "name": "submitAudio",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "string", "name": "_cid", "type": "string" },
+        { "internalType": "bool", "name": "_isValid", "type": "bool" }
+      ],
+      "name": "validateAudio",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "string", "name": "_language", "type": "string" }
+      ],
+      "name": "purchaseDataset",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "address", "name": "_contributor", "type": "address" }
+      ],
+      "name": "getContributorStats",
+      "outputs": [
+        { "internalType": "uint256", "name": "submissions", "type": "uint256" },
+        { "internalType": "uint256", "name": "earnings", "type": "uint256" },
+        { "internalType": "uint256", "name": "reputation", "type": "uint256" }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "string", "name": "_language", "type": "string" }
+      ],
+      "name": "getLanguageStats",
+      "outputs": [
+        { "internalType": "uint256", "name": "clips", "type": "uint256" },
+        { "internalType": "uint256", "name": "duration", "type": "uint256" },
+        { "internalType": "uint256", "name": "contributors", "type": "uint256" },
+        { "internalType": "uint256", "name": "price", "type": "uint256" }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "withdrawEarnings",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "internalType": "string", "name": "_phoneNumber", "type": "string" },
+        { "internalType": "string", "name": "_provider", "type": "string" }
+      ],
+      "name": "withdrawToMobileMoney",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ]
+}
