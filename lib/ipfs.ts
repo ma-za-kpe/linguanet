@@ -5,15 +5,15 @@ const IPFS_GATEWAY = process.env.NEXT_PUBLIC_IPFS_GATEWAY || 'https://w3s.link/i
 /**
  * Upload audio file to IPFS via Web3.Storage
  */
-export async function uploadToIPFS(file: Blob, metadata: any): Promise<string> {
+export async function uploadToIPFS(file: Blob, metadata: any, walletAddress?: string): Promise<string> {
   try {
     // Try to use Web3.Storage if it's ready
     if (isW3StorageReady()) {
       console.log('Using Web3.Storage for upload...');
-      return await uploadToW3Storage(file, metadata);
+      return await uploadToW3Storage(file, metadata, walletAddress);
     } else {
       console.log('Web3.Storage not ready, using mock hash for demo');
-      return generateMockIPFSHash(metadata);
+      return generateMockIPFSHash(metadata, walletAddress);
     }
     
     // Original Web3.Storage upload code (keeping for reference)
@@ -49,7 +49,7 @@ export async function uploadToIPFS(file: Blob, metadata: any): Promise<string> {
 }
 
 // Helper function to store in localStorage
-function storeInLocalStorage(ipfsHash: string, metadata: any): void {
+function storeInLocalStorage(ipfsHash: string, metadata: any, walletAddress?: string): void {
   if (typeof window !== 'undefined') {
     const stored = localStorage.getItem('voiceShares') || '[]';
     const voiceShares = JSON.parse(stored);
@@ -57,6 +57,7 @@ function storeInLocalStorage(ipfsHash: string, metadata: any): void {
       ipfsHash,
       metadata,
       timestamp: Date.now(),
+      walletAddress: walletAddress || 'anonymous',
     });
     localStorage.setItem('voiceShares', JSON.stringify(voiceShares));
   }
@@ -65,7 +66,7 @@ function storeInLocalStorage(ipfsHash: string, metadata: any): void {
 /**
  * Generate a mock IPFS hash that looks realistic
  */
-function generateMockIPFSHash(metadata: any): string {
+function generateMockIPFSHash(metadata: any, walletAddress?: string): string {
   // Create a deterministic hash based on metadata
   const seed = `${metadata.language}-${metadata.duration}-${metadata.timestamp}`;
   let hash = 0;
@@ -86,7 +87,7 @@ function generateMockIPFSHash(metadata: any): string {
   }
   
   // Store in localStorage for consistency
-  storeInLocalStorage(result, metadata);
+  storeInLocalStorage(result, metadata, walletAddress);
   
   return result;
 }

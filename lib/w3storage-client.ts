@@ -145,18 +145,19 @@ async function completeSetup(): Promise<void> {
  */
 export async function uploadToW3Storage(
   file: Blob,
-  metadata: any
+  metadata: any,
+  walletAddress?: string
 ): Promise<string> {
   if (!w3upClient || !isInitialized) {
     console.warn('Web3.Storage not initialized. Using mock upload.');
-    return generateMockIPFSHash(metadata);
+    return generateMockIPFSHash(metadata, walletAddress);
   }
 
   try {
     const currentSpace = w3upClient.currentSpace();
     if (!currentSpace) {
       console.warn('No space selected. Using mock upload.');
-      return generateMockIPFSHash(metadata);
+      return generateMockIPFSHash(metadata, walletAddress);
     }
 
     console.log('Uploading to Web3.Storage...');
@@ -175,19 +176,19 @@ export async function uploadToW3Storage(
     console.log('Upload successful! CID:', cid.toString());
     
     // Store in localStorage for reference
-    storeUploadRecord(cid.toString(), metadata);
+    storeUploadRecord(cid.toString(), metadata, walletAddress);
     
     return cid.toString();
   } catch (error) {
     console.error('Web3.Storage upload failed:', error);
-    return generateMockIPFSHash(metadata);
+    return generateMockIPFSHash(metadata, walletAddress);
   }
 }
 
 /**
  * Store upload record in localStorage
  */
-function storeUploadRecord(cid: string, metadata: any): void {
+function storeUploadRecord(cid: string, metadata: any, walletAddress?: string): void {
   if (typeof window !== 'undefined') {
     const stored = localStorage.getItem('voiceShares') || '[]';
     const voiceShares = JSON.parse(stored);
@@ -196,6 +197,7 @@ function storeUploadRecord(cid: string, metadata: any): void {
       metadata,
       timestamp: Date.now(),
       email: userEmail,
+      walletAddress: walletAddress || 'anonymous',
     });
     localStorage.setItem('voiceShares', JSON.stringify(voiceShares));
   }
@@ -204,7 +206,7 @@ function storeUploadRecord(cid: string, metadata: any): void {
 /**
  * Generate a mock IPFS hash for demo/fallback
  */
-function generateMockIPFSHash(metadata: any): string {
+function generateMockIPFSHash(metadata: any, walletAddress?: string): string {
   const seed = `${metadata.language}-${metadata.duration}-${metadata.timestamp}`;
   let hash = 0;
   for (let i = 0; i < seed.length; i++) {
@@ -221,7 +223,7 @@ function generateMockIPFSHash(metadata: any): string {
     result += chars[hash % chars.length];
   }
   
-  storeUploadRecord(result, metadata);
+  storeUploadRecord(result, metadata, walletAddress);
   return result;
 }
 

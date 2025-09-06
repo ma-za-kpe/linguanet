@@ -80,11 +80,13 @@ export default function GalleryClient() {
               rarity?: number; 
             }; 
             timestamp?: number; 
-            email?: string 
+            email?: string;
+            walletAddress?: string;
           }, index: number) => {
             localNFTs.push({
               tokenId: `VS-${index + 1}`, // Voice Share prefix
-              owner: address || voice.email || '0x0000000000000000000000000000000000000000',
+              // Use the stored wallet address or fallback to placeholder
+              owner: voice.walletAddress || '0x0000000000000000000000000000000000000000',
               languageCode: voice.metadata?.language || 'unknown',
               quality: Math.round((voice.metadata?.quality || 0.9) * 100),
               duration: voice.metadata?.duration || 30,
@@ -119,7 +121,7 @@ export default function GalleryClient() {
           },
           {
             tokenId: 'demo-3',
-            owner: address || '0x0000000000000000000000000000000000000000',
+            owner: '0x1234567890123456789012345678901234567890', // Different demo address
             languageCode: 'wolof',
             quality: 88,
             duration: 25,
@@ -400,7 +402,7 @@ export default function GalleryClient() {
         </div>
         <div className="stat-item">
           <FiUser className="stat-icon" />
-          <span className="stat-value">{userBalance ? Number(userBalance) : 0}</span>
+          <span className="stat-value">{myNfts.length}</span>
           <span className="stat-label">My Voices</span>
         </div>
         <div className="stat-item">

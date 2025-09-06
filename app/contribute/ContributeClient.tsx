@@ -165,7 +165,7 @@ export default function ContributeClient() {
         rarity: language?.multiplier || 1,
       };
       
-      const ipfsHash = await uploadToIPFS(audioBlob, metadata);
+      const ipfsHash = await uploadToIPFS(audioBlob, metadata, address);
       
       // Submit to blockchain
       const result = await submitVoiceData(
