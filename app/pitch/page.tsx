@@ -375,7 +375,27 @@ const pitchSlides = [
         </div>
       </div>
     )
-  }
+  },
+
+  id: 12,
+  title: "The Team",
+  content: (
+    <div className="team-slide">
+      <div className="team-grid">
+        <div className="team-member">
+          <div className="member-avatar">👨🏿‍💻</div>
+          <h3>Maku Pauline Mazakpe</h3>
+          <p className="role">Android Engineer</p>
+        </div>
+        <div className="team-member">
+          <div className="member-avatar">👩🏿‍💻</div>
+          <h3>Theophilus David Nana Yaw Kyei-Charway</h3>
+          <p className="role">Blockchain Dev</p>
+        </div>
+      </div>
+    </div>
+  )
+}
 ];
 
 export default function Pitch() {
