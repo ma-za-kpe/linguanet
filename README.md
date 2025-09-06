@@ -4,15 +4,19 @@
 
 ## 🏆 ETHAccra 2025 Hackathon Submission
 
+### 🎨 Track: Culture, Creativity & Community
+> Preserving African languages through NFTs, DAOs, and community ownership - empowering creators and unlocking new models of collective cultural preservation.
+
 > **For Judges**: Jump to [Quick Start for Hackathon Judges](#-quick-start-for-hackathon-judges) for installation instructions (5 minutes setup)
 
 ### 🎯 One-Line Pitch
 The first protocol where preserving endangered languages pays better than abandoning them.
 
-### 🔗 Live Demo
-- **Deployed App**: [https://linguadao.vercel.app](https://linguadao.vercel.app)
-- **Smart Contracts**: Deployed on Base Sepolia ([View on BaseScan](https://sepolia.basescan.org))
-- **Demo Video**: [3-minute walkthrough](https://youtube.com/watch?v=demo)
+### 🔗 Live Deployment
+- **Live App**: [https://linguanetai-pt2g5q21w-popos-projects-fb891440.vercel.app/](https://linguanetai-pt2g5q21w-popos-projects-fb891440.vercel.app/) (Fully functional on Base Sepolia)
+- **GitHub Repository**: [https://github.com/ma-za-kpe/linguanet](https://github.com/ma-za-kpe/linguanet)
+- **Smart Contracts**: Live on Base Sepolia
+- **Demo Video**: [3-minute walkthrough](Coming soon)
 
 ## 🌍 Saving 3,000+ Endangered African Languages Through Blockchain
 
@@ -81,19 +85,19 @@ Open [http://localhost:3000](http://localhost:3000) or [http://localhost:3001](h
 
 ### 🔧 Configuration for Testing
 
-The `.env.local.example` file contains all necessary configurations with default values that work out of the box:
+The `.env.local.example` file contains all necessary configurations:
 
-1. **No wallet required for demo**: The app works in demo mode without connecting a wallet
-2. **Pre-deployed contracts**: All smart contracts are already deployed on Base Sepolia
-3. **IPFS storage**: Works with public gateways, no API key needed for testing
-4. **Test tokens**: Faucet links provided in the app for Base Sepolia ETH
+1. **Smart contracts**: All contracts are live on Base Sepolia
+2. **IPFS storage**: Fully functional with Web3.Storage
+3. **Wallet connection**: Connect with MetaMask or any Web3 wallet
+4. **Test tokens**: Get Base Sepolia ETH from the faucet
 
 ### 📱 Key Features to Test
 
 1. **Voice Mining** (`/contribute`)
    - Record 30-second audio samples
    - See reward calculations in real-time
-   - Works without wallet in demo mode
+   - Mint Voice Share NFTs on Base Sepolia
 
 2. **Voice Gallery** (`/gallery`)
    - Browse Voice Share NFTs
@@ -136,17 +140,16 @@ If you want to test with a real wallet:
 | Wallet connection fails | Ensure you're on Base Sepolia network |
 | Audio recording doesn't work | Allow microphone permissions in browser |
 
-### 📝 Demo Credentials
+### 📝 Live Features
 
-No credentials needed! The app includes:
-- Demo voice recordings
-- Sample NFTs in the gallery
-- Mock reward calculations
-- Test language data
+- **Voice Mining**: Record real audio and mint NFTs
+- **Gallery**: Browse actual Voice Share NFTs on-chain
+- **Rewards**: Live $LINGUA token calculations
+- **IPFS Storage**: All recordings stored on decentralized network
 
 ### 🎥 Video Demo
 
-Watch our 3-minute demo: [Link to demo video]
+Watch our 3-minute walkthrough: [Coming soon]
 
 ### Smart Contract Deployment
 

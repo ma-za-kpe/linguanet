@@ -62,7 +62,6 @@ export function DeploymentStatus() {
     // Simulate deployment process
     for (let i = 0; i < steps.length; i++) {
       const step = steps[i];
-      setCurrentStep(i);
       
       // Update to in-progress
       updateStep(step.id, { status: 'in-progress' });

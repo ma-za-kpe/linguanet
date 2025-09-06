@@ -47,11 +47,6 @@ export default function GalleryClient() {
   const [playingId, setPlayingId] = useState<string | null>(null);
   const audioRefs = useRef<{ [key: string]: HTMLAudioElement }>({});
 
-  // Get total supply of NFTs
-  const { data: supply } = useReadContract({
-    ...getContractConfig('voiceSharesNFT'),
-    functionName: 'totalSupply',
-  });
 
 
   // Fetch NFT metadata from localStorage and blockchain
@@ -91,42 +86,8 @@ export default function GalleryClient() {
           });
         }
 
-        // Add some mock NFTs for demo with varied timestamps
-        const mockNFTs: VoiceNFT[] = [
-          {
-            tokenId: 'demo-1',
-            owner: '0xF00b53AF46FAd844b6A6cB6ea466e562D27fDE11',
-            languageCode: 'twi',
-            quality: 95,
-            duration: 28,
-            timestamp: Date.now() - 3600000, // 1 hour ago
-            ipfsHash: 'QmXoypizjW3WknFiJnKLwHCnL72vedxjQkDDP1mXWo6uco',
-            rewards: '450',
-          },
-          {
-            tokenId: 'demo-2',
-            owner: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
-            languageCode: 'yoruba',
-            quality: 92,
-            duration: 30,
-            timestamp: Date.now() - 7200000, // 2 hours ago
-            ipfsHash: 'QmPZ9gcCEpqKTo6aq61g2nXGUhM4iCL3ewuL8Eb8j7cDDP',
-            rewards: '480',
-          },
-          {
-            tokenId: 'demo-3',
-            owner: '0x1234567890123456789012345678901234567890', // Different demo address
-            languageCode: 'wolof',
-            quality: 88,
-            duration: 25,
-            timestamp: Date.now() - 10800000, // 3 hours ago
-            ipfsHash: 'QmYwAPJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG',
-            rewards: '660',
-          },
-        ];
-
-        // Combine local and mock NFTs
-        const allNFTs = [...localNFTs, ...mockNFTs];
+        // Use only real NFTs from localStorage and blockchain
+        const allNFTs = [...localNFTs];
         
         // Sort by timestamp - newest first
         allNFTs.sort((a, b) => b.timestamp - a.timestamp);
@@ -186,33 +147,11 @@ export default function GalleryClient() {
           audioRefs.current[playingId].pause();
         }
         
-        // For demonstration, use Web Audio API to create a unique beep for each NFT
-        // In production, this would play the actual audio from IPFS
-        const playDemoSound = () => {
-          const AudioContextClass = window.AudioContext || (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
-          if (!AudioContextClass) return;
-          const context = new AudioContextClass();
-          const oscillator = context.createOscillator();
-          const gainNode = context.createGain();
-          
-          oscillator.connect(gainNode);
-          gainNode.connect(context.destination);
-          
-          // Create different tones based on tokenId for variety
-          const baseFreq = 440; // A4
-          const freqMultiplier = 1 + (parseInt(tokenId.replace(/\D/g, ''), 10) % 5) * 0.2;
-          oscillator.frequency.value = baseFreq * freqMultiplier;
-          
-          // Envelope for smoother sound
-          gainNode.gain.setValueAtTime(0, context.currentTime);
-          gainNode.gain.linearRampToValueAtTime(0.1, context.currentTime + 0.01);
-          gainNode.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 0.5);
-          
-          oscillator.start(context.currentTime);
-          oscillator.stop(context.currentTime + 0.5);
-          
-          setPlayingId(tokenId);
-          setTimeout(() => setPlayingId(null), 500);
+        // Handle playback error  
+        const handlePlaybackError = (err: Error | unknown) => {
+          console.error('[Gallery] Audio playback failed:', err);
+          setPlayingId(null);
+          // In production, could show user-friendly error message
         };
         
         // Check if it's a real IPFS hash
@@ -265,19 +204,18 @@ export default function GalleryClient() {
                       setPlayingId(tokenId);
                       audioRefs.current[tokenId] = fallbackAudio;
                     })
-                    .catch(() => playDemoSound());
+                    .catch(err => handlePlaybackError(err));
                 };
                 
                 audioRefs.current[tokenId] = audio;
                 audio.play().catch((err) => {
                   console.log('[Gallery] Play failed:', err);
-                  playDemoSound();
+                  handlePlaybackError(err);
                 });
               })
               .catch(error => {
                 console.log('[Gallery] Fetch error:', error);
-                console.log('[Gallery] Playing demo sound as fallback');
-                playDemoSound();
+                handlePlaybackError(error);
               });
           } else {
             // Audio already exists, try to play
@@ -289,13 +227,13 @@ export default function GalleryClient() {
               })
               .catch((err) => {
                 console.log('[Gallery] Resume failed:', err);
-                playDemoSound();
+                handlePlaybackError(err);
               });
           }
         } else {
-          // Mock hash, play demo sound
-          console.log('[Gallery] Mock hash detected, playing demo sound');
-          playDemoSound();
+          // Invalid IPFS hash
+          console.log('[Gallery] Invalid IPFS hash');
+          handlePlaybackError(new Error('Invalid IPFS hash'));
         }
       }
     } catch (error) {
