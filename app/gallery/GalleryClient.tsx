@@ -2,9 +2,9 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { useAccount, useReadContract, usePublicClient } from 'wagmi';
-import { CONTRACT_ADDRESSES, getContractConfig } from '@/lib/contracts-config';
+import { useAccount } from 'wagmi';
 import { WalletButton } from '@/components/WalletButton';
+import { CONTRACT_ADDRESSES } from '@/lib/contracts-config';
 import { motion } from 'framer-motion';
 import { FiMusic, FiClock, FiAward, FiUser, FiGlobe, FiHash, FiPlay, FiPause, FiDownload } from 'react-icons/fi';
 import './gallery.css';
@@ -38,7 +38,6 @@ const languageNames: Record<string, string> = {
 
 export default function GalleryClient() {
   const { address, isConnected } = useAccount();
-  const publicClient = usePublicClient();
   const [nfts, setNfts] = useState<VoiceNFT[]>([]);
   const [myNfts, setMyNfts] = useState<VoiceNFT[]>([]);
   const [view, setView] = useState<'all' | 'mine'>('all');
@@ -112,7 +111,7 @@ export default function GalleryClient() {
     }
 
     fetchNFTs();
-  }, [publicClient, address]);
+  }, [address]);
 
   const formatTime = (timestamp: number) => {
     const date = new Date(timestamp);
@@ -465,7 +464,7 @@ export default function GalleryClient() {
                   🌐 IPFS
                 </a>
                 <a 
-                  href={`https://sepolia.basescan.org/token/${CONTRACT_ADDRESSES.voiceSharesNFT}?a=${nft.tokenId}`}
+                  href={`https://sepolia.basescan.org/token/${CONTRACT_ADDRESSES.voiceSharesNFT || '0xCC1D5C4e4b2B9aafADd31976051f52dF3d8f1308'}?a=${nft.tokenId}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="view-button"

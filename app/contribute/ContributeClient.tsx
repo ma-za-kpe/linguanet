@@ -52,10 +52,10 @@ export default function ContributeClient() {
   const [qualityScore, setQualityScore] = useState(0);
   const [miningReward, setMiningReward] = useState(0);
 
-  // Stats from blockchain or mock for demo
-  const [guardianTier] = useState('Expert');
-  const [stakingBoost] = useState(1.5);
-  const [totalEarned] = useState('1,284');
+  // Calculate stats based on actual data
+  const guardianTier = voiceSharesBalance >= 10 ? 'Expert' : voiceSharesBalance >= 5 ? 'Advanced' : voiceSharesBalance >= 1 ? 'Novice' : 'Beginner';
+  const stakingBoost = voiceSharesBalance >= 10 ? 2.0 : voiceSharesBalance >= 5 ? 1.5 : voiceSharesBalance >= 1 ? 1.2 : 1.0;
+  const totalEarned = linguaBalance ? Math.floor(Number(linguaBalance) * 0.8).toLocaleString() : '0';
 
   // Refs
   const timerRef = useRef<NodeJS.Timeout | undefined>(undefined);
@@ -292,7 +292,7 @@ export default function ContributeClient() {
             <div className="stat-content">
               <div className="stat-value">{guardianTier}</div>
               <div className="stat-label">Guardian Tier</div>
-              <div className="stat-bonus">+50% Mining Boost</div>
+              <div className="stat-bonus">+{((stakingBoost - 1) * 100).toFixed(0)}% Mining Boost</div>
             </div>
           </div>
           

@@ -4,7 +4,7 @@ import { useAccount, useBalance, useReadContract, useWriteContract } from 'wagmi
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useState, useEffect, useCallback } from 'react';
 import { formatUnits } from 'viem';
-import { CONTRACT_ADDRESSES, getContractConfig } from '../contracts-config';
+import { CONTRACT_ADDRESSES, getContractConfig, CONTRACT_ABIS } from '../contracts-config';
 import { getENSName, registerENSName, generateENSName } from '../ens';
 
 /**
@@ -91,7 +91,7 @@ export function useSubmitAudio() {
   const [error, setError] = useState<string | null>(null);
   
   const { writeContractAsync } = useWriteContract();
-  const contractAddress = getContractAddress('linguanetCore') as `0x${string}`;
+  const contractAddress = CONTRACT_ADDRESSES.linguaToken || '0x0000000000000000000000000000000000000000' as `0x${string}`;
 
   const submitAudio = useCallback(async (
     language: string,

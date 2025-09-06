@@ -15,8 +15,17 @@ The first protocol where preserving endangered languages pays better than abando
 ### 🔗 Live Deployment
 - **Live App**: [https://linguanetai-pt2g5q21w-popos-projects-fb891440.vercel.app/](https://linguanetai-pt2g5q21w-popos-projects-fb891440.vercel.app/) (Fully functional on Base Sepolia)
 - **GitHub Repository**: [https://github.com/ma-za-kpe/linguanet](https://github.com/ma-za-kpe/linguanet)
-- **Smart Contracts**: Live on Base Sepolia
 - **Demo Video**: [3-minute walkthrough](Coming soon)
+
+### 📜 Deployed Smart Contracts (Base Sepolia)
+
+| Contract | Address | View on BaseScan |
+|----------|---------|------------------|
+| **LinguaToken** | `0x9aB86b04D321b5dB9a2E6F2CFbE2B028Cc6df21D` | [View](https://sepolia.basescan.org/address/0x9aB86b04D321b5dB9a2E6F2CFbE2B028Cc6df21D) |
+| **VoiceSharesNFT** | `0xCC1D5C4e4b2B9aafADd31976051f52dF3d8f1308` | [View](https://sepolia.basescan.org/address/0xCC1D5C4e4b2B9aafADd31976051f52dF3d8f1308) |
+| **LinguaDAO** | `0xf94CC32C9cD25d565C54fE54DC5AeEe159FB910a` | [View](https://sepolia.basescan.org/address/0xf94CC32C9cD25d565C54fE54DC5AeEe159FB910a) |
+| **LanguagePoolsAMM** | `0x9744Ed27A3353B3B73243A0A656188854188f2DD` | [View](https://sepolia.basescan.org/address/0x9744Ed27A3353B3B73243A0A656188854188f2DD) |
+| **ExtinctionInsurance** | `0xa3dc5A67cB29cD07705Fe9282FAE870CA1017929` | [View](https://sepolia.basescan.org/address/0xa3dc5A67cB29cD07705Fe9282FAE870CA1017929) |
 
 ## 🌍 Saving 3,000+ Endangered African Languages Through Blockchain
 
