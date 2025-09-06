@@ -148,12 +148,14 @@ export default function GalleryClient() {
   const getAudioUrl = (ipfsHash: string) => {
     // Handle real IPFS hashes from Web3.Storage
     if (ipfsHash.startsWith('bafy') || ipfsHash.startsWith('Qm')) {
-      // Use the correct subdomain format: https://${cid}.ipfs.${gatewayHost}
-      // The uploaded directory contains audio.webm and metadata.json
-      return `https://${ipfsHash}.ipfs.w3s.link/audio.webm`;
+      // Use w3s.link which is currently working for audio files
+      const audioUrl = `https://${ipfsHash}.ipfs.w3s.link/audio.webm`;
+      console.log('[Gallery] Audio URL:', audioUrl);
+      return audioUrl;
     }
     // For local/mock hashes, use a demo audio
-    return 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn9rPuzAAhY2RjWxXSpRxzvNqFQeGkeaLdRQ='; // Small silent audio for demo
+    console.log('[Gallery] Using demo audio for mock hash:', ipfsHash);
+    return 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn9rPuzAAhY2RjWxXSpRxzvNqFQeGkeaLdRQ=';
   };
 
   const handlePlayPause = async (tokenId: string, ipfsHash: string) => {
@@ -170,65 +172,95 @@ export default function GalleryClient() {
           audioRefs.current[playingId].pause();
         }
         
-        // Create or play the audio
-        if (!audioRefs.current[tokenId]) {
-          const audioUrl = getAudioUrl(ipfsHash);
-          const audio = new Audio();
+        // For demonstration, use Web Audio API to create a unique beep for each NFT
+        // In production, this would play the actual audio from IPFS
+        const playDemoSound = () => {
+          const context = new (window.AudioContext || (window as any).webkitAudioContext)();
+          const oscillator = context.createOscillator();
+          const gainNode = context.createGain();
           
-          // Set up error handling
-          audio.onerror = (e) => {
-            console.error('Audio playback error:', e);
-            // Create a simple beep sound as fallback
-            const context = new (window.AudioContext || (window as any).webkitAudioContext)();
-            const oscillator = context.createOscillator();
-            const gainNode = context.createGain();
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(context.destination);
-            
-            oscillator.frequency.value = 440; // A4 note
-            gainNode.gain.value = 0.1;
-            
-            oscillator.start();
-            setTimeout(() => {
-              oscillator.stop();
-              setPlayingId(null);
-            }, 500); // Play for 0.5 seconds
-          };
+          oscillator.connect(gainNode);
+          gainNode.connect(context.destination);
           
-          audio.onended = () => setPlayingId(null);
+          // Create different tones based on tokenId for variety
+          const baseFreq = 440; // A4
+          const freqMultiplier = 1 + (parseInt(tokenId.replace(/\D/g, ''), 10) % 5) * 0.2;
+          oscillator.frequency.value = baseFreq * freqMultiplier;
           
-          // Try to load the audio
-          audio.src = audioUrl;
-          audioRefs.current[tokenId] = audio;
-        }
+          // Envelope for smoother sound
+          gainNode.gain.setValueAtTime(0, context.currentTime);
+          gainNode.gain.linearRampToValueAtTime(0.1, context.currentTime + 0.01);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 0.5);
+          
+          oscillator.start(context.currentTime);
+          oscillator.stop(context.currentTime + 0.5);
+          
+          setPlayingId(tokenId);
+          setTimeout(() => setPlayingId(null), 500);
+        };
         
-        // Try to play
-        const playPromise = audioRefs.current[tokenId].play();
-        if (playPromise !== undefined) {
-          playPromise.then(() => {
-            setPlayingId(tokenId);
-          }).catch((error) => {
-            console.log('Playback failed, using fallback beep');
-            // Use Web Audio API as fallback
-            const context = new (window.AudioContext || (window as any).webkitAudioContext)();
-            const oscillator = context.createOscillator();
-            const gainNode = context.createGain();
+        // Check if it's a real IPFS hash
+        if (ipfsHash.startsWith('bafy') || ipfsHash.startsWith('Qm')) {
+          console.log('[Gallery] Attempting to play IPFS audio for token:', tokenId);
+          console.log('[Gallery] IPFS hash:', ipfsHash);
+          
+          // Try to play from IPFS first
+          if (!audioRefs.current[tokenId]) {
+            const audio = new Audio();
+            audio.crossOrigin = 'anonymous'; // Enable CORS
             
-            oscillator.connect(gainNode);
-            gainNode.connect(context.destination);
+            // Set up the audio with fallback
+            audio.onerror = (e) => {
+              console.log('[Gallery] Audio error event:', e);
+              console.log('[Gallery] Falling back to demo sound');
+              playDemoSound();
+            };
             
-            oscillator.frequency.value = 440; // A4 note
-            gainNode.gain.value = 0.1;
+            audio.onloadstart = () => {
+              console.log('[Gallery] Starting to load audio...');
+            };
             
-            oscillator.start();
-            setPlayingId(tokenId);
+            audio.oncanplaythrough = () => {
+              console.log('[Gallery] Audio can play through, attempting playback');
+              audio.play()
+                .then(() => {
+                  console.log('[Gallery] Audio playback started successfully');
+                  setPlayingId(tokenId);
+                })
+                .catch((err) => {
+                  console.log('[Gallery] Play promise rejected:', err);
+                  playDemoSound();
+                });
+            };
             
-            setTimeout(() => {
-              oscillator.stop();
+            audio.onended = () => {
+              console.log('[Gallery] Audio playback ended');
               setPlayingId(null);
-            }, 1000); // Play for 1 second
-          });
+            };
+            
+            // Use storacha.link as primary gateway
+            const audioUrl = `https://${ipfsHash}.ipfs.storacha.link/audio.webm`;
+            console.log('[Gallery] Setting audio source:', audioUrl);
+            
+            audio.src = audioUrl;
+            audioRefs.current[tokenId] = audio;
+          } else {
+            // Audio already exists, try to play
+            console.log('[Gallery] Reusing existing audio element');
+            audioRefs.current[tokenId].play()
+              .then(() => {
+                console.log('[Gallery] Resumed playback successfully');
+                setPlayingId(tokenId);
+              })
+              .catch((err) => {
+                console.log('[Gallery] Resume failed:', err);
+                playDemoSound();
+              });
+          }
+        } else {
+          // Mock hash, play demo sound
+          console.log('[Gallery] Mock hash detected, playing demo sound');
+          playDemoSound();
         }
       }
     } catch (error) {
@@ -451,7 +483,7 @@ export default function GalleryClient() {
                   <FiDownload /> Download
                 </button>
                 <a 
-                  href={`https://${nft.ipfsHash}.ipfs.w3s.link/`}
+                  href={`https://${nft.ipfsHash}.ipfs.storacha.link/`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="ipfs-button"
