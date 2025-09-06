@@ -494,17 +494,8 @@ export default function ContributeClient() {
                     <button 
                       className="action-button submit"
                       onClick={submitRecording}
-                      disabled={recordingState === 'submitting'}
-                      style={{
-                        opacity: recordingState === 'submitting' ? 0.6 : 1,
-                        cursor: recordingState === 'submitting' ? 'not-allowed' : 'pointer'
-                      }}
                     >
-                      {recordingState === 'submitting' ? (
-                        <><span className="spinner"></span> Submitting...</>
-                      ) : (
-                        <><FiCheck /> Submit to Blockchain</>
-                      )}
+                      <FiCheck /> Submit to Blockchain
                     </button>
                   </div>
                 </div>
