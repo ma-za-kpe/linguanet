@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { initializeW3Storage, loginWithEmail, isW3StorageReady, getCurrentSpaceDID } from '@/lib/w3storage-client';
+import { useState, useEffect, useRef } from 'react';
+import { initializeW3Storage, loginWithEmail, isW3StorageReady, getCurrentSpaceDID, checkVerificationStatus } from '@/lib/w3storage-client';
 import { FiMail, FiCheck, FiAlertCircle, FiLoader, FiCloud } from 'react-icons/fi';
 
 export function Web3StorageSetup() {
@@ -11,10 +11,18 @@ export function Web3StorageSetup() {
   const [errorMessage, setErrorMessage] = useState('');
   const [spaceDID, setSpaceDID] = useState<string | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
+  const verificationCheckInterval = useRef<NodeJS.Timeout | null>(null);
 
   // Check if already initialized on component mount
   useEffect(() => {
     checkInitialization();
+    
+    // Cleanup interval on unmount
+    return () => {
+      if (verificationCheckInterval.current) {
+        clearInterval(verificationCheckInterval.current);
+      }
+    };
   }, []);
 
   const checkInitialization = async () => {
@@ -31,10 +39,32 @@ export function Web3StorageSetup() {
     }
   };
 
+  // Start checking for verification completion
+  const startVerificationCheck = () => {
+    // Check every 2 seconds if user has completed verification
+    verificationCheckInterval.current = setInterval(async () => {
+      const isVerified = await checkVerificationStatus();
+      if (isVerified) {
+        console.log('[UI] Verification complete!');
+        setStatus('ready');
+        setIsInitialized(true);
+        const did = getCurrentSpaceDID();
+        if (did) setSpaceDID(did);
+        
+        // Stop checking
+        if (verificationCheckInterval.current) {
+          clearInterval(verificationCheckInterval.current);
+          verificationCheckInterval.current = null;
+        }
+      }
+    }, 2000);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || isLoading) return;
 
+    console.log('[UI] Starting Web3.Storage setup with email:', email);
     setIsLoading(true);
     setStatus('idle');
     setErrorMessage('');
@@ -42,32 +72,29 @@ export function Web3StorageSetup() {
     try {
       // Initialize client if not already done
       if (!isInitialized) {
+        console.log('[UI] Initializing W3Storage client...');
         await initializeW3Storage();
       }
 
       // Start login process
+      console.log('[UI] Calling loginWithEmail...');
+      
+      // Call login - it will send the email and return immediately
       await loginWithEmail(email);
       
-      setStatus('sent');
+      // Immediately show the email sent message and stop loading
+      console.log('[UI] Email sent successfully');
+      setIsLoading(false);  // Stop loading immediately
+      setStatus('sent');     // Show check email message
       
-      // Note: The actual verification happens when user clicks the email link
-      // The loginWithEmail function will wait for verification
-      // Once verified, it will set up the space automatically
-      
-      // For demo purposes, we'll show success after a delay
-      setTimeout(() => {
-        setStatus('ready');
-        setIsInitialized(true);
-        const did = getCurrentSpaceDID();
-        if (did) setSpaceDID(did);
-      }, 3000);
+      // Start checking for verification completion
+      startVerificationCheck();
       
     } catch (error: any) {
-      setStatus('error');
-      setErrorMessage(error.message || 'Failed to setup Web3.Storage');
-      console.error('Setup failed:', error);
-    } finally {
+      console.error('[UI] Setup error:', error);
       setIsLoading(false);
+      setErrorMessage(error.message || 'Failed to send verification email');
+      setStatus('error');
     }
   };
 
@@ -180,15 +207,29 @@ export function Web3StorageSetup() {
         }}>
           <FiMail size={20} color="#3b82f6" />
           <div>
-            <div style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>
-              Check Your Email!
+            <div style={{ fontWeight: 'bold', marginBottom: '0.5rem', color: '#3b82f6' }}>
+              ✅ Check Your Email!
             </div>
             <p style={{ fontSize: '0.9rem', marginBottom: '0.5rem' }}>
-              We've sent a verification link to <strong>{email}</strong>
+              We've sent a verification email to: <strong>{email}</strong>
             </p>
-            <p style={{ fontSize: '0.85rem', opacity: 0.8 }}>
-              Click the link in your email to complete setup. This page will update automatically.
+            <p style={{ fontSize: '0.85rem', opacity: 0.9, marginBottom: '0.5rem' }}>
+              Please click the link in your email to complete Web3.Storage setup.
             </p>
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '0.5rem',
+              marginTop: '0.75rem',
+              padding: '0.5rem',
+              background: 'rgba(255, 255, 255, 0.05)',
+              borderRadius: '6px'
+            }}>
+              <FiLoader className="animate-spin" size={16} color="#3b82f6" />
+              <p style={{ fontSize: '0.85rem', opacity: 0.9, margin: 0 }}>
+                Checking verification status... (this will update automatically)
+              </p>
+            </div>
           </div>
         </div>
       )}

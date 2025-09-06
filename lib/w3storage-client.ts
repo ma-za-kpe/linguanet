@@ -44,43 +44,98 @@ export async function initializeW3Storage(): Promise<Client> {
 }
 
 /**
- * Login with email and create/register a space
- * This sends a verification email to the user
+ * Send verification email without waiting
+ * Returns immediately after email is sent
  */
 export async function loginWithEmail(email: string): Promise<void> {
+  console.log('[W3Storage] Starting login process for:', email);
+  
   if (!w3upClient) {
+    console.log('[W3Storage] Client not initialized, initializing...');
     await initializeW3Storage();
   }
   
   if (!w3upClient) {
+    console.error('[W3Storage] Client initialization failed');
     throw new Error('Client not initialized');
   }
 
   try {
-    console.log('Logging in with email:', email);
+    console.log('[W3Storage] Checking if already logged in...');
+    const accounts = w3upClient.accounts();
+    
+    if (Object.keys(accounts).length > 0) {
+      console.log('[W3Storage] Already logged in with an account');
+      await completeSetup();
+      return;
+    }
+    
+    console.log('[W3Storage] Sending verification email to:', email);
     userEmail = email;
     
-    // This will send a verification email
-    const account = await w3upClient.login(email);
-    console.log('Login email sent. Please check your inbox and click the verification link.');
+    // Start the login process in the background
+    // This sends the email and waits for verification
+    w3upClient.login(email).then(async (account) => {
+      console.log('[W3Storage] Email verified! Account created:', account.did());
+      // Complete setup after verification
+      await completeSetup();
+    }).catch((error) => {
+      console.error('[W3Storage] Login verification error:', error);
+    });
     
-    // Wait for payment plan (required for new accounts)
-    console.log('Waiting for account setup...');
-    await account.plan.wait({ timeout: 900000 }); // 15 minute timeout
+    // Return immediately - email has been sent
+    console.log('[W3Storage] Verification email sent to:', email);
+    console.log('[W3Storage] User should check email and click the link');
+    return;
     
-    // Create a space if we don't have one
+  } catch (error: any) {
+    console.error('[W3Storage] Login error:', error);
+    throw error;
+  }
+}
+
+/**
+ * Complete setup after email verification
+ * Creates a space and provisions it to the account
+ */
+async function completeSetup(): Promise<void> {
+  if (!w3upClient) return;
+  
+  try {
+    // Check if we already have spaces
     const spaces = await w3upClient.spaces();
+    
     if (spaces.length === 0) {
-      console.log('Creating new space...');
-      const space = await w3upClient.createSpace('LinguaDAO-Space', { account });
-      await w3upClient.setCurrentSpace(space.did());
-      console.log('Space created:', space.did());
+      console.log('[W3Storage] No spaces found, creating new space...');
+      
+      // Create a new space for LinguaDAO
+      const space = await w3upClient.createSpace('linguadao');
+      console.log('[W3Storage] Space created:', space.did());
+      
+      // Save the space and set it as current
+      await space.save();
+      console.log('[W3Storage] Space saved');
+      
+      // Get the account to provision the space
+      const accounts = w3upClient.accounts();
+      const account = Object.values(accounts)[0];
+      
+      if (account) {
+        await account.provision(space.did());
+        console.log('[W3Storage] Space provisioned to account');
+      }
+    } else {
+      console.log('[W3Storage] Found existing spaces:', spaces.length);
+      const linguaSpace = spaces.find(s => s.name === 'linguadao') || spaces[0];
+      await w3upClient.setCurrentSpace(linguaSpace.did());
+      console.log('[W3Storage] Using space:', linguaSpace.name || linguaSpace.did());
     }
     
     isInitialized = true;
-    console.log('Web3.Storage setup complete!');
+    console.log('[W3Storage] Setup complete!');
+    
   } catch (error) {
-    console.error('Login failed:', error);
+    console.error('[W3Storage] Setup error:', error);
     throw error;
   }
 }
@@ -175,6 +230,34 @@ function generateMockIPFSHash(metadata: any): string {
  */
 export function isW3StorageReady(): boolean {
   return isInitialized && w3upClient !== null && w3upClient.currentSpace() !== null;
+}
+
+/**
+ * Check if user has verified email and setup is complete
+ */
+export async function checkVerificationStatus(): Promise<boolean> {
+  if (!w3upClient) {
+    await initializeW3Storage();
+  }
+  
+  if (!w3upClient) return false;
+  
+  try {
+    const accounts = w3upClient.accounts();
+    const spaces = await w3upClient.spaces();
+    
+    // If we have accounts and spaces, verification is complete
+    if (Object.keys(accounts).length > 0 && spaces.length > 0) {
+      console.log('[W3Storage] Verification complete - found accounts and spaces');
+      await completeSetup();
+      return true;
+    }
+    
+    return false;
+  } catch (error) {
+    console.error('[W3Storage] Error checking verification:', error);
+    return false;
+  }
 }
 
 /**

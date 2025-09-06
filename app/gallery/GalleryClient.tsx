@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAccount, useReadContract, useContractRead, usePublicClient } from 'wagmi';
 import { CONTRACT_ADDRESSES, getContractConfig } from '@/lib/contracts-config';
 import { WalletButton } from '@/components/WalletButton';
 import { motion } from 'framer-motion';
-import { FiMusic, FiClock, FiAward, FiUser, FiGlobe, FiHash } from 'react-icons/fi';
+import { FiMusic, FiClock, FiAward, FiUser, FiGlobe, FiHash, FiPlay, FiPause, FiDownload } from 'react-icons/fi';
 import './gallery.css';
 
 interface VoiceNFT {
@@ -43,6 +43,8 @@ export default function GalleryClient() {
   const [view, setView] = useState<'all' | 'mine'>('all');
   const [loading, setLoading] = useState(true);
   const [totalSupply, setTotalSupply] = useState(0);
+  const [playingId, setPlayingId] = useState<string | null>(null);
+  const audioRefs = useRef<{ [key: string]: HTMLAudioElement }>({});
 
   // Get total supply of NFTs
   const { data: supply } = useReadContract({
@@ -68,16 +70,16 @@ export default function GalleryClient() {
         
         if (storedVoices) {
           const voices = JSON.parse(storedVoices);
-          voices.forEach((voice: any, index: number) => {
+          voices.forEach((voice: { ipfsHash: string; metadata?: any; timestamp?: number; email?: string }, index: number) => {
             localNFTs.push({
-              tokenId: String(index + 1),
-              owner: address || '0x0000000000000000000000000000000000000000',
-              languageCode: voice.metadata.language,
-              quality: Math.round(voice.metadata.quality * 100),
-              duration: voice.metadata.duration,
-              timestamp: voice.timestamp,
+              tokenId: `VS-${index + 1}`, // Voice Share prefix
+              owner: address || voice.email || '0x0000000000000000000000000000000000000000',
+              languageCode: voice.metadata?.language || 'unknown',
+              quality: Math.round((voice.metadata?.quality || 0.9) * 100),
+              duration: voice.metadata?.duration || 30,
+              timestamp: voice.timestamp || Date.now(),
               ipfsHash: voice.ipfsHash,
-              rewards: String(Math.floor(100 * voice.metadata.quality * voice.metadata.rarity * 1.5)),
+              rewards: String(Math.floor(100 * (voice.metadata?.quality || 0.9) * (voice.metadata?.rarity || 1) * 1.5)),
             });
           });
         }
@@ -142,14 +144,106 @@ export default function GalleryClient() {
     return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
   };
 
+  // Get audio URL from IPFS using proper gateway format
+  const getAudioUrl = (ipfsHash: string) => {
+    // Handle real IPFS hashes from Web3.Storage
+    if (ipfsHash.startsWith('bafy') || ipfsHash.startsWith('Qm')) {
+      // Use the correct subdomain format: https://${cid}.ipfs.${gatewayHost}
+      // The uploaded directory contains audio.webm and metadata.json
+      return `https://${ipfsHash}.ipfs.w3s.link/audio.webm`;
+    }
+    // For local/mock hashes, use a demo audio
+    return 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn9rPuzAAhY2RjWxXSpRxzvNqFQeGkeaLdRQ='; // Small silent audio for demo
+  };
+
+  const handlePlayPause = async (tokenId: string, ipfsHash: string) => {
+    try {
+      if (playingId === tokenId) {
+        // Pause current audio
+        if (audioRefs.current[tokenId]) {
+          audioRefs.current[tokenId].pause();
+        }
+        setPlayingId(null);
+      } else {
+        // Stop any currently playing audio
+        if (playingId && audioRefs.current[playingId]) {
+          audioRefs.current[playingId].pause();
+        }
+        
+        // Create or play the audio
+        if (!audioRefs.current[tokenId]) {
+          const audioUrl = getAudioUrl(ipfsHash);
+          const audio = new Audio();
+          
+          // Set up error handling
+          audio.onerror = (e) => {
+            console.error('Audio playback error:', e);
+            // Create a simple beep sound as fallback
+            const context = new (window.AudioContext || (window as any).webkitAudioContext)();
+            const oscillator = context.createOscillator();
+            const gainNode = context.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(context.destination);
+            
+            oscillator.frequency.value = 440; // A4 note
+            gainNode.gain.value = 0.1;
+            
+            oscillator.start();
+            setTimeout(() => {
+              oscillator.stop();
+              setPlayingId(null);
+            }, 500); // Play for 0.5 seconds
+          };
+          
+          audio.onended = () => setPlayingId(null);
+          
+          // Try to load the audio
+          audio.src = audioUrl;
+          audioRefs.current[tokenId] = audio;
+        }
+        
+        // Try to play
+        const playPromise = audioRefs.current[tokenId].play();
+        if (playPromise !== undefined) {
+          playPromise.then(() => {
+            setPlayingId(tokenId);
+          }).catch((error) => {
+            console.log('Playback failed, using fallback beep');
+            // Use Web Audio API as fallback
+            const context = new (window.AudioContext || (window as any).webkitAudioContext)();
+            const oscillator = context.createOscillator();
+            const gainNode = context.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(context.destination);
+            
+            oscillator.frequency.value = 440; // A4 note
+            gainNode.gain.value = 0.1;
+            
+            oscillator.start();
+            setPlayingId(tokenId);
+            
+            setTimeout(() => {
+              oscillator.stop();
+              setPlayingId(null);
+            }, 1000); // Play for 1 second
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Audio handling error:', error);
+    }
+  };
+
   const displayNfts = view === 'mine' ? myNfts : nfts;
 
   return (
     <div className="gallery-container">
       {/* Header */}
       <div className="gallery-header">
-        <h1>🎨 Voice Share Gallery</h1>
-        <p>Explore the preserved voices of Africa</p>
+        <h1>🎨 Voice Shares Gallery</h1>
+        <p>Own a piece of the AI models you help train • Proof of Voice NFTs</p>
         <div className="wallet-section">
           <WalletButton />
         </div>
@@ -291,31 +385,43 @@ export default function GalleryClient() {
               </div>
               
               <div className="nft-visual">
-                <div className="audio-wave">
-                  {[...Array(20)].map((_, i) => (
-                    <div 
-                      key={i} 
-                      className="wave-bar" 
-                      style={{ 
-                        height: `${Math.random() * 60 + 20}%`,
-                        animationDelay: `${i * 0.05}s`
-                      }}
-                    />
-                  ))}
+                <div className="audio-player-section">
+                  <button 
+                    className="play-button"
+                    onClick={() => handlePlayPause(nft.tokenId, nft.ipfsHash)}
+                    aria-label={playingId === nft.tokenId ? 'Pause' : 'Play'}
+                  >
+                    {playingId === nft.tokenId ? <FiPause size={24} /> : <FiPlay size={24} />}
+                  </button>
+                  <div className="audio-wave">
+                    {[...Array(20)].map((_, i) => (
+                      <div 
+                        key={i} 
+                        className={`wave-bar ${playingId === nft.tokenId ? 'playing' : ''}`}
+                        style={{ 
+                          height: `${Math.random() * 60 + 20}%`,
+                          animationDelay: `${i * 0.05}s`
+                        }}
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
 
               <div className="nft-details">
                 <div className="detail-item">
                   <FiAward />
-                  <span>Quality: {nft.quality}%</span>
+                  <span>Quality Score: {nft.quality}%</span>
                 </div>
                 <div className="detail-item">
                   <FiClock />
                   <span>Duration: {nft.duration}s</span>
                 </div>
+                <div className="detail-item highlight">
+                  <span className="rewards">💰 {nft.rewards} $LINGUA earned</span>
+                </div>
                 <div className="detail-item">
-                  <span className="rewards">{nft.rewards} $LINGUA earned</span>
+                  <span className="revenue-share">📊 Revenue Share: 0.001%</span>
                 </div>
               </div>
 
@@ -329,21 +435,38 @@ export default function GalleryClient() {
               </div>
 
               <div className="nft-actions">
+                <button 
+                  className="download-button"
+                  onClick={() => {
+                    const link = document.createElement('a');
+                    link.href = getAudioUrl(nft.ipfsHash);
+                    link.download = `voice-share-${nft.tokenId}.webm`;
+                    link.target = '_blank';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                  }}
+                  title="Download Audio"
+                >
+                  <FiDownload /> Download
+                </button>
+                <a 
+                  href={`https://${nft.ipfsHash}.ipfs.w3s.link/`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="ipfs-button"
+                  title="View on IPFS"
+                >
+                  🌐 IPFS
+                </a>
                 <a 
                   href={`https://sepolia.basescan.org/token/${CONTRACT_ADDRESSES.voiceSharesNFT}?a=${nft.tokenId}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="view-button"
+                  title="View on BaseScan"
                 >
-                  View on BaseScan
-                </a>
-                <a 
-                  href={`https://w3s.link/ipfs/${nft.ipfsHash}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="ipfs-button"
-                >
-                  View on IPFS
+                  ⛓️ Chain
                 </a>
               </div>
             </motion.div>
