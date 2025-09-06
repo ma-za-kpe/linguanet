@@ -90,10 +90,11 @@ export function Web3StorageSetup() {
       // Start checking for verification completion
       startVerificationCheck();
       
-    } catch (error: any) {
+    } catch (error) {
       console.error('[UI] Setup error:', error);
       setIsLoading(false);
-      setErrorMessage(error.message || 'Failed to send verification email');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to send verification email';
+      setErrorMessage(errorMessage);
       setStatus('error');
     }
   };
@@ -211,7 +212,7 @@ export function Web3StorageSetup() {
               ✅ Check Your Email!
             </div>
             <p style={{ fontSize: '0.9rem', marginBottom: '0.5rem' }}>
-              We've sent a verification email to: <strong>{email}</strong>
+              We&apos;ve sent a verification email to: <strong>{email}</strong>
             </p>
             <p style={{ fontSize: '0.85rem', opacity: 0.9, marginBottom: '0.5rem' }}>
               Please click the link in your email to complete Web3.Storage setup.

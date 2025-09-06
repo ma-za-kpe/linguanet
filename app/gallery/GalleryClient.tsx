@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { useAccount, useReadContract, useContractRead, usePublicClient } from 'wagmi';
+import Link from 'next/link';
+import { useAccount, useReadContract, usePublicClient } from 'wagmi';
 import { CONTRACT_ADDRESSES, getContractConfig } from '@/lib/contracts-config';
 import { WalletButton } from '@/components/WalletButton';
 import { motion } from 'framer-motion';
@@ -70,7 +71,17 @@ export default function GalleryClient() {
         
         if (storedVoices) {
           const voices = JSON.parse(storedVoices);
-          voices.forEach((voice: { ipfsHash: string; metadata?: any; timestamp?: number; email?: string }, index: number) => {
+          voices.forEach((voice: { 
+            ipfsHash: string; 
+            metadata?: { 
+              language?: string; 
+              quality?: number; 
+              duration?: number; 
+              rarity?: number; 
+            }; 
+            timestamp?: number; 
+            email?: string 
+          }, index: number) => {
             localNFTs.push({
               tokenId: `VS-${index + 1}`, // Voice Share prefix
               owner: address || voice.email || '0x0000000000000000000000000000000000000000',
@@ -84,35 +95,35 @@ export default function GalleryClient() {
           });
         }
 
-        // Add some mock NFTs for demo
+        // Add some mock NFTs for demo with varied timestamps
         const mockNFTs: VoiceNFT[] = [
           {
-            tokenId: '1',
+            tokenId: 'demo-1',
             owner: '0xF00b53AF46FAd844b6A6cB6ea466e562D27fDE11',
             languageCode: 'twi',
             quality: 95,
             duration: 28,
-            timestamp: Date.now() - 3600000,
+            timestamp: Date.now() - 3600000, // 1 hour ago
             ipfsHash: 'QmXoypizjW3WknFiJnKLwHCnL72vedxjQkDDP1mXWo6uco',
             rewards: '450',
           },
           {
-            tokenId: '2',
+            tokenId: 'demo-2',
             owner: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
             languageCode: 'yoruba',
             quality: 92,
             duration: 30,
-            timestamp: Date.now() - 7200000,
+            timestamp: Date.now() - 7200000, // 2 hours ago
             ipfsHash: 'QmPZ9gcCEpqKTo6aq61g2nXGUhM4iCL3ewuL8Eb8j7cDDP',
             rewards: '480',
           },
           {
-            tokenId: '3',
+            tokenId: 'demo-3',
             owner: address || '0x0000000000000000000000000000000000000000',
             languageCode: 'wolof',
             quality: 88,
             duration: 25,
-            timestamp: Date.now() - 10800000,
+            timestamp: Date.now() - 10800000, // 3 hours ago
             ipfsHash: 'QmYwAPJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG',
             rewards: '660',
           },
@@ -120,12 +131,19 @@ export default function GalleryClient() {
 
         // Combine local and mock NFTs
         const allNFTs = [...localNFTs, ...mockNFTs];
+        
+        // Sort by timestamp - newest first
+        allNFTs.sort((a, b) => b.timestamp - a.timestamp);
+        
         setNfts(allNFTs);
         
         if (address) {
-          setMyNfts(allNFTs.filter(nft => 
+          const userNfts = allNFTs.filter(nft => 
             nft.owner.toLowerCase() === address.toLowerCase()
-          ));
+          );
+          // Also sort user's NFTs by newest first
+          userNfts.sort((a, b) => b.timestamp - a.timestamp);
+          setMyNfts(userNfts);
         }
         
         setTotalSupply(allNFTs.length);
@@ -175,7 +193,9 @@ export default function GalleryClient() {
         // For demonstration, use Web Audio API to create a unique beep for each NFT
         // In production, this would play the actual audio from IPFS
         const playDemoSound = () => {
-          const context = new (window.AudioContext || (window as any).webkitAudioContext)();
+          const AudioContextClass = window.AudioContext || (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+          if (!AudioContextClass) return;
+          const context = new AudioContextClass();
           const oscillator = context.createOscillator();
           const gainNode = context.createGain();
           
@@ -206,44 +226,63 @@ export default function GalleryClient() {
           
           // Try to play from IPFS first
           if (!audioRefs.current[tokenId]) {
-            const audio = new Audio();
-            audio.crossOrigin = 'anonymous'; // Enable CORS
+            const audioUrl = `https://${ipfsHash}.ipfs.w3s.link/audio.webm`;
+            console.log('[Gallery] Fetching audio from:', audioUrl);
             
-            // Set up the audio with fallback
-            audio.onerror = (e) => {
-              console.log('[Gallery] Audio error event:', e);
-              console.log('[Gallery] Falling back to demo sound');
-              playDemoSound();
-            };
-            
-            audio.onloadstart = () => {
-              console.log('[Gallery] Starting to load audio...');
-            };
-            
-            audio.oncanplaythrough = () => {
-              console.log('[Gallery] Audio can play through, attempting playback');
-              audio.play()
-                .then(() => {
-                  console.log('[Gallery] Audio playback started successfully');
+            // Try to fetch as blob first for better compatibility
+            fetch(audioUrl)
+              .then(response => {
+                console.log('[Gallery] Fetch response status:', response.status);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                return response.blob();
+              })
+              .then(blob => {
+                console.log('[Gallery] Audio blob received, size:', blob.size, 'type:', blob.type);
+                const blobUrl = URL.createObjectURL(blob);
+                const audio = new Audio(blobUrl);
+                
+                audio.onloadeddata = () => {
+                  console.log('[Gallery] Audio loaded successfully');
+                };
+                
+                audio.onplay = () => {
+                  console.log('[Gallery] Audio playing');
                   setPlayingId(tokenId);
-                })
-                .catch((err) => {
-                  console.log('[Gallery] Play promise rejected:', err);
+                };
+                
+                audio.onended = () => {
+                  console.log('[Gallery] Audio ended');
+                  setPlayingId(null);
+                  URL.revokeObjectURL(blobUrl); // Clean up
+                };
+                
+                audio.onerror = (e) => {
+                  console.log('[Gallery] Audio playback error:', e);
+                  console.log('[Gallery] Attempting direct play as fallback');
+                  URL.revokeObjectURL(blobUrl);
+                  
+                  // Try direct audio element as fallback
+                  const fallbackAudio = new Audio();
+                  fallbackAudio.src = audioUrl;
+                  fallbackAudio.play()
+                    .then(() => {
+                      setPlayingId(tokenId);
+                      audioRefs.current[tokenId] = fallbackAudio;
+                    })
+                    .catch(() => playDemoSound());
+                };
+                
+                audioRefs.current[tokenId] = audio;
+                audio.play().catch((err) => {
+                  console.log('[Gallery] Play failed:', err);
                   playDemoSound();
                 });
-            };
-            
-            audio.onended = () => {
-              console.log('[Gallery] Audio playback ended');
-              setPlayingId(null);
-            };
-            
-            // Use storacha.link as primary gateway
-            const audioUrl = `https://${ipfsHash}.ipfs.storacha.link/audio.webm`;
-            console.log('[Gallery] Setting audio source:', audioUrl);
-            
-            audio.src = audioUrl;
-            audioRefs.current[tokenId] = audio;
+              })
+              .catch(error => {
+                console.log('[Gallery] Fetch error:', error);
+                console.log('[Gallery] Playing demo sound as fallback');
+                playDemoSound();
+              });
           } else {
             // Audio already exists, try to play
             console.log('[Gallery] Reusing existing audio element');
@@ -303,7 +342,7 @@ export default function GalleryClient() {
           >
             🎙️ Record Voice
           </a>
-          <a 
+          <Link 
             href="/" 
             style={{
               padding: '0.75rem 2rem',
@@ -325,7 +364,7 @@ export default function GalleryClient() {
             }}
           >
             🏠 Home
-          </a>
+          </Link>
           <a 
             href="/pitch" 
             style={{
@@ -483,7 +522,7 @@ export default function GalleryClient() {
                   <FiDownload /> Download
                 </button>
                 <a 
-                  href={`https://${nft.ipfsHash}.ipfs.storacha.link/`}
+                  href={`https://${nft.ipfsHash}.ipfs.w3s.link/`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="ipfs-button"

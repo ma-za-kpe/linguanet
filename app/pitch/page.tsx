@@ -53,7 +53,7 @@ const pitchSlides = [
           </div>
         </div>
         <div className="quote-section">
-          <p>"My grandmother's stories in Ga have no written record. When she's gone, they're gone."</p>
+          <p>&ldquo;My grandmother&apos;s stories in Ga have no written record. When she&apos;s gone, they&apos;re gone.&rdquo;</p>
           <span>- Kofi, Accra</span>
         </div>
       </div>
@@ -309,7 +309,7 @@ const pitchSlides = [
           </div>
         </div>
         <div className="tagline">
-          <p>"The future of Africa speaks every language"</p>
+          <p>&ldquo;The future of Africa speaks every language&rdquo;</p>
         </div>
       </div>
     )
