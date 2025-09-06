@@ -253,35 +253,36 @@ const pitchSlides = [
   },
   {
     id: 9,
-    title: "The Ask: $50K to Save 47 Languages",
+    title: "What We Need to Launch",
     content: (
       <div className="ask-slide">
         <div className="funding-header">
-          <h2 className="gradient-text">Buidl Guidl Grant: $50,000</h2>
+          <h2 className="gradient-text">Seeking Strategic Partners & Early Supporters</h2>
         </div>
         <div className="allocation">
           <div className="allocation-item">
-            <span className="amount">$20K</span>
-            <p>Smart Contract Deployment & Audits</p>
+            <span className="amount">Infrastructure</span>
+            <p>Protocol deployment, audits & oracle integration</p>
           </div>
           <div className="allocation-item">
-            <span className="amount">$15K</span>
-            <p>Initial Liquidity Pools</p>
+            <span className="amount">Liquidity</span>
+            <p>Bootstrap initial language pools & trading pairs</p>
           </div>
           <div className="allocation-item">
-            <span className="amount">$10K</span>
-            <p>Community Incentives (First 1000 users)</p>
+            <span className="amount">Community</span>
+            <p>Incentivize first 1000 voice miners</p>
           </div>
           <div className="allocation-item">
-            <span className="amount">$5K</span>
-            <p>Chainlink Oracle Integration</p>
+            <span className="amount">Growth</span>
+            <p>Scale to 47 languages in 6 months</p>
           </div>
         </div>
         <div className="impact-promise">
-          <h3>Your $50K will:</h3>
-          <p>• Preserve 47 endangered languages</p>
-          <p>• Create $3M in economic value for African communities</p>
-          <p>• Build the first profitable cultural preservation protocol</p>
+          <h3>Your support enables:</h3>
+          <p>• Immediate preservation of critically endangered languages</p>
+          <p>• Economic opportunity for 100,000+ speakers</p>
+          <p>• A new model for cultural preservation through Web3</p>
+          <p className="highlight">Join us as a founding partner in this historic mission</p>
         </div>
       </div>
     )
@@ -319,12 +320,48 @@ const pitchSlides = [
 export default function Pitch() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [direction, setDirection] = useState(0);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  // Fullscreen functions
+  const enterFullscreen = () => {
+    const elem = document.documentElement;
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if ((elem as any).webkitRequestFullscreen) {
+      (elem as any).webkitRequestFullscreen();
+    } else if ((elem as any).msRequestFullscreen) {
+      (elem as any).msRequestFullscreen();
+    }
+    setIsFullscreen(true);
+  };
+
+  const exitFullscreen = () => {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if ((document as any).webkitExitFullscreen) {
+      (document as any).webkitExitFullscreen();
+    } else if ((document as any).msExitFullscreen) {
+      (document as any).msExitFullscreen();
+    }
+    setIsFullscreen(false);
+  };
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowRight' || e.key === ' ') {
+      if (e.key === 'f' || e.key === 'F') {
+        e.preventDefault();
+        if (!isFullscreen) {
+          enterFullscreen();
+        }
+      } else if (e.key === 'Escape') {
+        if (isFullscreen) {
+          exitFullscreen();
+        }
+      } else if (e.key === 'ArrowRight' || e.key === ' ') {
+        e.preventDefault();
         nextSlide();
       } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
         prevSlide();
       } else if (e.key >= '0' && e.key <= '9') {
         const slideIndex = parseInt(e.key);
@@ -334,10 +371,23 @@ export default function Pitch() {
       }
     };
 
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('msfullscreenchange', handleFullscreenChange);
+    
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('msfullscreenchange', handleFullscreenChange);
+    };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentSlide]);
+  }, [currentSlide, isFullscreen]);
 
   const nextSlide = () => {
     if (currentSlide < pitchSlides.length - 1) {
@@ -369,7 +419,7 @@ export default function Pitch() {
   };
 
   return (
-    <div className="pitch-container">
+    <div className={`pitch-container ${isFullscreen ? 'fullscreen-mode' : ''}`}>
       {/* Progress Bar */}
       <div className="progress-bar">
         <div 
@@ -441,8 +491,21 @@ export default function Pitch() {
 
       {/* Keyboard Hints */}
       <div className="keyboard-hints">
-        Use ← → or Space to navigate
+        <span>Use ← → or Space to navigate</span>
+        {!isFullscreen && <span className="fullscreen-hint"> | Press F for fullscreen</span>}
+        {isFullscreen && <span className="fullscreen-hint"> | Press ESC to exit fullscreen</span>}
       </div>
+      
+      {/* Fullscreen Toggle Button */}
+      {!isFullscreen && (
+        <button 
+          className="fullscreen-button"
+          onClick={enterFullscreen}
+          title="Enter fullscreen (F)"
+        >
+          ⛶
+        </button>
+      )}
     </div>
   );
 }

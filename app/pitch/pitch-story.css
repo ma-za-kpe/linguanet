@@ -10,6 +10,40 @@
   flex-direction: column;
 }
 
+/* Fullscreen Mode Styles */
+.pitch-container.fullscreen-mode {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  width: 100vw;
+  height: 100vh;
+}
+
+.pitch-container.fullscreen-mode .slide-content {
+  padding: 40px 60px;
+  max-width: 100%;
+}
+
+.pitch-container.fullscreen-mode .slide-title {
+  font-size: 3.5rem;
+}
+
+.pitch-container.fullscreen-mode .navigation {
+  bottom: 30px;
+}
+
+.pitch-container.fullscreen-mode .keyboard-hints {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.pitch-container.fullscreen-mode:hover .keyboard-hints {
+  opacity: 1;
+}
+
 /* Progress Bar */
 .progress-bar {
   position: fixed;
