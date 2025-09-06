@@ -1,0 +1,14 @@
+{
+  "network": "Base Sepolia",
+  "chainId": 84532,
+  "deployer": "0xF00b53AF46FAd844b6A6cB6ea466e562D27fDE11",
+  "timestamp": "2025-09-05T18:23:20.874Z",
+  "contracts": {
+    "linguaToken": "0x9aB86b04D321b5dB9a2E6F2CFbE2B028Cc6df21D",
+    "voiceSharesNFT": "0xCC1D5C4e4b2B9aafADd31976051f52dF3d8f1308",
+    "linguaDAO": "0xf94CC32C9cD25d565C54fE54DC5AeEe159FB910a",
+    "languagePoolsAMM": "0x9744Ed27A3353B3B73243A0A656188854188f2DD",
+    "extinctionInsurance": "0xa3dc5A67cB29cD07705Fe9282FAE870CA1017929"
+  },
+  "blockNumber": 30664157
+}

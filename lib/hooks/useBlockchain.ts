@@ -4,8 +4,7 @@ import { useAccount, useBalance, useReadContract, useWriteContract } from 'wagmi
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useState, useEffect, useCallback } from 'react';
 import { formatUnits } from 'viem';
-import { getContractAddress } from '../wagmi-config';
-import LinguaNetCoreABI from '../../contracts/abis/LinguaNetCore.json';
+import { CONTRACT_ADDRESSES, getContractConfig, CONTRACT_ABIS } from '../contracts-config';
 import { getENSName, registerENSName, generateENSName } from '../ens';
 
 /**
@@ -20,16 +19,22 @@ export function useBlockchain() {
   // Get USDC balance
   const { data: balance } = useBalance({
     address: address,
-    token: getContractAddress('usdcToken') as `0x${string}`,
+    token: CONTRACT_ADDRESSES.usdcToken,
   });
 
-  // Get contributor stats
-  const { data: contributorStats } = useReadContract({
-    address: getContractAddress('linguanetCore') as `0x${string}`,
-    abi: LinguaNetCoreABI.abi,
-    functionName: 'getContributorStats',
+  // Get LINGUA token balance
+  const { data: linguaBalance } = useReadContract({
+    ...getContractConfig('linguaToken'),
+    functionName: 'balanceOf',
     args: address ? [address] : undefined,
-  }) as { data: readonly [bigint, bigint, bigint] | undefined };
+  });
+
+  // Get Voice Shares NFT balance
+  const { data: voiceSharesBalance } = useReadContract({
+    ...getContractConfig('voiceSharesNFT'),
+    functionName: 'balanceOf',
+    args: address ? [address] : undefined,
+  });
 
   // Load ENS name
   useEffect(() => {
@@ -72,12 +77,9 @@ export function useBlockchain() {
     // Balances
     usdcBalance: balance ? formatUnits(balance.value, balance.decimals) : '0',
     
-    // Stats
-    contributorStats: contributorStats ? {
-      submissions: Number(contributorStats[0]),
-      earnings: formatUnits(contributorStats[1] as bigint, 6),
-      reputation: Number(contributorStats[2]),
-    } : null,
+    // Token Balances
+    linguaBalance: linguaBalance ? formatUnits(linguaBalance as bigint, 18) : '0',
+    voiceSharesBalance: voiceSharesBalance ? Number(voiceSharesBalance) : 0,
   };
 }
 
@@ -89,7 +91,7 @@ export function useSubmitAudio() {
   const [error, setError] = useState<string | null>(null);
   
   const { writeContractAsync } = useWriteContract();
-  const contractAddress = getContractAddress('linguanetCore') as `0x${string}`;
+  const contractAddress = CONTRACT_ADDRESSES.linguaToken || '0x0000000000000000000000000000000000000000' as `0x${string}`;
 
   const submitAudio = useCallback(async (
     language: string,
@@ -106,7 +108,7 @@ export function useSubmitAudio() {
 
       const hash = await writeContractAsync({
         address: contractAddress,
-        abi: LinguaNetCoreABI.abi,
+        abi: CONTRACT_ABIS.linguaDAO,
         functionName: 'submitAudio',
         args: [language, mockCid, BigInt(duration)],
       });
@@ -135,7 +137,7 @@ export function useSubmitAudio() {
 export function useValidateAudio() {
   const [isValidating, setIsValidating] = useState(false);
   const { writeContractAsync } = useWriteContract();
-  const contractAddress = getContractAddress('linguanetCore') as `0x${string}`;
+  const contractAddress = CONTRACT_ADDRESSES.linguaDAO;
 
   const validateAudio = useCallback(async (cid: string, isValid: boolean) => {
     setIsValidating(true);
@@ -143,7 +145,7 @@ export function useValidateAudio() {
     try {
       const hash = await writeContractAsync({
         address: contractAddress,
-        abi: LinguaNetCoreABI.abi,
+        abi: CONTRACT_ABIS.linguaDAO,
         functionName: 'validateAudio',
         args: [cid, isValid],
       });
@@ -171,14 +173,14 @@ export function useValidateAudio() {
 export function useWithdraw() {
   const [isWithdrawing, setIsWithdrawing] = useState(false);
   const { writeContractAsync } = useWriteContract();
-  const contractAddress = getContractAddress('linguanetCore') as `0x${string}`;
+  const contractAddress = CONTRACT_ADDRESSES.linguaDAO;
 
   const withdraw = useCallback(async () => {
     setIsWithdrawing(true);
     try {
       const hash = await writeContractAsync({
         address: contractAddress,
-        abi: LinguaNetCoreABI.abi,
+        abi: CONTRACT_ABIS.linguaDAO,
         functionName: 'withdrawEarnings',
         args: [],
       });
@@ -201,7 +203,7 @@ export function useWithdraw() {
     try {
       const hash = await writeContractAsync({
         address: contractAddress,
-        abi: LinguaNetCoreABI.abi,
+        abi: CONTRACT_ABIS.linguaDAO,
         functionName: 'withdrawToMobileMoney',
         args: [phoneNumber, provider],
       });

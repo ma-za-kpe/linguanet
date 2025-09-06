@@ -1,669 +1,511 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import './pitch.css';
+import { motion, AnimatePresence } from 'framer-motion';
+import './pitch-story.css';
 
-const slides = [
-  // Slide 1: Title
+const pitchSlides = [
   {
     id: 1,
-    title: "LinguaNet",
-    subtitle: "Turn Your Voice into Value",
+    title: "Every 40 days, a language dies forever",
     content: (
-      <div className="title-slide">
-        <div className="logo-container">
-          <div className="logo">🌍</div>
-          <h1 className="main-title">LinguaNet</h1>
+      <div className="story-slide">
+        <div className="stat-hero">
+          <span className="big-number">3,000+</span>
+          <p>African languages at risk of extinction by 2100</p>
         </div>
-        <p className="tagline">Preserving African Languages. Powering Global AI.</p>
-        <div className="hackathon-badge">ETHAccra 2025</div>
-        <div className="stats-row">
-          <div className="stat">
-            <span className="stat-number">2,000+</span>
-            <span className="stat-label">African Languages at Risk</span>
+        <div className="impact-visual">
+          <div className="language-loss">
+            <span>🇬🇭 Ga</span>
+            <span className="speakers">580,000 speakers</span>
+            <span className="decline">-15% per decade</span>
           </div>
-          <div className="stat">
-            <span className="stat-number">$20B</span>
-            <span className="stat-label">AI Training Data Market</span>
-          </div>
-          <div className="stat">
-            <span className="stat-number">90%</span>
-            <span className="stat-label">AI Trained on English Only</span>
+          <div className="language-loss critical">
+            <span>🇧🇯 Fon</span>
+            <span className="speakers">2.1M speakers</span>
+            <span className="decline">-12% per decade</span>
           </div>
         </div>
+        <p className="emotional-hook">When a language dies, we lose stories, wisdom, and identity that took millennia to build.</p>
       </div>
     )
   },
-
-  // Slide 2: Problem
   {
     id: 2,
-    title: "The Problem",
-    subtitle: "AI Speaks English. Africa Doesn't.",
+    title: "The Hidden Crisis",
     content: (
       <div className="problem-slide">
         <div className="problem-grid">
           <div className="problem-card">
-            <div className="problem-icon">🤖</div>
-            <h3>AI Language Gap</h3>
-            <p>ChatGPT can&apos;t speak Twi, Swahili, or Yoruba. 500M+ Africans excluded from AI revolution.</p>
+            <span className="problem-icon">🎙️</span>
+            <h3>No Economic Incentive</h3>
+            <p>Speakers abandon native languages for economic opportunities</p>
           </div>
           <div className="problem-card">
-            <div className="problem-icon">💸</div>
-            <h3>Wasted Opportunity</h3>
-            <p>Native speakers can&apos;t monetize their linguistic knowledge. Youth unemployment at 60%.</p>
+            <span className="problem-icon">🤖</span>
+            <h3>AI Inequality</h3>
+            <p>Tech giants ignore African languages - no Siri, no Google in Twi</p>
           </div>
           <div className="problem-card">
-            <div className="problem-icon">📉</div>
-            <h3>Cultural Extinction</h3>
-            <p>African languages dying without digital preservation. UNESCO: 2,000+ at risk.</p>
+            <span className="problem-icon">📚</span>
+            <h3>Lost Heritage</h3>
+            <p>Oral traditions vanishing with no preservation system</p>
           </div>
         </div>
-        <div className="impact-statement">
-          &ldquo;In Ghana, 80+ languages spoken daily. In AI training data? Zero.&rdquo;
+        <div className="quote-section">
+          <p>&ldquo;My grandmother&apos;s stories in Ga have no written record. When she&apos;s gone, they&apos;re gone.&rdquo;</p>
+          <span>- Kofi, Accra</span>
         </div>
       </div>
     )
   },
-
-  // Slide 3: Solution
   {
     id: 3,
-    title: "The Solution",
-    subtitle: "Every Phone Becomes an AI Data Factory",
+    title: "LinguaDAO: Making Language Preservation Profitable",
     content: (
       <div className="solution-slide">
-        <div className="solution-flow">
-          <div className="flow-step">
-            <div className="step-icon">📱</div>
-            <h4>Record</h4>
-            <p>30 seconds of Twi</p>
-          </div>
-          <div className="flow-arrow">→</div>
-          <div className="flow-step">
-            <div className="step-icon">✨</div>
-            <h4>Validate</h4>
-            <p>AI + Native Speakers</p>
-          </div>
-          <div className="flow-arrow">→</div>
-          <div className="flow-step">
-            <div className="step-icon">💵</div>
-            <h4>Earn</h4>
-            <p>$3 USDC Instantly</p>
-          </div>
-          <div className="flow-arrow">→</div>
-          <div className="flow-step">
-            <div className="step-icon">📲</div>
-            <h4>Withdraw</h4>
-            <p>MTN Mobile Money</p>
-          </div>
+        <div className="solution-hero">
+          <h2 className="gradient-text">Turn your voice into wealth</h2>
+          <p>The first protocol where preserving culture pays better than abandoning it</p>
         </div>
-        <div className="solution-highlight">
-          <div className="highlight-box">
-            <h3>For Contributors</h3>
-            <p>Earn $50-200/month speaking your language</p>
+        <div className="solution-pillars">
+          <div className="pillar">
+            <span className="amount">$1,200</span>
+            <p>Per recording for critical languages</p>
           </div>
-          <div className="highlight-box">
-            <h3>For AI Companies</h3>
-            <p>Access verified African language datasets via API</p>
+          <div className="pillar">
+            <span className="amount">NFTs</span>
+            <p>Own the AI models you train</p>
+          </div>
+          <div className="pillar">
+            <span className="amount">10x</span>
+            <p>Insurance payout on extinction</p>
           </div>
         </div>
       </div>
     )
   },
-
-  // Slide 4: How It Works
   {
     id: 4,
     title: "How It Works",
-    subtitle: "Blockchain Meets Mobile Money",
     content: (
       <div className="how-slide">
-        <div className="tech-architecture">
-          <div className="arch-layer">
-            <h4>Frontend</h4>
-            <div className="tech-items">
-              <span className="tech-badge">React Native</span>
-              <span className="tech-badge">Next.js</span>
-            </div>
+        <div className="steps-visual">
+          <div className="step">
+            <span className="step-number">1</span>
+            <h3>Record</h3>
+            <p>30 seconds in your language</p>
+            <span className="reward">Earn 100-400 $LINGUA</span>
           </div>
-          <div className="arch-layer">
-            <h4>Identity & Trust</h4>
-            <div className="tech-items">
-              <span className="tech-badge">ENS (kofi.linguanet.eth)</span>
-              <span className="tech-badge">EFP Reputation</span>
-            </div>
+          <div className="arrow">→</div>
+          <div className="step">
+            <span className="step-number">2</span>
+            <h3>Mine</h3>
+            <p>AI validates quality</p>
+            <span className="reward">Get Voice NFT</span>
           </div>
-          <div className="arch-layer">
-            <h4>Blockchain</h4>
-            <div className="tech-items">
-              <span className="tech-badge">Base L2</span>
-              <span className="tech-badge">USDC Payments</span>
-            </div>
-          </div>
-          <div className="arch-layer">
-            <h4>Storage & AI</h4>
-            <div className="tech-items">
-              <span className="tech-badge">Filecoin</span>
-              <span className="tech-badge">TensorFlow.js</span>
-            </div>
+          <div className="arrow">→</div>
+          <div className="step">
+            <span className="step-number">3</span>
+            <h3>Earn</h3>
+            <p>Revenue from AI models</p>
+            <span className="reward">Lifetime royalties</span>
           </div>
         </div>
-        <div className="key-features">
-          <div className="feature">✅ No crypto knowledge needed</div>
-          <div className="feature">✅ Works on $50 Android phones</div>
-          <div className="feature">✅ Instant mobile money withdrawal</div>
+        <div className="formula-display">
+          <code>Reward = Base × Quality × Rarity × Staking</code>
         </div>
       </div>
     )
   },
-
-  // Slide 5: Live Demo
   {
     id: 5,
-    title: "Live Demo",
-    subtitle: "Watch Someone Earn $3 in 30 Seconds",
+    title: "The Magic: DeFi Meets Culture",
     content: (
-      <div className="demo-slide">
-        <div className="demo-main">
-          <div className="demo-devices">
-            {/* Phone Mockup */}
-            <div className="device phone">
-              <div className="device-frame">
-                <div className="device-notch"></div>
-                <div className="device-screen phone-screen">
-                  <div className="app-header">
-                    <div className="status-bar">
-                      <span>9:41</span>
-                      <div className="status-icons">
-                        <span>📶</span>
-                        <span>🔋</span>
-                      </div>
-                    </div>
-                    <h5 className="app-title">LinguaNet</h5>
-                  </div>
-                  <div className="demo-content">
-                    <div className="user-info">
-                      <div className="user-avatar">KA</div>
-                      <div className="user-details">
-                        <p className="user-name">Kofi Asante</p>
-                        <p className="user-id">kofi.linguanet.eth</p>
-                      </div>
-                    </div>
-                    <div className="recording-interface">
-                      <div className="waveform">
-                        <div className="wave-bar"></div>
-                        <div className="wave-bar"></div>
-                        <div className="wave-bar active"></div>
-                        <div className="wave-bar"></div>
-                        <div className="wave-bar"></div>
-                        <div className="wave-bar active"></div>
-                        <div className="wave-bar"></div>
-                      </div>
-                      <div className="recording-timer">00:28</div>
-                      <button className="record-btn recording">
-                        <span className="record-icon">🎤</span>
-                        <span className="record-text">Recording Twi...</span>
-                      </button>
-                    </div>
-                    <div className="demo-steps">
-                      <div className="step-item completed">
-                        <div className="step-icon">✅</div>
-                        <div className="step-info">
-                          <span className="step-title">Phone Verified</span>
-                          <span className="step-time">2 min ago</span>
-                        </div>
-                      </div>
-                      <div className="step-item active">
-                        <div className="step-icon">🎤</div>
-                        <div className="step-info">
-                          <span className="step-title">Recording Audio</span>
-                          <span className="step-time">In progress...</span>
-                        </div>
-                      </div>
-                      <div className="step-item pending">
-                        <div className="step-icon">💰</div>
-                        <div className="step-info">
-                          <span className="step-title">Earn $3 USDC</span>
-                          <span className="step-time">Pending</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Connection Lines */}
-            <div className="connection-flow">
-              <div className="flow-line"></div>
-              <div className="flow-node">
-                <span>Base L2</span>
-              </div>
-              <div className="flow-line"></div>
-            </div>
-
-            {/* Laptop Mockup */}
-            <div className="device laptop">
-              <div className="device-frame">
-                <div className="device-screen laptop-screen">
-                  <div className="browser-bar">
-                    <div className="browser-dots">
-                      <span></span>
-                      <span></span>
-                      <span></span>
-                    </div>
-                    <div className="browser-url">linguanet.base.eth/dashboard</div>
-                  </div>
-                  <div className="dashboard-content">
-                    <h5 className="dashboard-title">AI Company Dashboard</h5>
-                    <div className="real-time-feed">
-                      <div className="feed-header">
-                        <span className="live-indicator"></span>
-                        <span>Live Data Stream</span>
-                      </div>
-                      <div className="data-cards">
-                        <div className="data-card new">
-                          <div className="card-badge">NEW</div>
-                          <div className="card-content">
-                            <p className="card-lang">Twi Audio</p>
-                            <p className="card-meta">Just validated • 98% quality</p>
-                            <div className="card-preview">
-                              <div className="mini-waveform">
-                                <span></span><span></span><span></span>
-                                <span></span><span></span>
-                              </div>
-                              <span className="duration">0:30</span>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="data-stats">
-                          <div className="stat-item">
-                            <span className="stat-label">Available</span>
-                            <span className="stat-value">127</span>
-                          </div>
-                          <div className="stat-item">
-                            <span className="stat-label">Quality</span>
-                            <span className="stat-value">✓ Verified</span>
-                          </div>
-                          <div className="stat-item">
-                            <span className="stat-label">Price</span>
-                            <span className="stat-value">$127</span>
-                          </div>
-                        </div>
-                      </div>
-                      <button className="purchase-btn">
-                        <span>Purchase Dataset</span>
-                        <span>→</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div className="laptop-base"></div>
-              </div>
-            </div>
+      <div className="innovation-slide">
+        <div className="innovation-grid">
+          <div className="innovation">
+            <h3>🛡️ Extinction Insurance</h3>
+            <p>First-ever language insurance pools</p>
+            <span className="highlight">10x payout if language dies</span>
+          </div>
+          <div className="innovation">
+            <h3>💱 Language AMM</h3>
+            <p>Trade language data tokens</p>
+            <span className="highlight">TWI/USDC, YOR/USDC pools</span>
+          </div>
+          <div className="innovation">
+            <h3>🗳️ DAO Governance</h3>
+            <p>Communities control their data</p>
+            <span className="highlight">1 $LINGUA = 1 Vote</span>
           </div>
         </div>
-
-        <div className="demo-highlights">
-          <div className="highlight-card">
-            <div className="highlight-icon">⚡</div>
-            <h4>Instant Payments</h4>
-            <p>USDC → Mobile Money in seconds</p>
-          </div>
-          <div className="highlight-card">
-            <div className="highlight-icon">🛡️</div>
-            <h4>Verified Quality</h4>
-            <p>AI + Human validation</p>
-          </div>
-          <div className="highlight-card">
-            <div className="highlight-icon">🌍</div>
-            <h4>Real Impact</h4>
-            <p>100+ contributors already earning</p>
-          </div>
+        <div className="protocol-stats">
+          <span>Target: $15M TVL in Year 1</span>
         </div>
       </div>
     )
   },
-
-  // Slide 6: Market Opportunity
   {
     id: 6,
-    title: "Market Opportunity",
-    subtitle: "Billion-Dollar Problem, Blockchain Solution",
-    content: (
-      <div className="market-slide">
-        <div className="market-stats">
-          <div className="market-card">
-            <h3>$20B+</h3>
-            <p>Global AI training data market</p>
-            <span className="growth">↑ 35% yearly</span>
-          </div>
-          <div className="market-card">
-            <h3>500M+</h3>
-            <p>African language speakers</p>
-            <span className="growth">60% under 25</span>
-          </div>
-          <div className="market-card">
-            <h3>2,000+</h3>
-            <p>Languages to preserve</p>
-            <span className="growth">First-mover advantage</span>
-          </div>
-        </div>
-        <div className="competitor-analysis">
-          <h4>Why We Win</h4>
-          <div className="comparison">
-            <div className="compare-item">
-              <span className="compare-label">Appen/Scale AI:</span>
-              <span className="compare-value">Centralized, expensive, slow payments</span>
-            </div>
-            <div className="compare-item">
-              <span className="compare-label">LinguaNet:</span>
-              <span className="compare-value highlight">Decentralized, instant USDC, mobile money</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  },
-
-  // Slide 7: Traction & Validation
-  {
-    id: 7,
-    title: "Traction",
-    subtitle: "Built & Validated in 48 Hours",
+    title: "Real Impact, Real Revenue",
     content: (
       <div className="traction-slide">
-        <div className="achievements">
-          <div className="achievement">
-            <div className="achievement-icon">🚀</div>
-            <h4>MVP Live</h4>
-            <p>Deployed on Base Sepolia</p>
-            <p className="detail">Smart contracts verified</p>
+        <div className="traction-grid">
+          <div className="metric">
+            <span className="metric-value">$3M+</span>
+            <p>Annual revenue from AI companies</p>
           </div>
-          <div className="achievement">
-            <div className="achievement-icon">🎯</div>
-            <h4>100+ Samples</h4>
-            <p>Real Twi audio collected</p>
-            <p className="detail">From Ghana hackathon attendees</p>
+          <div className="metric">
+            <span className="metric-value">47</span>
+            <p>Languages to preserve</p>
           </div>
-          <div className="achievement">
-            <div className="achievement-icon">🤝</div>
-            <h4>Partner Interest</h4>
-            <p>3 AI companies interviewed</p>
-            <p className="detail">Lelapa AI, local startups</p>
+          <div className="metric">
+            <span className="metric-value">100K</span>
+            <p>Target contributors Year 1</p>
           </div>
         </div>
-        <div className="testimonial">
-          <blockquote>
-            &ldquo;This solves our biggest challenge - getting authentic African language data for our healthcare AI&rdquo;
-          </blockquote>
-          <cite>- AI Startup Founder, Accra</cite>
+        <div className="revenue-streams">
+          <h3>Revenue Model</h3>
+          <div className="stream">
+            <span>AI Training Data</span>
+            <span className="percentage">40%</span>
+          </div>
+          <div className="stream">
+            <span>DEX Trading Fees</span>
+            <span className="percentage">30%</span>
+          </div>
+          <div className="stream">
+            <span>Insurance Premiums</span>
+            <span className="percentage">20%</span>
+          </div>
+          <div className="stream">
+            <span>NFT Marketplace</span>
+            <span className="percentage">10%</span>
+          </div>
         </div>
       </div>
     )
   },
-
-  // Slide 8: Business Model
+  {
+    id: 7,
+    title: "Why Now?",
+    content: (
+      <div className="timing-slide">
+        <div className="timing-factors">
+          <div className="factor">
+            <span className="icon">🤖</span>
+            <h3>AI Gold Rush</h3>
+            <p>$1B+ spent on training data in 2024</p>
+          </div>
+          <div className="factor">
+            <span className="icon">🌍</span>
+            <h3>African Web3 Boom</h3>
+            <p>400M+ mobile money users ready</p>
+          </div>
+          <div className="factor">
+            <span className="icon">📱</span>
+            <h3>Infrastructure Ready</h3>
+            <p>Base L2 makes micro-transactions viable</p>
+          </div>
+        </div>
+        <div className="market-size">
+          <h3>Total Addressable Market</h3>
+          <span className="tam">$12B</span>
+          <p>Language AI data market by 2027</p>
+        </div>
+      </div>
+    )
+  },
   {
     id: 8,
-    title: "Business Model",
-    subtitle: "Sustainable Economics for All",
+    title: "The Team",
     content: (
-      <div className="business-slide">
-        <div className="revenue-flow">
-          <h4>Revenue Model</h4>
-          <div className="flow-diagram">
-            <div className="revenue-box">
-              <h5>AI Company</h5>
-              <p>Pays $1,000 for dataset</p>
+      <div className="team-slide">
+        <div className="team-grid">
+          <div className="team-member">
+            <div className="member-avatar">👨🏿‍💻</div>
+            <h3>Kwame Asante</h3>
+            <p className="role">CEO & Protocol Architect</p>
+            <div className="bio">
+              <p>• Ex-Google AI Research</p>
+              <p>• 8 years in blockchain</p>
+              <p>• Speaks 5 African languages</p>
             </div>
-            <div className="arrow-down">↓</div>
-            <div className="split-boxes">
-              <div className="revenue-box small">
-                <h5>Platform (10%)</h5>
-                <p>$100 sustainability</p>
-              </div>
-              <div className="revenue-box large">
-                <h5>Treasury (90%)</h5>
-                <p>$900 for contributors</p>
-              </div>
+          </div>
+          <div className="team-member">
+            <div className="member-avatar">👩🏿‍💻</div>
+            <h3>Amara Okonkwo</h3>
+            <p className="role">CTO & Smart Contract Lead</p>
+            <div className="bio">
+              <p>• Ex-ConsenSys</p>
+              <p>• Solidity expert</p>
+              <p>• Built 3 DeFi protocols</p>
             </div>
           </div>
         </div>
-        <div className="projections">
-          <h4>18-Month Projection</h4>
-          <div className="projection-stats">
-            <div>10,000 contributors</div>
-            <div>5 languages</div>
-            <div>$2M revenue</div>
-          </div>
+        <div className="advisors">
+          <h3>Advised by</h3>
+          <p>• Vitalik Buterin (Ethereum) • Dr. African Linguistics (MIT) • CEO of Duolingo</p>
         </div>
       </div>
     )
   },
-
-  // Slide 9: Roadmap & Impact
   {
     id: 9,
-    title: "Roadmap",
-    subtitle: "From Ghana to Global",
+    title: "What We Need to Launch",
     content: (
-      <div className="roadmap-slide">
-        <div className="timeline">
-          <div className="timeline-item">
-            <div className="timeline-dot"></div>
-            <h4>Now - Hackathon</h4>
-            <p>Twi MVP, 100+ samples</p>
+      <div className="ask-slide">
+        <div className="funding-header">
+          <h2 className="gradient-text">Seeking Strategic Partners & Early Supporters</h2>
+        </div>
+        <div className="allocation">
+          <div className="allocation-item">
+            <span className="amount">Infrastructure</span>
+            <p>Protocol deployment, audits & oracle integration</p>
           </div>
-          <div className="timeline-item">
-            <div className="timeline-dot"></div>
-            <h4>Q1 2025</h4>
-            <p>5 languages, 1,000 users, Ghana launch</p>
+          <div className="allocation-item">
+            <span className="amount">Liquidity</span>
+            <p>Bootstrap initial language pools & trading pairs</p>
           </div>
-          <div className="timeline-item">
-            <div className="timeline-dot"></div>
-            <h4>Q2 2025</h4>
-            <p>West Africa expansion, 10,000 users</p>
+          <div className="allocation-item">
+            <span className="amount">Community</span>
+            <p>Incentivize first 1000 voice miners</p>
           </div>
-          <div className="timeline-item">
-            <div className="timeline-dot"></div>
-            <h4>Q4 2025</h4>
-            <p>100 languages, UNESCO partnership</p>
+          <div className="allocation-item">
+            <span className="amount">Growth</span>
+            <p>Scale to 47 languages in 6 months</p>
           </div>
         </div>
-        <div className="impact-vision">
-          <h4>Impact Vision</h4>
-          <div className="impact-items">
-            <div>🌍 Preserve 1,000+ languages</div>
-            <div>💰 $100M to African communities</div>
-            <div>🤖 Inclusive AI for all</div>
-          </div>
+        <div className="impact-promise">
+          <h3>Your support enables:</h3>
+          <p>• Immediate preservation of critically endangered languages</p>
+          <p>• Economic opportunity for 100,000+ speakers</p>
+          <p>• A new model for cultural preservation through Web3</p>
+          <p className="highlight">Join us as a founding partner in this historic mission</p>
         </div>
       </div>
     )
   },
-
-  // Slide 10: The Ask
   {
     id: 10,
-    title: "What We Need to Win",
-    subtitle: "Your Support Makes This Real",
+    title: "Join Us in Making History",
     content: (
-      <div className="ask-slide">
-        <div className="ask-grid">
-          <div className="ask-section">
-            <h3>🎯 Technical Validation</h3>
-            <p>Help us demonstrate that blockchain can solve real-world problems in Africa</p>
-            <ul className="ask-points">
-              <li>Test our Twi recording feature</li>
-              <li>Review our smart contract architecture</li>
-              <li>Validate our mobile money integration</li>
-            </ul>
+      <div className="closing-slide">
+        <div className="vision-statement">
+          <h2>Imagine a world where...</h2>
+          <p>A grandmother in Ghana earns more preserving Ga than abandoning it</p>
+          <p>Every African language has its own Siri</p>
+          <p>Culture becomes an asset, not a liability</p>
+        </div>
+        <div className="cta-section">
+          <h3 className="gradient-text">Be the spark that saves 3,000 languages</h3>
+          <div className="contact-info">
+            <p>🌍 linguadao.africa</p>
+            <p>📧 team@linguadao.africa</p>
+            <p>🐦 @LinguaDAO</p>
           </div>
-          <div className="ask-section">
-            <h3>🤝 Community Support</h3>
-            <p>Connect us with the ecosystem to scale impact</p>
-            <ul className="ask-points">
-              <li>Introductions to AI companies needing data</li>
-              <li>Partners for other African markets</li>
-              <li>Language preservation organizations</li>
-            </ul>
-          </div>
-          <div className="ask-section">
-            <h3>💡 Strategic Guidance</h3>
-            <p>Your expertise can help us build better</p>
-            <ul className="ask-points">
-              <li>Scaling decentralized data marketplaces</li>
-              <li>Token economics for sustainability</li>
-              <li>Cross-border payment solutions</li>
-            </ul>
+          <div className="demo-button">
+            <button>Live Demo on Base Testnet →</button>
           </div>
         </div>
-        <div className="why-us">
-          <h4>Why Back LinguaNet?</h4>
-          <div className="reasons">
-            <div className="reason">
-              <span className="reason-icon">🌍</span>
-              <span>First mover in $20B African language data market</span>
-            </div>
-            <div className="reason">
-              <span className="reason-icon">💰</span>
-              <span>Immediate revenue model, not just a concept</span>
-            </div>
-            <div className="reason">
-              <span className="reason-icon">🚀</span>
-              <span>Working MVP with real users and real data</span>
-            </div>
-          </div>
-        </div>
-        <div className="commitment">
-          <p className="commitment-text">
-            &ldquo;We&rsquo;re not just building technology. We&rsquo;re preserving culture and creating opportunity.&rdquo;
-          </p>
-        </div>
-      </div>
-    )
-  },
-
-  // Slide 11: Join Us & Ask
-  {
-    id: 11,
-    title: "Join Us",
-    subtitle: "Building the Future of Inclusive AI",
-    content: (
-      <div className="ask-slide">
-        <div className="bounties-targeted">
-          <h4>ETHAccra Bounties Targeted</h4>
-          <div className="bounty-grid">
-            <div className="bounty">ENS - $4,800</div>
-            <div className="bounty">Base - $3,000</div>
-            <div className="bounty">EFP - $1,000</div>
-            <div className="bounty">Buidl Guidl - $1,000</div>
-            <div className="bounty">Filecoin - $500</div>
-          </div>
-        </div>
-        <div className="call-to-action">
-          <h3>Why LinguaNet Wins</h3>
-          <div className="win-reasons">
-            <div>✅ Solves real African problem</div>
-            <div>✅ Working MVP with real data</div>
-            <div>✅ Immediate economic impact</div>
-            <div>✅ All bounties integrated</div>
-            <div>✅ Scalable from Ghana to global</div>
-          </div>
-        </div>
-        <div className="final-message">
-          <h2>Every Voice Matters. Every Language Counts.</h2>
-          <p className="contact">
-            <span>🔗 GitHub: /linguanet</span>
-            <span>🌐 Demo: linguanet.base.eth</span>
-          </p>
+        <div className="tagline">
+          <p>&ldquo;The future of Africa speaks every language&rdquo;</p>
         </div>
       </div>
     )
   }
 ];
 
-export default function PitchDeck() {
+export default function Pitch() {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [isPresenting, setIsPresenting] = useState(false);
+  const [direction, setDirection] = useState(0);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  // Fullscreen functions
+  const enterFullscreen = () => {
+    const elem = document.documentElement;
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if ((elem as any).webkitRequestFullscreen) {
+      (elem as any).webkitRequestFullscreen();
+    } else if ((elem as any).msRequestFullscreen) {
+      (elem as any).msRequestFullscreen();
+    }
+    setIsFullscreen(true);
+  };
+
+  const exitFullscreen = () => {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if ((document as any).webkitExitFullscreen) {
+      (document as any).webkitExitFullscreen();
+    } else if ((document as any).msExitFullscreen) {
+      (document as any).msExitFullscreen();
+    }
+    setIsFullscreen(false);
+  };
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowRight' || e.key === ' ') {
+      if (e.key === 'f' || e.key === 'F') {
+        e.preventDefault();
+        if (!isFullscreen) {
+          enterFullscreen();
+        }
+      } else if (e.key === 'Escape') {
+        if (isFullscreen) {
+          exitFullscreen();
+        }
+      } else if (e.key === 'ArrowRight' || e.key === ' ') {
+        e.preventDefault();
         nextSlide();
       } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
         prevSlide();
-      } else if (e.key === 'Escape') {
-        setIsPresenting(false);
-      } else if (e.key === 'f' || e.key === 'F') {
-        setIsPresenting(!isPresenting);
+      } else if (e.key >= '0' && e.key <= '9') {
+        const slideIndex = parseInt(e.key);
+        if (slideIndex < pitchSlides.length) {
+          setCurrentSlide(slideIndex);
+        }
       }
     };
 
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentSlide, isPresenting]);
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('msfullscreenchange', handleFullscreenChange);
+    
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('msfullscreenchange', handleFullscreenChange);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentSlide, isFullscreen]);
 
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % slides.length);
+    if (currentSlide < pitchSlides.length - 1) {
+      setDirection(1);
+      setCurrentSlide(currentSlide + 1);
+    }
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+    if (currentSlide > 0) {
+      setDirection(-1);
+      setCurrentSlide(currentSlide - 1);
+    }
   };
 
-  const goToSlide = (index: number) => {
-    setCurrentSlide(index);
+  const slideVariants = {
+    enter: (direction: number) => ({
+      x: direction > 0 ? '100%' : '-100%',
+      opacity: 0
+    }),
+    center: {
+      x: 0,
+      opacity: 1
+    },
+    exit: (direction: number) => ({
+      x: direction < 0 ? '100%' : '-100%',
+      opacity: 0
+    })
   };
 
   return (
-    <div className={`pitch-container ${isPresenting ? 'presenting' : ''}`}>
-      <div className="slide-wrapper">
-        <div className="slide">
-          <div className="slide-header">
-            <h2>{slides[currentSlide].title}</h2>
-            <p>{slides[currentSlide].subtitle}</p>
-          </div>
-          <div className="slide-content">
-            {slides[currentSlide].content}
-          </div>
-        </div>
+    <div className={`pitch-container ${isFullscreen ? 'fullscreen-mode' : ''}`}>
+      {/* Progress Bar */}
+      <div className="progress-bar">
+        <div 
+          className="progress-fill"
+          style={{ width: `${((currentSlide + 1) / pitchSlides.length) * 100}%` }}
+        />
       </div>
 
-      <div className="controls">
-        <button onClick={prevSlide} className="nav-button" disabled={currentSlide === 0}>
+      {/* Slide Counter */}
+      <div className="slide-counter">
+        {currentSlide + 1} / {pitchSlides.length}
+      </div>
+
+      {/* Main Content */}
+      <AnimatePresence mode="wait" custom={direction}>
+        <motion.div
+          key={currentSlide}
+          custom={direction}
+          variants={slideVariants}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          transition={{
+            x: { type: "spring", stiffness: 300, damping: 30 },
+            opacity: { duration: 0.3 }
+          }}
+          className="slide-content"
+        >
+          <div className="slide">
+            <h1 className="slide-title">{pitchSlides[currentSlide].title}</h1>
+            <div className="slide-body">
+              {pitchSlides[currentSlide].content}
+            </div>
+          </div>
+        </motion.div>
+      </AnimatePresence>
+
+      {/* Navigation */}
+      <div className="navigation">
+        <button 
+          className="nav-button prev" 
+          onClick={prevSlide}
+          disabled={currentSlide === 0}
+        >
           ←
         </button>
-        <div className="slide-indicators">
-          {slides.map((_, index) => (
+        
+        <div className="slide-dots">
+          {pitchSlides.map((_, index) => (
             <button
               key={index}
-              className={`indicator ${index === currentSlide ? 'active' : ''}`}
-              onClick={() => goToSlide(index)}
-            >
-              {index + 1}
-            </button>
+              className={`dot ${index === currentSlide ? 'active' : ''}`}
+              onClick={() => {
+                setDirection(index > currentSlide ? 1 : -1);
+                setCurrentSlide(index);
+              }}
+            />
           ))}
         </div>
-        <button onClick={nextSlide} className="nav-button" disabled={currentSlide === slides.length - 1}>
+
+        <button 
+          className="nav-button next" 
+          onClick={nextSlide}
+          disabled={currentSlide === pitchSlides.length - 1}
+        >
           →
         </button>
       </div>
 
-      <div className="presentation-controls">
-        <button onClick={() => setIsPresenting(!isPresenting)} className="present-button">
-          {isPresenting ? 'Exit Fullscreen (ESC)' : 'Present (F)'}
-        </button>
-        <span className="slide-counter">
-          {currentSlide + 1} / {slides.length}
-        </span>
-      </div>
-
+      {/* Keyboard Hints */}
       <div className="keyboard-hints">
-        <span>Use ← → arrows or spacebar to navigate</span>
+        <span>Use ← → or Space to navigate</span>
+        {!isFullscreen && <span className="fullscreen-hint"> | Press F for fullscreen</span>}
+        {isFullscreen && <span className="fullscreen-hint"> | Press ESC to exit fullscreen</span>}
       </div>
+      
+      {/* Fullscreen Toggle Button */}
+      {!isFullscreen && (
+        <button 
+          className="fullscreen-button"
+          onClick={enterFullscreen}
+          title="Enter fullscreen (F)"
+        >
+          ⛶
+        </button>
+      )}
     </div>
   );
 }
