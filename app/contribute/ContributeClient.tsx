@@ -55,7 +55,28 @@ export default function ContributeClient() {
   // Calculate stats based on actual data
   const guardianTier = voiceSharesBalance >= 10 ? 'Expert' : voiceSharesBalance >= 5 ? 'Advanced' : voiceSharesBalance >= 1 ? 'Novice' : 'Beginner';
   const stakingBoost = voiceSharesBalance >= 10 ? 2.0 : voiceSharesBalance >= 5 ? 1.5 : voiceSharesBalance >= 1 ? 1.2 : 1.0;
-  const totalEarned = linguaBalance ? Math.floor(Number(linguaBalance) * 0.8).toLocaleString() : '0';
+  
+  // Calculate total earned from actual NFT rewards
+  const [totalEarned, setTotalEarned] = useState('0');
+  
+  useEffect(() => {
+    // Load NFTs from localStorage and calculate total rewards
+    const storedVoices = localStorage.getItem('voiceShares');
+    if (storedVoices) {
+      const voices = JSON.parse(storedVoices);
+      let totalRewards = 0;
+      
+      voices.forEach((voice: { metadata?: { quality?: number; rarity?: number } }) => {
+        // Calculate rewards for each NFT: base * quality * rarity * multiplier
+        const quality = voice.metadata?.quality || 0.9;
+        const rarity = voice.metadata?.rarity || 1;
+        const rewardAmount = Math.floor(100 * quality * rarity * 1.5);
+        totalRewards += rewardAmount;
+      });
+      
+      setTotalEarned(totalRewards.toLocaleString());
+    }
+  }, [recordingState]); // Recalculate when new recordings are added
 
   // Refs
   const timerRef = useRef<NodeJS.Timeout | undefined>(undefined);

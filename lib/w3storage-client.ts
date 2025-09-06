@@ -75,7 +75,7 @@ export async function loginWithEmail(email: string): Promise<void> {
     
     // Start the login process in the background
     // This sends the email and waits for verification
-    w3upClient.login(email).then(async (account) => {
+    w3upClient.login(email as `${string}@${string}`).then(async (account) => {
       console.log('[W3Storage] Email verified! Account created:', account.did());
       // Complete setup after verification
       await completeSetup();
@@ -118,9 +118,10 @@ async function completeSetup(): Promise<void> {
       
       // Get the account to provision the space
       const accounts = w3upClient.accounts();
-      const account = Object.values(accounts)[0];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const account = Object.values(accounts)[0] as any;
       
-      if (account) {
+      if (account && account.provision) {
         await account.provision(space.did());
         console.log('[W3Storage] Space provisioned to account');
       }

@@ -108,7 +108,7 @@ export function useSubmitAudio() {
 
       const hash = await writeContractAsync({
         address: contractAddress,
-        abi: LinguaNetCoreABI.abi,
+        abi: CONTRACT_ABIS.linguaDAO,
         functionName: 'submitAudio',
         args: [language, mockCid, BigInt(duration)],
       });
@@ -137,7 +137,7 @@ export function useSubmitAudio() {
 export function useValidateAudio() {
   const [isValidating, setIsValidating] = useState(false);
   const { writeContractAsync } = useWriteContract();
-  const contractAddress = getContractAddress('linguanetCore') as `0x${string}`;
+  const contractAddress = CONTRACT_ADDRESSES.linguaDAO;
 
   const validateAudio = useCallback(async (cid: string, isValid: boolean) => {
     setIsValidating(true);
@@ -145,7 +145,7 @@ export function useValidateAudio() {
     try {
       const hash = await writeContractAsync({
         address: contractAddress,
-        abi: LinguaNetCoreABI.abi,
+        abi: CONTRACT_ABIS.linguaDAO,
         functionName: 'validateAudio',
         args: [cid, isValid],
       });
@@ -173,14 +173,14 @@ export function useValidateAudio() {
 export function useWithdraw() {
   const [isWithdrawing, setIsWithdrawing] = useState(false);
   const { writeContractAsync } = useWriteContract();
-  const contractAddress = getContractAddress('linguanetCore') as `0x${string}`;
+  const contractAddress = CONTRACT_ADDRESSES.linguaDAO;
 
   const withdraw = useCallback(async () => {
     setIsWithdrawing(true);
     try {
       const hash = await writeContractAsync({
         address: contractAddress,
-        abi: LinguaNetCoreABI.abi,
+        abi: CONTRACT_ABIS.linguaDAO,
         functionName: 'withdrawEarnings',
         args: [],
       });
@@ -203,7 +203,7 @@ export function useWithdraw() {
     try {
       const hash = await writeContractAsync({
         address: contractAddress,
-        abi: LinguaNetCoreABI.abi,
+        abi: CONTRACT_ABIS.linguaDAO,
         functionName: 'withdrawToMobileMoney',
         args: [phoneNumber, provider],
       });
