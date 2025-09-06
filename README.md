@@ -15,7 +15,7 @@ The first protocol where preserving endangered languages pays better than abando
 ### 🔗 Live Deployment
 - **Live App**: [https://linguanetai-pt2g5q21w-popos-projects-fb891440.vercel.app/](https://linguanetai-pt2g5q21w-popos-projects-fb891440.vercel.app/) (Fully functional on Base Sepolia)
 - **GitHub Repository**: [https://github.com/ma-za-kpe/linguanet](https://github.com/ma-za-kpe/linguanet)
-- **Demo Video**: [3-minute walkthrough](Coming soon)
+- **Demo Video**: [https://youtu.be/fWFL5xup3Bg]
 
 ### 📜 Deployed Smart Contracts (Base Sepolia)
 
