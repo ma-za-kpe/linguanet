@@ -15,7 +15,7 @@ import { CONTRACT_ADDRESSES } from '@/lib/contracts-config';
 import { initializeW3Storage } from '@/lib/w3storage-client';
 import './contribute-linguadao.css';
 
-type RecordingState = 'idle' | 'recording' | 'review' | 'success' | 'error';
+type RecordingState = 'idle' | 'recording' | 'review' | 'submitting' | 'success' | 'error';
 
 // Languages with rarity multipliers
 const languages = [
@@ -164,6 +164,8 @@ export default function ContributeClient() {
   const submitRecording = async () => {
     if (!audioBlob || !selectedLanguage) return;
     
+    setRecordingState('submitting');
+    
     try {
       // Upload to IPFS
       const language = languages.find(l => l.code === selectedLanguage);
@@ -204,10 +206,12 @@ export default function ContributeClient() {
         }, 5000);
       } else {
         setRecordingState('error');
+        setTimeout(() => setRecordingState('review'), 3000);
       }
     } catch (error) {
       console.error('Submission failed:', error);
       setRecordingState('error');
+      setTimeout(() => setRecordingState('review'), 3000);
     }
   };
 
@@ -490,9 +494,49 @@ export default function ContributeClient() {
                     <button 
                       className="action-button submit"
                       onClick={submitRecording}
+                      disabled={recordingState === 'submitting'}
+                      style={{
+                        opacity: recordingState === 'submitting' ? 0.6 : 1,
+                        cursor: recordingState === 'submitting' ? 'not-allowed' : 'pointer'
+                      }}
                     >
-                      <FiCheck /> Submit to Blockchain
+                      {recordingState === 'submitting' ? (
+                        <><span className="spinner"></span> Submitting...</>
+                      ) : (
+                        <><FiCheck /> Submit to Blockchain</>
+                      )}
                     </button>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Submitting State */}
+            {recordingState === 'submitting' && (
+              <motion.div
+                key="submitting"
+                className="submitting-message"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                <div className="submitting-spinner">
+                  <div className="spinner-large"></div>
+                </div>
+                <h3>Submitting to Blockchain...</h3>
+                <p>Uploading to IPFS and minting your Voice Share NFT</p>
+                <div className="transaction-steps">
+                  <div className="step active">
+                    <span className="step-icon">📤</span>
+                    <span>Uploading to IPFS</span>
+                  </div>
+                  <div className="step">
+                    <span className="step-icon">🔗</span>
+                    <span>Creating transaction</span>
+                  </div>
+                  <div className="step">
+                    <span className="step-icon">🎨</span>
+                    <span>Minting NFT</span>
                   </div>
                 </div>
               </motion.div>
@@ -537,13 +581,31 @@ export default function ContributeClient() {
               <motion.div
                 key="error"
                 className="error-message"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0 }}
                 style={{ textAlign: 'center', padding: '40px' }}
               >
                 <FiX size={48} style={{ color: '#ef4444', marginBottom: '16px' }} />
-                <p style={{ color: '#ef4444' }}>Recording failed. Please try again.</p>
+                <h3 style={{ color: '#ffffff', marginBottom: '12px' }}>Submission Failed</h3>
+                <p style={{ color: '#ef4444', marginBottom: '20px' }}>
+                  Unable to submit to blockchain. Please check your wallet connection and try again.
+                </p>
+                <button 
+                  className="retry-button"
+                  onClick={() => setRecordingState('review')}
+                  style={{
+                    padding: '10px 24px',
+                    background: 'linear-gradient(135deg, #ef4444, #dc2626)',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '25px',
+                    cursor: 'pointer',
+                    fontWeight: 'bold'
+                  }}
+                >
+                  Try Again
+                </button>
               </motion.div>
             )}
           </AnimatePresence>
