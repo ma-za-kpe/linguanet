@@ -63,6 +63,66 @@ export default function Home() {
         ))}
       </div>
 
+      {/* Quick Access Navigation Bar */}
+      <div style={{
+        position: 'fixed',
+        top: '20px',
+        right: '20px',
+        zIndex: 1000,
+        display: 'flex',
+        gap: '1rem',
+      }}>
+        <Link href="/gallery">
+          <button style={{
+            padding: '0.75rem 1.5rem',
+            background: 'linear-gradient(135deg, #22c55e, #10b981)',
+            color: 'white',
+            border: 'none',
+            borderRadius: '25px',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+            fontSize: '1rem',
+            boxShadow: '0 4px 15px rgba(34, 197, 94, 0.4)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            transition: 'transform 0.3s',
+          }}
+          onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+          onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+          >
+            🎨 View NFT Gallery
+            <span style={{
+              background: 'rgba(255,255,255,0.3)',
+              padding: '0.25rem 0.5rem',
+              borderRadius: '12px',
+              fontSize: '0.75rem'
+            }}>
+              DEMO READY
+            </span>
+          </button>
+        </Link>
+        <Link href="/contribute">
+          <button style={{
+            padding: '0.75rem 1.5rem',
+            background: 'linear-gradient(135deg, #667eea, #764ba2)',
+            color: 'white',
+            border: 'none',
+            borderRadius: '25px',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+            fontSize: '1rem',
+            boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)',
+            transition: 'transform 0.3s',
+          }}
+          onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+          onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+          >
+            🎙️ Start Mining
+          </button>
+        </Link>
+      </div>
+
       {/* Hero Section */}
       <section className="hero-section">
         <motion.div 

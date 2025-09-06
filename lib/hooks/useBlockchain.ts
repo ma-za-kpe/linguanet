@@ -3,9 +3,8 @@
 import { useAccount, useBalance, useReadContract, useWriteContract } from 'wagmi';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useState, useEffect, useCallback } from 'react';
-import { formatUnits } from 'viem';
-import { getContractAddress } from '../wagmi-config';
-import LinguaNetCoreABI from '../../contracts/abis/LinguaNetCore.json';
+import { formatUnits, parseUnits } from 'viem';
+import { CONTRACT_ADDRESSES, getContractConfig } from '../contracts-config';
 import { getENSName, registerENSName, generateENSName } from '../ens';
 
 /**
@@ -20,16 +19,22 @@ export function useBlockchain() {
   // Get USDC balance
   const { data: balance } = useBalance({
     address: address,
-    token: getContractAddress('usdcToken') as `0x${string}`,
+    token: CONTRACT_ADDRESSES.usdcToken,
   });
 
-  // Get contributor stats
-  const { data: contributorStats } = useReadContract({
-    address: getContractAddress('linguanetCore') as `0x${string}`,
-    abi: LinguaNetCoreABI.abi,
-    functionName: 'getContributorStats',
+  // Get LINGUA token balance
+  const { data: linguaBalance } = useReadContract({
+    ...getContractConfig('linguaToken'),
+    functionName: 'balanceOf',
     args: address ? [address] : undefined,
-  }) as { data: readonly [bigint, bigint, bigint] | undefined };
+  });
+
+  // Get Voice Shares NFT balance
+  const { data: voiceSharesBalance } = useReadContract({
+    ...getContractConfig('voiceSharesNFT'),
+    functionName: 'balanceOf',
+    args: address ? [address] : undefined,
+  });
 
   // Load ENS name
   useEffect(() => {
@@ -72,12 +77,9 @@ export function useBlockchain() {
     // Balances
     usdcBalance: balance ? formatUnits(balance.value, balance.decimals) : '0',
     
-    // Stats
-    contributorStats: contributorStats ? {
-      submissions: Number(contributorStats[0]),
-      earnings: formatUnits(contributorStats[1] as bigint, 6),
-      reputation: Number(contributorStats[2]),
-    } : null,
+    // Token Balances
+    linguaBalance: linguaBalance ? formatUnits(linguaBalance as bigint, 18) : '0',
+    voiceSharesBalance: voiceSharesBalance ? Number(voiceSharesBalance) : 0,
   };
 }
 

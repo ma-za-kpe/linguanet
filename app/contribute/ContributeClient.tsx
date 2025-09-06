@@ -9,8 +9,13 @@ import {
   FiZap, FiGlobe, FiArrowRight
 } from 'react-icons/fi';
 import { WalletButton } from '@/components/WalletButton';
-import { useBlockchain, useSubmitAudio, useValidateAudio, useWithdraw } from '@/lib/hooks/useBlockchain';
+import { Web3StorageSetup } from '@/components/Web3StorageSetup';
+import { useBlockchain } from '@/lib/hooks/useBlockchain';
+import { useVoiceMining, useClaimRewards } from '@/lib/hooks/useMining';
+import { uploadToIPFS } from '@/lib/ipfs';
 import { formatENSDisplay, generateENSName } from '@/lib/ens';
+import { CONTRACT_ADDRESSES } from '@/lib/contracts-config';
+import { initializeW3Storage } from '@/lib/w3storage-client';
 import './contribute-linguadao.css';
 
 type RecordingState = 'idle' | 'recording' | 'review' | 'success' | 'error';
@@ -38,14 +43,14 @@ export default function ContributeClient() {
     isConnected, 
     ensName, 
     usdcBalance, 
-    contributorStats,
+    linguaBalance,
+    voiceSharesBalance,
     registerUserENS,
     isRegistering 
   } = useBlockchain();
   
-  const { submitAudio, isSubmitting } = useSubmitAudio();
-  const { validateAudio, isValidating } = useValidateAudio();
-  const { withdrawToMobileMoney, isWithdrawing } = useWithdraw();
+  const { submitVoiceData, isSubmitting, isConfirmed } = useVoiceMining();
+  const { claimRewards, isClaiming } = useClaimRewards();
 
   // State Management
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -56,18 +61,21 @@ export default function ContributeClient() {
   const [qualityScore, setQualityScore] = useState(0);
   const [miningReward, setMiningReward] = useState(0);
 
-  // Mock stats for demo
-  const [linguaBalance] = useState('5,420');
-  const [voiceShares] = useState(12);
+  // Stats from blockchain or mock for demo
   const [guardianTier] = useState('Expert');
   const [stakingBoost] = useState(1.5);
   const [totalEarned] = useState('1,284');
-  const [contributionsCount] = useState(87);
+  const [contributionsCount] = useState(voiceSharesBalance || 0);
 
   // Refs
   const timerRef = useRef<NodeJS.Timeout | undefined>(undefined);
   const mediaRecorderRef = useRef<MediaRecorder | undefined>(undefined);
   const audioChunksRef = useRef<Blob[]>([]);
+
+  // Initialize Web3.Storage on mount
+  useEffect(() => {
+    initializeW3Storage().catch(console.error);
+  }, []);
 
   // Calculate mining rewards
   const calculateReward = () => {
@@ -143,14 +151,53 @@ export default function ContributeClient() {
   };
 
   const submitRecording = async () => {
-    setRecordingState('success');
-    // In production, submit to blockchain here
-    setTimeout(() => {
-      setRecordingState('idle');
-      setRecordingTime(0);
-      setAudioBlob(null);
-      setSelectedLanguage('');
-    }, 3000);
+    if (!audioBlob || !selectedLanguage) return;
+    
+    try {
+      // Upload to IPFS
+      const language = languages.find(l => l.code === selectedLanguage);
+      const metadata = {
+        language: selectedLanguage,
+        languageName: language?.name,
+        duration: recordingTime,
+        timestamp: Date.now(),
+        quality: qualityScore || 0.9,
+        rarity: language?.multiplier || 1,
+      };
+      
+      const ipfsHash = await uploadToIPFS(audioBlob, metadata);
+      
+      // Submit to blockchain
+      const result = await submitVoiceData(
+        selectedLanguage,
+        ipfsHash,
+        {
+          duration: recordingTime,
+          quality: qualityScore || 0.9,
+          rarity: language?.multiplier || 1,
+        }
+      );
+      
+      if (result.success || isConfirmed) {
+        setRecordingState('success');
+        // Show success message with transaction details
+        console.log('Voice Share NFT minted successfully!');
+        console.log('IPFS Hash:', ipfsHash);
+        console.log('View on IPFS:', `https://w3s.link/ipfs/${ipfsHash}`);
+        
+        setTimeout(() => {
+          setRecordingState('idle');
+          setRecordingTime(0);
+          setAudioBlob(null);
+          setSelectedLanguage('');
+        }, 5000);
+      } else {
+        setRecordingState('error');
+      }
+    } catch (error) {
+      console.error('Submission failed:', error);
+      setRecordingState('error');
+    }
   };
 
   const discardRecording = () => {
@@ -171,6 +218,64 @@ export default function ContributeClient() {
         <div className="wallet-section">
           <WalletButton />
         </div>
+        
+        {/* Quick Navigation to Gallery */}
+        <div style={{ marginTop: '1.5rem', display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+          <a 
+            href="/gallery" 
+            className="gallery-button"
+            style={{
+              padding: '0.75rem 2rem',
+              background: 'linear-gradient(135deg, #22c55e, #10b981)',
+              color: 'white',
+              borderRadius: '25px',
+              textDecoration: 'none',
+              fontWeight: 'bold',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              boxShadow: '0 4px 15px rgba(34, 197, 94, 0.3)',
+              transition: 'transform 0.3s',
+            }}
+            onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+            onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+          >
+            🎨 View NFT Gallery
+            {voiceSharesBalance > 0 && (
+              <span style={{
+                background: 'rgba(255,255,255,0.3)',
+                padding: '0.25rem 0.5rem',
+                borderRadius: '12px',
+                fontSize: '0.85rem'
+              }}>
+                {voiceSharesBalance} NFTs
+              </span>
+            )}
+          </a>
+          <a 
+            href="/" 
+            style={{
+              padding: '0.75rem 2rem',
+              background: 'rgba(255, 255, 255, 0.1)',
+              color: 'white',
+              borderRadius: '25px',
+              textDecoration: 'none',
+              fontWeight: 'bold',
+              border: '1px solid rgba(255, 255, 255, 0.3)',
+              transition: 'all 0.3s',
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
+              e.currentTarget.style.transform = 'scale(1.05)';
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+              e.currentTarget.style.transform = 'scale(1)';
+            }}
+          >
+            📊 Dashboard
+          </a>
+        </div>
       </div>
 
       {/* Stats Dashboard */}
@@ -179,7 +284,7 @@ export default function ContributeClient() {
           <div className="stat-card">
             <div className="stat-icon">💰</div>
             <div className="stat-content">
-              <div className="stat-value">{linguaBalance}</div>
+              <div className="stat-value">{linguaBalance ? Number(linguaBalance).toLocaleString() : '0'}</div>
               <div className="stat-label">$LINGUA Balance</div>
             </div>
           </div>
@@ -187,7 +292,7 @@ export default function ContributeClient() {
           <div className="stat-card">
             <div className="stat-icon">🎨</div>
             <div className="stat-content">
-              <div className="stat-value">{voiceShares}</div>
+              <div className="stat-value">{voiceSharesBalance || 0}</div>
               <div className="stat-label">Voice Share NFTs</div>
             </div>
           </div>
@@ -209,6 +314,11 @@ export default function ContributeClient() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Web3.Storage Setup (show only when connected) */}
+      {isConnected && (
+        <Web3StorageSetup />
       )}
 
       {/* Language Selection */}
@@ -387,9 +497,27 @@ export default function ContributeClient() {
                 exit={{ opacity: 0 }}
               >
                 <div className="success-icon">✅</div>
-                <h3>Voice Data Minted!</h3>
+                <h3>Voice Share NFT Minted!</h3>
                 <p>{miningReward} $LINGUA tokens earned</p>
-                <p className="nft-mint">Voice Share NFT #{voiceShares + 1} minted</p>
+                <p className="nft-mint">Voice Share NFT #{voiceSharesBalance + 1} minted</p>
+                <div className="success-actions" style={{ marginTop: '1.5rem', display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+                  <a 
+                    href="/gallery" 
+                    className="success-button"
+                    style={{ padding: '0.75rem 1.5rem', background: 'white', color: '#667eea', borderRadius: '25px', textDecoration: 'none', fontWeight: 'bold' }}
+                  >
+                    View in Gallery
+                  </a>
+                  <a 
+                    href={`https://sepolia.basescan.org/address/${CONTRACT_ADDRESSES.voiceSharesNFT}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="success-button secondary"
+                    style={{ padding: '0.75rem 1.5rem', background: 'rgba(255,255,255,0.2)', color: 'white', borderRadius: '25px', textDecoration: 'none', fontWeight: 'bold' }}
+                  >
+                    View on BaseScan
+                  </a>
+                </div>
               </motion.div>
             )}
 
