@@ -4,9 +4,9 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { 
-  FiMic, FiDollarSign, FiUsers, FiDatabase, 
-  FiGlobe, FiAward, FiCode, FiShield,
-  FiArrowRight, FiPlay, FiCheckCircle,
+  FiMic, FiUsers, FiDatabase, 
+  FiAward, FiShield,
+  FiPlay, FiCheckCircle,
   FiTrendingUp, FiLock, FiBarChart2, FiPieChart
 } from 'react-icons/fi';
 import './home.css';
@@ -155,8 +155,8 @@ export default function Home() {
           </p>
           
           <p className="hero-description">
-            Own the future of AI by preserving human languages. Stake, mine, govern, and earn 
-            from the world's most valuable linguistic data marketplace.
+            Save endangered languages while earning rewards. Join the first protocol where 
+            preserving culture pays better than abandoning it.
           </p>
 
           {/* Token Stats Grid */}
@@ -608,7 +608,7 @@ export default function Home() {
           {activeTab === 'insurance' && (
             <div className="insurance-content">
               <h3>Language Extinction Insurance</h3>
-              <p>World's first DeFi protocol protecting against language loss</p>
+              <p>World&apos;s first DeFi protocol protecting against language loss</p>
               
               <div className="insurance-mechanism">
                 <div className="insurance-flow">
@@ -750,7 +750,7 @@ export default function Home() {
           viewport={{ once: true }}
         >
           <h2>Join the Language Revolution</h2>
-          <p>Be part of the first community-owned AI training protocol</p>
+          <p>Be part of the first decentralized language preservation movement</p>
           <div className="final-cta">
             <Link href="/contribute">
               <button className="cta-button primary large">

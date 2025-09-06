@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import './dashboard-linguadao.css';
 
 // Mock data for LinguaDAO Protocol
@@ -122,7 +122,6 @@ const recentActivity = [
 ];
 
 export default function Dashboard() {
-  const [selectedView, setSelectedView] = useState('overview');
   const [animatedTVL, setAnimatedTVL] = useState(0);
 
   useEffect(() => {

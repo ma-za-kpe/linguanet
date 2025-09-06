@@ -1,6 +1,7 @@
 {
-  "name": "linguanet",
+  "name": "linguadao",
   "version": "0.1.0",
+  "description": "The First Decentralized Language Preservation Protocol - Save endangered languages through blockchain",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",

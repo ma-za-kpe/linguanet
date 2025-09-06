@@ -5,7 +5,16 @@ const IPFS_GATEWAY = process.env.NEXT_PUBLIC_IPFS_GATEWAY || 'https://w3s.link/i
 /**
  * Upload audio file to IPFS via Web3.Storage
  */
-export async function uploadToIPFS(file: Blob, metadata: any, walletAddress?: string): Promise<string> {
+interface AudioMetadata {
+  language: string;
+  languageName?: string;
+  duration: number;
+  timestamp: number;
+  quality: number;
+  rarity: number;
+}
+
+export async function uploadToIPFS(file: Blob, metadata: AudioMetadata, walletAddress?: string): Promise<string> {
   try {
     // Try to use Web3.Storage if it's ready
     if (isW3StorageReady()) {
@@ -49,7 +58,7 @@ export async function uploadToIPFS(file: Blob, metadata: any, walletAddress?: st
 }
 
 // Helper function to store in localStorage
-function storeInLocalStorage(ipfsHash: string, metadata: any, walletAddress?: string): void {
+function storeInLocalStorage(ipfsHash: string, metadata: AudioMetadata, walletAddress?: string): void {
   if (typeof window !== 'undefined') {
     const stored = localStorage.getItem('voiceShares') || '[]';
     const voiceShares = JSON.parse(stored);
@@ -66,7 +75,7 @@ function storeInLocalStorage(ipfsHash: string, metadata: any, walletAddress?: st
 /**
  * Generate a mock IPFS hash that looks realistic
  */
-function generateMockIPFSHash(metadata: any, walletAddress?: string): string {
+function generateMockIPFSHash(metadata: AudioMetadata, walletAddress?: string): string {
   // Create a deterministic hash based on metadata
   const seed = `${metadata.language}-${metadata.duration}-${metadata.timestamp}`;
   let hash = 0;
@@ -102,7 +111,7 @@ export function getIPFSUrl(cid: string): string {
 /**
  * Fetch metadata from IPFS
  */
-export async function fetchFromIPFS(cid: string): Promise<any> {
+export async function fetchFromIPFS(cid: string): Promise<AudioMetadata | null> {
   try {
     const response = await fetch(getIPFSUrl(cid));
     if (!response.ok) {

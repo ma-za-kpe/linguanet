@@ -27,7 +27,6 @@ export function DeploymentStatus() {
   ]);
 
   const [logs, setLogs] = useState<string[]>([]);
-  const [currentStep, setCurrentStep] = useState(0);
 
   // Check if all environment variables are set
   useEffect(() => {

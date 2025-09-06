@@ -3,7 +3,7 @@
 import { useAccount, useBalance, useReadContract, useWriteContract } from 'wagmi';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useState, useEffect, useCallback } from 'react';
-import { formatUnits, parseUnits } from 'viem';
+import { formatUnits } from 'viem';
 import { CONTRACT_ADDRESSES, getContractConfig } from '../contracts-config';
 import { getENSName, registerENSName, generateENSName } from '../ens';
 

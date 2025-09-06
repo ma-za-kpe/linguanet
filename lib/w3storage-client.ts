@@ -88,7 +88,7 @@ export async function loginWithEmail(email: string): Promise<void> {
     console.log('[W3Storage] User should check email and click the link');
     return;
     
-  } catch (error: any) {
+  } catch (error) {
     console.error('[W3Storage] Login error:', error);
     throw error;
   }
@@ -143,9 +143,18 @@ async function completeSetup(): Promise<void> {
 /**
  * Upload file to IPFS using Web3.Storage
  */
+interface AudioMetadata {
+  language: string;
+  languageName?: string;
+  duration: number;
+  timestamp: number;
+  quality: number;
+  rarity: number;
+}
+
 export async function uploadToW3Storage(
   file: Blob,
-  metadata: any,
+  metadata: AudioMetadata,
   walletAddress?: string
 ): Promise<string> {
   if (!w3upClient || !isInitialized) {
@@ -188,7 +197,7 @@ export async function uploadToW3Storage(
 /**
  * Store upload record in localStorage
  */
-function storeUploadRecord(cid: string, metadata: any, walletAddress?: string): void {
+function storeUploadRecord(cid: string, metadata: AudioMetadata, walletAddress?: string): void {
   if (typeof window !== 'undefined') {
     const stored = localStorage.getItem('voiceShares') || '[]';
     const voiceShares = JSON.parse(stored);
@@ -206,7 +215,7 @@ function storeUploadRecord(cid: string, metadata: any, walletAddress?: string): 
 /**
  * Generate a mock IPFS hash for demo/fallback
  */
-function generateMockIPFSHash(metadata: any, walletAddress?: string): string {
+function generateMockIPFSHash(metadata: AudioMetadata, walletAddress?: string): string {
   const seed = `${metadata.language}-${metadata.duration}-${metadata.timestamp}`;
   let hash = 0;
   for (let i = 0; i < seed.length; i++) {

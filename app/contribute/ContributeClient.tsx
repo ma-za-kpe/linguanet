@@ -1,19 +1,16 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  FiMic, FiMicOff, FiDollarSign, FiCheck, FiX,
-  FiUser, FiAward, FiSmartphone,
-  FiPlay, FiPause, FiCheckCircle, FiShield,
-  FiZap, FiGlobe, FiArrowRight
+  FiMic, FiMicOff, FiCheck, FiX
 } from 'react-icons/fi';
 import { WalletButton } from '@/components/WalletButton';
 import { Web3StorageSetup } from '@/components/Web3StorageSetup';
 import { useBlockchain } from '@/lib/hooks/useBlockchain';
-import { useVoiceMining, useClaimRewards } from '@/lib/hooks/useMining';
+import { useVoiceMining } from '@/lib/hooks/useMining';
 import { uploadToIPFS } from '@/lib/ipfs';
-import { formatENSDisplay, generateENSName } from '@/lib/ens';
 import { CONTRACT_ADDRESSES } from '@/lib/contracts-config';
 import { initializeW3Storage } from '@/lib/w3storage-client';
 import './contribute-linguadao.css';
@@ -41,19 +38,13 @@ export default function ContributeClient() {
   const { 
     address, 
     isConnected, 
-    ensName, 
-    usdcBalance, 
     linguaBalance,
-    voiceSharesBalance,
-    registerUserENS,
-    isRegistering 
+    voiceSharesBalance
   } = useBlockchain();
   
-  const { submitVoiceData, isSubmitting, isConfirmed } = useVoiceMining();
-  const { claimRewards, isClaiming } = useClaimRewards();
+  const { submitVoiceData, isConfirmed } = useVoiceMining();
 
   // State Management
-  const [phoneNumber, setPhoneNumber] = useState('');
   const [recordingState, setRecordingState] = useState<RecordingState>('idle');
   const [recordingTime, setRecordingTime] = useState(0);
   const [selectedLanguage, setSelectedLanguage] = useState('');
@@ -65,7 +56,6 @@ export default function ContributeClient() {
   const [guardianTier] = useState('Expert');
   const [stakingBoost] = useState(1.5);
   const [totalEarned] = useState('1,284');
-  const [contributionsCount] = useState(voiceSharesBalance || 0);
 
   // Refs
   const timerRef = useRef<NodeJS.Timeout | undefined>(undefined);
@@ -252,7 +242,7 @@ export default function ContributeClient() {
               </span>
             )}
           </a>
-          <a 
+          <Link 
             href="/" 
             style={{
               padding: '0.75rem 2rem',
@@ -274,7 +264,7 @@ export default function ContributeClient() {
             }}
           >
             📊 Dashboard
-          </a>
+          </Link>
         </div>
       </div>
 

@@ -53,12 +53,6 @@ export default function GalleryClient() {
     functionName: 'totalSupply',
   });
 
-  // Get user's NFT balance
-  const { data: userBalance } = useReadContract({
-    ...getContractConfig('voiceSharesNFT'),
-    functionName: 'balanceOf',
-    args: address ? [address] : undefined,
-  });
 
   // Fetch NFT metadata from localStorage and blockchain
   useEffect(() => {

@@ -4,7 +4,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-LinguaDAO is a revolutionary decentralized language preservation protocol built on the "Proof of Voice" consensus mechanism. Contributors mint Voice Share NFTs representing ownership stakes in AI models, governance rights, and revenue sharing from language data sales.
+LinguaDAO is the first decentralized language preservation protocol, transforming language preservation from charity into a profitable ecosystem. Built on the "Proof of Voice" consensus mechanism, it incentivizes communities to preserve endangered African languages through blockchain rewards. Contributors mint Voice Share NFTs representing ownership stakes in AI models, governance rights, and revenue sharing from language data sales.
+
+**Mission**: Save 3,000+ endangered African languages by making preservation more profitable than abandonment.
+**Vision**: "The future of Africa speaks every language"
 
 ## Key Commands
 

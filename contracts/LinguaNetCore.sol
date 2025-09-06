@@ -6,8 +6,9 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /**
- * @title LinguaNet Core Contract
- * @dev Main contract for African language data marketplace on Base L2
+ * @title LinguaDAO Core Contract
+ * @dev Core protocol for decentralized language preservation on Base L2
+ * @notice Incentivizes preservation of endangered African languages through blockchain rewards
  */
 contract LinguaNetCore is Ownable, ReentrancyGuard {
     IERC20 public immutable usdcToken;

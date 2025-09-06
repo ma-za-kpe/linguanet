@@ -3,13 +3,12 @@
 import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { parseUnits } from 'viem';
 import { CONTRACT_ADDRESSES, getContractConfig } from '../contracts-config';
-import { toast } from 'react-hot-toast';
 
 /**
  * Hook for submitting voice mining data
  */
 export function useVoiceMining() {
-  const { writeContract, data: hash, isPending, isError, error } = useWriteContract();
+  const { writeContract, data: hash, isPending, error } = useWriteContract();
 
   const { isLoading: isConfirming, isSuccess: isConfirmed } = 
     useWaitForTransactionReceipt({
