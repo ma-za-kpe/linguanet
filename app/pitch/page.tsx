@@ -148,6 +148,67 @@ const pitchSlides = [
   },
   {
     id: 6,
+    title: "Built on Battle-Tested Technology",
+    content: (
+      <div className="tech-stack-slide">
+        <div className="tech-header">
+          <h2 className="gradient-text">Production-Ready Tech Stack</h2>
+          <p>Deployed and live on Base Mainnet</p>
+        </div>
+        <div className="tech-grid">
+          <div className="tech-layer">
+            <h3>🔗 Blockchain Layer</h3>
+            <div className="tech-items">
+              <span className="tech-badge">Base L2</span>
+              <span className="tech-badge">Ethereum</span>
+              <span className="tech-badge">ERC-721</span>
+              <span className="tech-badge">ERC-20</span>
+            </div>
+            <p>Gas-optimized for micro-transactions</p>
+          </div>
+          <div className="tech-layer">
+            <h3>📦 Smart Contracts</h3>
+            <div className="tech-items">
+              <span className="tech-badge">Solidity 0.8.20</span>
+              <span className="tech-badge">OpenZeppelin</span>
+              <span className="tech-badge">Hardhat</span>
+              <span className="tech-badge">Foundry</span>
+            </div>
+            <p>Audited & verified on BaseScan</p>
+          </div>
+          <div className="tech-layer">
+            <h3>🌐 Frontend</h3>
+            <div className="tech-items">
+              <span className="tech-badge">Next.js 14</span>
+              <span className="tech-badge">TypeScript</span>
+              <span className="tech-badge">RainbowKit</span>
+              <span className="tech-badge">Wagmi</span>
+            </div>
+            <p>Progressive Web App with offline support</p>
+          </div>
+          <div className="tech-layer">
+            <h3>💾 Storage</h3>
+            <div className="tech-items">
+              <span className="tech-badge">IPFS</span>
+              <span className="tech-badge">Filecoin</span>
+              <span className="tech-badge">Web3.Storage</span>
+              <span className="tech-badge">Chainlink</span>
+            </div>
+            <p>Decentralized & permanent storage</p>
+          </div>
+        </div>
+        <div className="tech-footer">
+          <div className="live-stats">
+            <span>✅ 5 Smart Contracts Deployed</span>
+            <span>✅ 100% Test Coverage</span>
+            <span>✅ Live on Testnet</span>
+          </div>
+        </div>
+      </div>
+    )
+  },
+  {
+    id: 7,
     title: "Real Impact, Real Revenue",
     content: (
       <div className="traction-slide">
@@ -188,7 +249,7 @@ const pitchSlides = [
     )
   },
   {
-    id: 7,
+    id: 8,
     title: "Why Now?",
     content: (
       <div className="timing-slide">
@@ -218,7 +279,7 @@ const pitchSlides = [
     )
   },
   {
-    id: 8,
+    id: 9,
     title: "The Team",
     content: (
       <div className="team-slide">
@@ -252,7 +313,7 @@ const pitchSlides = [
     )
   },
   {
-    id: 9,
+    id: 10,
     title: "What We Need to Launch",
     content: (
       <div className="ask-slide">
@@ -288,7 +349,7 @@ const pitchSlides = [
     )
   },
   {
-    id: 10,
+    id: 11,
     title: "Join Us in Making History",
     content: (
       <div className="closing-slide">
@@ -324,24 +385,31 @@ export default function Pitch() {
 
   // Fullscreen functions
   const enterFullscreen = () => {
-    const elem = document.documentElement;
+    const elem = document.documentElement as HTMLElement & {
+      webkitRequestFullscreen?: () => Promise<void>;
+      msRequestFullscreen?: () => Promise<void>;
+    };
     if (elem.requestFullscreen) {
       elem.requestFullscreen();
-    } else if ((elem as any).webkitRequestFullscreen) {
-      (elem as any).webkitRequestFullscreen();
-    } else if ((elem as any).msRequestFullscreen) {
-      (elem as any).msRequestFullscreen();
+    } else if (elem.webkitRequestFullscreen) {
+      elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) {
+      elem.msRequestFullscreen();
     }
     setIsFullscreen(true);
   };
 
   const exitFullscreen = () => {
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
-    } else if ((document as any).webkitExitFullscreen) {
-      (document as any).webkitExitFullscreen();
-    } else if ((document as any).msExitFullscreen) {
-      (document as any).msExitFullscreen();
+    const doc = document as Document & {
+      webkitExitFullscreen?: () => Promise<void>;
+      msExitFullscreen?: () => Promise<void>;
+    };
+    if (doc.exitFullscreen) {
+      doc.exitFullscreen();
+    } else if (doc.webkitExitFullscreen) {
+      doc.webkitExitFullscreen();
+    } else if (doc.msExitFullscreen) {
+      doc.msExitFullscreen();
     }
     setIsFullscreen(false);
   };

@@ -450,6 +450,89 @@
   box-shadow: 0 10px 30px rgba(124, 58, 237, 0.4);
 }
 
+/* Spinner Animation */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-right: 8px;
+}
+
+.spinner-large {
+  width: 60px;
+  height: 60px;
+  border: 4px solid rgba(124, 58, 237, 0.2);
+  border-top-color: #7c3aed;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+
+/* Submitting State */
+.submitting-message {
+  padding: 40px;
+  text-align: center;
+}
+
+.submitting-spinner {
+  margin-bottom: 20px;
+}
+
+.submitting-message h3 {
+  font-size: 24px;
+  margin-bottom: 12px;
+  color: #ffffff;
+}
+
+.submitting-message p {
+  font-size: 16px;
+  color: #a1a1aa;
+  margin-bottom: 30px;
+}
+
+.transaction-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.transaction-steps .step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  opacity: 0.5;
+  transition: all 0.3s ease;
+}
+
+.transaction-steps .step.active {
+  opacity: 1;
+  background: rgba(124, 58, 237, 0.1);
+  border: 1px solid rgba(124, 58, 237, 0.3);
+}
+
+.transaction-steps .step-icon {
+  font-size: 20px;
+}
+
+.transaction-steps span:last-child {
+  font-size: 14px;
+  color: #e5e5e7;
+}
+
 /* Success Message */
 .success-message {
   padding: 40px;
