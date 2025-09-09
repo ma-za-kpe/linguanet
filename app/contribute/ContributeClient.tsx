@@ -14,6 +14,7 @@ import { uploadToIPFS } from '@/lib/ipfs';
 import { CONTRACT_ADDRESSES } from '@/lib/contracts-config';
 import { initializeW3Storage } from '@/lib/w3storage-client';
 import './contribute-linguadao.css';
+import './contribute-mobile.css';
 
 type RecordingState = 'idle' | 'recording' | 'review' | 'submitting' | 'success' | 'error';
 

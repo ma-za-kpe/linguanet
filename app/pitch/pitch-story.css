@@ -10,6 +10,188 @@
   flex-direction: column;
 }
 
+/* MIT Research Validation Styles */
+.research-validation {
+  margin-top: 20px;
+  padding: 15px;
+  background: rgba(255, 215, 0, 0.1);
+  border-left: 4px solid #FFD700;
+  border-radius: 8px;
+}
+
+.research-quote {
+  font-style: italic;
+  color: #FFD700;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+
+.source {
+  font-size: 0.9rem;
+  color: #888;
+  display: block;
+  text-align: right;
+}
+
+/* Partnership Slide Styles */
+.partnership-slide {
+  padding: 40px;
+}
+
+.partnership-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.partnership-header p {
+  color: #FFD700;
+  margin-top: 10px;
+  font-size: 1.2rem;
+}
+
+.partnership-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 25px;
+  margin-bottom: 30px;
+}
+
+.partner-type {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 25px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.partner-type:hover {
+  transform: translateY(-5px);
+  border-color: #FFD700;
+}
+
+.partner-icon {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 15px;
+}
+
+.partner-type h3 {
+  color: #4ECDC4;
+  margin-bottom: 10px;
+  font-size: 1.3rem;
+}
+
+.partner-type p {
+  color: #ccc;
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.partner-type .value {
+  color: #FFD700;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.partnership-cta {
+  background: rgba(78, 205, 196, 0.1);
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #4ECDC4;
+}
+
+.partnership-cta h3 {
+  color: #4ECDC4;
+  margin-bottom: 15px;
+}
+
+.partnership-cta p {
+  margin: 8px 0;
+  color: #ddd;
+}
+
+/* Market Validation Styles */
+.market-validation {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 25px;
+  border-radius: 12px;
+  margin-top: 30px;
+}
+
+.validation-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.validation-item {
+  text-align: center;
+}
+
+.validation-item .metric {
+  font-size: 2rem;
+  color: #FFD700;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.validation-item p {
+  color: #ccc;
+  font-size: 0.9rem;
+}
+
+/* Validation Banner */
+.validation-banner {
+  margin-top: 30px;
+  padding: 20px;
+  background: linear-gradient(90deg, rgba(78, 205, 196, 0.2), rgba(255, 215, 0, 0.2));
+  border-radius: 10px;
+  text-align: center;
+}
+
+.validation-text {
+  font-size: 1.1rem;
+  color: #fff;
+  line-height: 1.6;
+}
+
+/* Traction Proof Styles */
+.traction-proof {
+  margin-top: 30px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+}
+
+.traction-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.traction-item {
+  text-align: center;
+  padding: 15px;
+  background: rgba(255, 215, 0, 0.1);
+  border-radius: 8px;
+}
+
+.traction-item .number {
+  font-size: 2rem;
+  color: #FFD700;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.traction-item p {
+  color: #ccc;
+  font-size: 0.85rem;
+}
+
 /* Fullscreen Mode Styles */
 .pitch-container.fullscreen-mode {
   position: fixed;

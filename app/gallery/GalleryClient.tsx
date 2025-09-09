@@ -2,12 +2,14 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useAccount } from 'wagmi';
 import { WalletButton } from '@/components/WalletButton';
 import { CONTRACT_ADDRESSES } from '@/lib/contracts-config';
 import { motion } from 'framer-motion';
 import { FiMusic, FiClock, FiAward, FiUser, FiGlobe, FiHash, FiPlay, FiPause, FiDownload } from 'react-icons/fi';
 import './gallery.css';
+import './gallery-mobile.css';
 
 interface VoiceNFT {
   tokenId: string;
@@ -253,7 +255,7 @@ export default function GalleryClient() {
         </div>
         
         {/* Quick Navigation */}
-        <div style={{ marginTop: '1.5rem', display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+        <div className="quick-nav-buttons" style={{ marginTop: '1.5rem', display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
           <a 
             href="/contribute" 
             className="cta-button"
@@ -389,6 +391,19 @@ export default function GalleryClient() {
               </div>
               
               <div className="nft-visual">
+                {/* Visual representation with LinguaDAO branding */}
+                <div className="nft-image-wrapper">
+                  <Image 
+                    src="/linguadao-profile.png" 
+                    alt="Voice Share NFT"
+                    className="nft-logo"
+                    width={60}
+                    height={60}
+                  />
+                  <div className="language-overlay">
+                    {languageNames[nft.languageCode]?.split(' ')[0]}
+                  </div>
+                </div>
                 <div className="audio-player-section">
                   <button 
                     className="play-button"
