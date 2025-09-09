@@ -1,6 +1,6 @@
 # LinguaDAO - The First Decentralized Language Preservation Protocol
 
-<img src="public/logo.png" alt="LinguaDAO Logo" width="200"/>
+<img src="public/linguadao-profile.png" alt="LinguaDAO Logo" width="200"/>
 
 ## 🏆 ETHAccra 2025 Hackathon Submission
 
@@ -13,8 +13,11 @@
 The first protocol where preserving endangered languages pays better than abandoning them.
 
 ### 🔗 Live Deployment
-- **Live App**: [https://linguanetai-pt2g5q21w-popos-projects-fb891440.vercel.app/](https://linguanetai-pt2g5q21w-popos-projects-fb891440.vercel.app/) (Fully functional on Base Sepolia)
+- **🌐 Live LinguaDAO Platform**: [https://linguadao.vercel.app/](https://linguadao.vercel.app/) (Production deployment)
+- **🎮 Demo App**: [https://linguanetai-pt2g5q21w-popos-projects-fb891440.vercel.app/](https://linguanetai-pt2g5q21w-popos-projects-fb891440.vercel.app/) (Test on Base Sepolia)
+- **📊 Interactive Pitch Deck**: [https://linguadao.vercel.app/pitch](https://linguadao.vercel.app/pitch) (Swipe-enabled mobile presentation)
 - **GitHub Repository**: [https://github.com/ma-za-kpe/linguanet](https://github.com/ma-za-kpe/linguanet)
+- **Demo Video**: [LinguaDAO Walkthrough](https://linguadao.vercel.app/demo) (3-minute overview)
 - **Demo Video**: [https://youtu.be/fWFL5xup3Bg]
 
 ### 📜 Deployed Smart Contracts (Base Sepolia)
@@ -108,9 +111,11 @@ The `.env.local.example` file contains all necessary configurations:
    - See reward calculations in real-time
    - Mint Voice Share NFTs on Base Sepolia
 
-2. **Voice Gallery** (`/gallery`)
-   - Browse Voice Share NFTs
-   - Play audio recordings
+2. **NFT Gallery** (`/gallery`)
+   - Browse Voice Share NFTs with audio playback
+   - View real-time rewards and ownership percentages
+   - Filter by language and owner
+   - Mobile-responsive gallery interface
    - Filter by language and ownership
 
 3. **Interactive Pitch** (`/pitch`)
@@ -152,7 +157,7 @@ If you want to test with a real wallet:
 ### 📝 Live Features
 
 - **Voice Mining**: Record real audio and mint NFTs
-- **Gallery**: Browse actual Voice Share NFTs on-chain
+- **NFT Gallery**: Interactive Voice Share NFT gallery with audio playback and mobile optimization
 - **Rewards**: Live $LINGUA token calculations
 - **IPFS Storage**: All recordings stored on decentralized network
 

@@ -1,0 +1,126 @@
+/* Enhanced Mobile Distribution Styles */
+
+@media (max-width: 768px) {
+  /* Alternative: Horizontal bar chart layout */
+  .token-distribution {
+    position: relative;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 12px;
+    margin-top: 20px !important;
+  }
+  
+  .distribution-item {
+    position: relative;
+    margin-bottom: 16px !important;
+    display: grid !important;
+    grid-template-columns: 1fr auto !important;
+    align-items: center !important;
+    gap: 10px !important;
+  }
+  
+  .distribution-item label {
+    order: 1 !important;
+    font-size: 0.85rem !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    margin: 0 !important;
+    line-height: 1.4;
+  }
+  
+  .distribution-bar {
+    order: 2 !important;
+    width: auto !important;
+    min-width: 50px !important;
+    max-width: 100% !important;
+    height: 36px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 8px !important;
+    padding: 0 12px !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+    position: relative !important;
+    overflow: hidden !important;
+  }
+  
+  .distribution-bar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+    pointer-events: none;
+  }
+  
+  .distribution-bar span {
+    font-size: 0.9rem !important;
+    font-weight: 700 !important;
+    color: white !important;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.4) !important;
+    z-index: 1;
+    position: relative;
+  }
+  
+  /* Create a visual percentage bar below each item */
+  .distribution-item::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.1);
+    width: 100%;
+    border-radius: 1px;
+  }
+  
+  /* Specific widths for visual representation */
+  .distribution-item:nth-child(2)::after { /* 40% - Voice Mining */
+    width: 40%;
+    background: linear-gradient(90deg, #7c3aed, #9333ea);
+  }
+  
+  .distribution-item:nth-child(3)::after { /* 20% - Treasury */
+    width: 20%;
+    background: linear-gradient(90deg, #22c55e, #10b981);
+  }
+  
+  .distribution-item:nth-child(4)::after { /* 15% - Team */
+    width: 15%;
+    background: linear-gradient(90deg, #3b82f6, #2563eb);
+  }
+  
+  .distribution-item:nth-child(5)::after { /* 15% - Grants */
+    width: 15%;
+    background: linear-gradient(90deg, #f59e0b, #f97316);
+  }
+  
+  .distribution-item:nth-child(6)::after { /* 10% - Liquidity */
+    width: 10%;
+    background: linear-gradient(90deg, #ec4899, #db2777);
+  }
+}
+
+/* Compact layout for very small screens */
+@media (max-width: 400px) {
+  .distribution-item {
+    grid-template-columns: 1fr !important;
+    gap: 6px !important;
+  }
+  
+  .distribution-item label {
+    font-size: 0.8rem !important;
+  }
+  
+  .distribution-bar {
+    width: 100% !important;
+    height: 32px !important;
+    justify-content: flex-start !important;
+    padding-left: 15px !important;
+  }
+  
+  .distribution-bar span {
+    font-size: 0.85rem !important;
+  }
+}

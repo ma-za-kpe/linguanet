@@ -1,0 +1,664 @@
+/* Mobile Responsive Styles for LinguaDAO Home Page */
+
+/* Base Mobile Styles */
+@media (max-width: 768px) {
+  /* Container */
+  .home-container {
+    padding: 0;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+  
+  /* Hide particles on mobile for better performance */
+  .particles {
+    display: none;
+  }
+  
+  /* Quick Navigation Bar */
+  .quick-nav-bar {
+    top: 10px !important;
+    right: 10px !important;
+    left: 10px !important;
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+    width: calc(100% - 20px) !important;
+  }
+  
+  .quick-nav-bar button {
+    width: 100% !important;
+    padding: 0.6rem 1rem !important;
+    font-size: 0.9rem !important;
+    justify-content: center;
+  }
+  
+  .quick-nav-bar button span {
+    display: none !important; /* Hide "DEMO READY" badge on mobile */
+  }
+
+  /* Hero Section */
+  .hero-section {
+    padding: 120px 20px 40px 20px; /* Add top padding for nav buttons */
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hero-content {
+    text-align: center;
+    width: 100%;
+  }
+  
+  .protocol-badge {
+    font-size: 0.75rem !important;
+    padding: 0.4rem 0.8rem !important;
+    margin-bottom: 1rem;
+  }
+
+  .hero-title {
+    font-size: 2.5rem !important;
+    line-height: 1.1;
+    margin-bottom: 15px;
+  }
+  
+  .hero-title .gradient-text {
+    font-size: inherit;
+  }
+
+  .hero-subtitle {
+    font-size: 1.1rem !important;
+    margin-bottom: 15px;
+    line-height: 1.3;
+  }
+  
+  .hero-description {
+    font-size: 0.95rem !important;
+    line-height: 1.5;
+    margin-bottom: 30px;
+    padding: 0 10px;
+  }
+
+  .token-stats {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 15px !important;
+    margin: 30px 0;
+    padding: 0;
+  }
+
+  .stat-card {
+    width: 100% !important;
+    padding: 20px !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 12px !important;
+  }
+  
+  .stat-card.highlight {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.2), rgba(139, 92, 246, 0.2)) !important;
+    border-color: #7c3aed !important;
+  }
+
+  .stat-value {
+    font-size: 1.8rem !important;
+    font-weight: bold;
+    margin: 8px 0;
+  }
+
+  .stat-label {
+    font-size: 0.85rem !important;
+    opacity: 0.8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .stat-change {
+    font-size: 0.8rem !important;
+    margin-top: 5px;
+  }
+  
+  .stat-change.positive {
+    color: #22c55e !important;
+  }
+
+  .hero-cta {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 15px !important;
+    margin-top: 30px !important;
+    padding: 0 10px;
+  }
+
+  .btn-primary, .btn-secondary {
+    width: 100% !important;
+    padding: 16px 20px !important;
+    font-size: 1rem !important;
+    border-radius: 12px !important;
+    font-weight: 600;
+    text-transform: none !important;
+  }
+
+  /* Live Stats Bar */
+  .live-stats-bar {
+    padding: 10px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .stat-item {
+    flex: 1 1 45%;
+    min-width: 120px;
+  }
+
+  .stat-item span:first-child {
+    font-size: 0.75rem;
+  }
+
+  .stat-item span:last-child {
+    font-size: 0.9rem;
+  }
+
+  /* Protocol Features */
+  .protocol-features {
+    padding: 40px 20px;
+  }
+
+  .section-header h2 {
+    font-size: 1.75rem;
+  }
+
+  .section-header p {
+    font-size: 0.9rem;
+  }
+
+  .features-tabs {
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 30px;
+  }
+
+  .tab-button {
+    width: 100%;
+    padding: 12px;
+    font-size: 0.9rem;
+  }
+
+  .tab-content {
+    padding: 20px;
+  }
+
+  .tab-content h3 {
+    font-size: 1.3rem;
+  }
+
+  .tab-content p {
+    font-size: 0.9rem;
+  }
+
+  .feature-list {
+    gap: 10px;
+  }
+
+  .feature-item {
+    font-size: 0.85rem;
+    padding: 8px 15px;
+  }
+
+  /* Token Economics */
+  .token-economics {
+    padding: 40px 20px;
+  }
+  
+  .tokenomics-section {
+    padding: 40px 20px !important;
+  }
+  
+  .tokenomics-grid {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+  
+  .token-card {
+    padding: 20px !important;
+    margin: 0 !important;
+  }
+  
+  .token-header {
+    margin-bottom: 20px !important;
+  }
+  
+  .token-icon {
+    font-size: 2rem !important;
+    margin-bottom: 10px !important;
+  }
+  
+  .token-card h3 {
+    font-size: 1.3rem !important;
+    margin-bottom: 5px !important;
+  }
+  
+  .token-type {
+    font-size: 0.85rem !important;
+  }
+  
+  .token-stats {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    margin-bottom: 20px !important;
+  }
+  
+  .token-stat {
+    display: flex !important;
+    justify-content: space-between !important;
+    padding: 10px !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-radius: 8px !important;
+  }
+  
+  .token-stat span {
+    font-size: 0.85rem !important;
+    opacity: 0.8;
+  }
+  
+  .token-stat strong {
+    font-size: 1rem !important;
+  }
+  
+  /* Token Distribution - Mobile Optimized */
+  .token-distribution {
+    margin-top: 20px !important;
+  }
+  
+  .token-distribution h4 {
+    font-size: 1.1rem !important;
+    margin-bottom: 15px !important;
+  }
+  
+  .distribution-item {
+    margin-bottom: 15px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+  
+  .distribution-item label {
+    font-size: 0.85rem !important;
+    order: 1 !important;
+    margin-bottom: 4px !important;
+    opacity: 0.9;
+  }
+  
+  .distribution-bar {
+    height: 32px !important;
+    border-radius: 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    padding: 0 10px !important;
+    order: 2 !important;
+    min-width: 60px !important;
+    transition: transform 0.2s ease !important;
+  }
+  
+  .distribution-bar span {
+    font-size: 0.85rem !important;
+    font-weight: bold !important;
+    color: white !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3) !important;
+  }
+  
+  /* Add visual hierarchy on mobile */
+  .distribution-item:first-child .distribution-bar {
+    opacity: 1 !important;
+  }
+  
+  .distribution-item:nth-child(2) .distribution-bar {
+    opacity: 0.95 !important;
+  }
+  
+  .distribution-item:nth-child(3) .distribution-bar {
+    opacity: 0.9 !important;
+  }
+  
+  .distribution-item:nth-child(4) .distribution-bar {
+    opacity: 0.85 !important;
+  }
+  
+  .distribution-item:nth-child(5) .distribution-bar {
+    opacity: 0.8 !important;
+  }
+
+  .token-metrics {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .metric-card {
+    padding: 20px;
+  }
+
+  .metric-icon {
+    font-size: 2rem;
+  }
+
+  .metric-title {
+    font-size: 1rem;
+  }
+
+  .metric-value {
+    font-size: 1.5rem;
+  }
+
+  .metric-description {
+    font-size: 0.85rem;
+  }
+
+  /* How It Works */
+  .how-it-works {
+    padding: 40px 20px;
+  }
+
+  .steps-container {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .step-card {
+    padding: 25px;
+  }
+
+  .step-number {
+    font-size: 2.5rem;
+  }
+
+  .step-title {
+    font-size: 1.1rem;
+  }
+
+  .step-description {
+    font-size: 0.9rem;
+  }
+
+  /* Language Pools */
+  .language-pools {
+    padding: 40px 20px;
+  }
+
+  .pools-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .pool-card {
+    padding: 20px;
+  }
+
+  .pool-header h3 {
+    font-size: 1.1rem;
+  }
+
+  .tvl-value {
+    font-size: 1.3rem;
+  }
+
+  .pool-stats {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .pool-stat span:first-child {
+    font-size: 0.75rem;
+  }
+
+  .pool-stat span:last-child {
+    font-size: 0.9rem;
+  }
+
+  /* CTA Section */
+  .cta-section {
+    padding: 40px 20px;
+  }
+
+  .cta-content h2 {
+    font-size: 1.75rem;
+  }
+
+  .cta-content p {
+    font-size: 1rem;
+  }
+
+  .cta-buttons {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .cta-buttons .btn-primary,
+  .cta-buttons .btn-secondary {
+    width: 100%;
+    padding: 15px;
+  }
+
+  /* Footer */
+  .footer {
+    padding: 30px 20px;
+  }
+
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    text-align: center;
+  }
+
+  .footer-section h4 {
+    font-size: 1.1rem;
+  }
+
+  .footer-links {
+    justify-content: center;
+  }
+
+  .footer-links a {
+    font-size: 0.9rem;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+
+  .social-links {
+    justify-content: center;
+  }
+
+  /* Floating Elements */
+  .floating-orbs {
+    display: block !important; /* Keep minimal orbs for visual appeal */
+  }
+  
+  .floating-orbs .orb {
+    width: 80px !important;
+    height: 80px !important;
+    opacity: 0.3 !important;
+  }
+  
+  .floating-orbs .orb-1 {
+    top: 10% !important;
+    left: -40px !important;
+  }
+  
+  .floating-orbs .orb-2 {
+    top: 50% !important;
+    right: -40px !important;
+  }
+  
+  .floating-orbs .orb-3 {
+    display: none; /* Hide third orb on mobile */
+  }
+
+  /* Charts and Visualizations */
+  .chart-container {
+    height: 200px;
+  }
+
+  /* Modal adjustments */
+  .modal-content {
+    width: 95%;
+    margin: 10px;
+    padding: 20px;
+  }
+
+  /* Navigation adjustments for mobile */
+  nav {
+    padding: 10px 20px;
+  }
+
+  .nav-links {
+    display: none; /* Hide desktop nav */
+  }
+
+  /* Add mobile menu button if needed */
+  .mobile-menu-button {
+    display: block;
+  }
+
+  /* Animations - reduce for mobile */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+}
+
+/* Small Mobile Devices */
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 1.75rem;
+  }
+
+  .hero-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .stat-value {
+    font-size: 1.2rem;
+  }
+
+  .section-header h2 {
+    font-size: 1.5rem;
+  }
+  
+  /* Distribution optimizations for small screens */
+  .token-card {
+    padding: 15px !important;
+  }
+  
+  .distribution-item {
+    margin-bottom: 12px !important;
+  }
+  
+  .distribution-bar {
+    height: 28px !important;
+    font-size: 0.8rem !important;
+  }
+  
+  .distribution-item label {
+    font-size: 0.8rem !important;
+  }
+  
+  .token-distribution h4 {
+    font-size: 1rem !important;
+  }
+
+  .btn-primary, .btn-secondary {
+    padding: 12px 16px;
+    font-size: 0.9rem;
+  }
+
+  .live-stats-bar {
+    display: none; /* Hide on very small screens */
+  }
+
+  .tab-button {
+    padding: 10px;
+    font-size: 0.85rem;
+  }
+
+  .metric-card {
+    padding: 15px;
+  }
+
+  .step-card {
+    padding: 20px;
+  }
+
+  .pool-card {
+    padding: 15px;
+  }
+}
+
+/* Landscape Mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+  .hero-section {
+    min-height: auto;
+    padding: 20px;
+  }
+
+  .hero-title {
+    font-size: 1.5rem;
+  }
+
+  .hero-stats {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .stat-card {
+    flex: 1 1 45%;
+  }
+
+  .features-tabs {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .tab-button {
+    flex: 1 1 45%;
+  }
+}
+
+/* Touch-friendly adjustments */
+@media (hover: none) and (pointer: coarse) {
+  .btn-primary, .btn-secondary {
+    min-height: 48px;
+  }
+
+  .tab-button {
+    min-height: 44px;
+  }
+
+  .pool-card, .metric-card, .step-card {
+    cursor: default;
+  }
+
+  /* Remove hover effects on mobile */
+  .pool-card:hover,
+  .metric-card:hover,
+  .step-card:hover {
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+/* High Resolution Mobile */
+@media (-webkit-min-device-pixel-ratio: 2) and (max-width: 768px),
+       (min-resolution: 192dpi) and (max-width: 768px) {
+  /* Optimize for retina displays */
+  .hero-title,
+  .section-header h2 {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}

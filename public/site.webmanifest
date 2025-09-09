@@ -1,13 +1,13 @@
 {
-  "name": "LinguaNet",
-  "short_name": "LinguaNet",
-  "description": "Turn Your Voice into Value - Preserve Languages, Power AI",
+  "name": "LinguaDAO - Decentralized Language Preservation",
+  "short_name": "LinguaDAO",
+  "description": "Save endangered African languages through blockchain. Earn $LINGUA tokens by preserving culture.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0a0a0a",
-  "theme_color": "#667eea",
+  "theme_color": "#7c3aed",
   "orientation": "portrait",
-  "categories": ["business", "education", "finance"],
+  "categories": ["business", "education", "finance", "social"],
   "lang": "en",
   "dir": "ltr",
   "icons": [
@@ -40,20 +40,52 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
     }
   ],
   "screenshots": [
     {
       "src": "/screenshot-1.png",
-      "sizes": "1280x720",
-      "type": "image/png"
+      "sizes": "400x300",
+      "type": "image/png",
+      "label": "LinguaDAO Home"
     },
     {
       "src": "/screenshot-2.png",
-      "sizes": "1280x720",
-      "type": "image/png"
+      "sizes": "400x300",
+      "type": "image/png",
+      "label": "Voice Recording"
     }
   ],
   "related_applications": [],
-  "prefer_related_applications": false
+  "prefer_related_applications": false,
+  "shortcuts": [
+    {
+      "name": "Record Voice",
+      "url": "/contribute",
+      "description": "Start voice mining",
+      "icons": [
+        {
+          "src": "/favicon-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "NFT Gallery",
+      "url": "/gallery",
+      "description": "View Voice Share NFTs",
+      "icons": [
+        {
+          "src": "/favicon-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ]
 }

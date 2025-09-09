@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import './dashboard-linguadao.css';
+import './dashboard-mobile.css';
 
 // Mock data for LinguaDAO Protocol
 const mockProtocolData = {

@@ -12,9 +12,13 @@ import {
 import './home.css';
 import './home-enhanced.css';
 import './linguadao.css';
+import './home-mobile.css';
+import './home-mobile-distribution.css';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<'voice-mining' | 'liquidity' | 'governance' | 'insurance'>('voice-mining');
+  const [mounted, setMounted] = useState(false);
+  const [particles, setParticles] = useState<Array<{left: number, delay: number, duration: number}>>([]);
   const [stats, setStats] = useState({
     totalValueLocked: 2847650,
     linguaPrice: 0.42,
@@ -23,6 +27,18 @@ export default function Home() {
     insurancePools: 8,
     dailyVolume: 127450
   });
+
+  // Initialize particles on client side only to avoid hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+    // Generate particle positions only on client
+    const particleArray = Array.from({ length: 20 }, () => ({
+      left: Math.random() * 100,
+      delay: Math.random() * 15,
+      duration: 15 + Math.random() * 10
+    }));
+    setParticles(particleArray);
+  }, []);
 
   // Animate stats
   useEffect(() => {
@@ -48,23 +64,25 @@ export default function Home() {
         <div className="orb orb-3"></div>
       </div>
       
-      {/* Particle Effects */}
-      <div className="particles">
-        {[...Array(20)].map((_, i) => (
-          <div 
-            key={i} 
-            className="particle" 
-            style={{
-              left: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 15}s`,
-              animationDuration: `${15 + Math.random() * 10}s`
-            }}
-          />
-        ))}
-      </div>
+      {/* Particle Effects - Only render on client to avoid hydration mismatch */}
+      {mounted && (
+        <div className="particles">
+          {particles.map((particle, i) => (
+            <div 
+              key={i} 
+              className="particle" 
+              style={{
+                left: `${particle.left}%`,
+                animationDelay: `${particle.delay}s`,
+                animationDuration: `${particle.duration}s`
+              }}
+            />
+          ))}
+        </div>
+      )}
 
       {/* Quick Access Navigation Bar */}
-      <div style={{
+      <div className="quick-nav-bar" style={{
         position: 'fixed',
         top: '20px',
         right: '20px',
@@ -88,8 +106,8 @@ export default function Home() {
             gap: '0.5rem',
             transition: 'transform 0.3s',
           }}
-          onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-          onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+          onMouseOver={(e) => mounted && (e.currentTarget.style.transform = 'scale(1.05)')}
+          onMouseOut={(e) => mounted && (e.currentTarget.style.transform = 'scale(1)')}
           >
             🎨 View NFT Gallery
             <span style={{
@@ -115,8 +133,8 @@ export default function Home() {
             boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)',
             transition: 'transform 0.3s',
           }}
-          onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-          onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+          onMouseOver={(e) => mounted && (e.currentTarget.style.transform = 'scale(1.05)')}
+          onMouseOut={(e) => mounted && (e.currentTarget.style.transform = 'scale(1)')}
           >
             🎙️ Start Mining
           </button>
