@@ -13,11 +13,11 @@
 The first protocol where preserving endangered languages pays better than abandoning them.
 
 ### 🔗 Live Deployment
-- **🌐 Live LinguaDAO Platform**: [https://linguadao.vercel.app/](https://linguadao.vercel.app/) (Production deployment)
+- **🌐 Live LinguaDAO Platform**: [https://linguanet.vercel.app/](https://linguanet.vercel.app/) (Production deployment)
 - **🎮 Demo App**: [https://linguanetai-pt2g5q21w-popos-projects-fb891440.vercel.app/](https://linguanetai-pt2g5q21w-popos-projects-fb891440.vercel.app/) (Test on Base Sepolia)
-- **📊 Interactive Pitch Deck**: [https://linguadao.vercel.app/pitch](https://linguadao.vercel.app/pitch) (Swipe-enabled mobile presentation)
+- **📊 Interactive Pitch Deck**: [https://linguanet.vercel.app/pitch](https://linguanet.vercel.app/pitch) (Swipe-enabled mobile presentation)
 - **GitHub Repository**: [https://github.com/ma-za-kpe/linguanet](https://github.com/ma-za-kpe/linguanet)
-- **Demo Video**: [LinguaDAO Walkthrough](https://linguadao.vercel.app/demo) (3-minute overview)
+- **Demo Video**: [LinguaDAO Walkthrough](https://linguanet.vercel.app/demo) (3-minute overview)
 - **Demo Video**: [https://youtu.be/fWFL5xup3Bg]
 
 ### 📜 Deployed Smart Contracts (Base Sepolia)
