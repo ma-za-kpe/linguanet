@@ -2,9 +2,9 @@ name: LinguaNet CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, develop ]
+    branches: [ main ]
 
 jobs:
   lint-and-test:
@@ -32,40 +32,7 @@ jobs:
         env:
           NEXT_TELEMETRY_DISABLED: 1
 
-  deploy-develop:
-    needs: lint-and-test
-    runs-on: ubuntu-latest
-    name: 🚀 Deploy to Development
-    if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
-    
-    env:
-      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-      
-    steps:
-      - name: 🔥 Checkout code
-        uses: actions/checkout@v4
-        
-      - name: 🟢 Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          cache: 'npm'
-      
-      - name: 📦 Install dependencies
-        run: npm ci
-      
-      - name: 🚀 Install Vercel CLI
-        run: npm install --global vercel@latest
-        
-      - name: 🌍 Pull Vercel Environment Information
-        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
-        
-      - name: 🏗️ Build Project Artifacts
-        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
-        
-      - name: 🚢 Deploy to Development
-        run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
+# Removed deploy-develop job - deployments only happen on main branch push
         
   deploy-production:
     needs: lint-and-test
