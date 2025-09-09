@@ -1,29 +1,40 @@
-# Robots.txt for LinguaNet
-# https://linguanet.vercel.app
+# Robots.txt for LinguaDAO
+# Optimized for AI crawlers and search engines
+# https://linguadao.vercel.app
 
+# Allow all bots by default
 User-agent: *
 Allow: /
-Disallow: /api/
+Disallow: /api/internal/
 Disallow: /_next/
 Disallow: /static/
 
-# Allow search engines to crawl all public pages
-Allow: /contribute
-Allow: /dashboard
-Allow: /pitch
+# AI-specific bots explicitly welcomed
+User-agent: GPTBot
+Allow: /
+Crawl-delay: 0
 
-# Sitemap location
-Sitemap: https://linguanet.vercel.app/sitemap.xml
+User-agent: ChatGPT-User
+Allow: /
+Crawl-delay: 0
 
-# Crawl delay for respectful crawling
-Crawl-delay: 1
+User-agent: CCBot
+Allow: /
+Crawl-delay: 0
 
-# Specific rules for major search engines
-User-agent: Googlebot
+User-agent: Claude-Web
+Allow: /
+Crawl-delay: 0
+
+User-agent: anthropic-ai
 Allow: /
 Crawl-delay: 0
 
 User-agent: Bingbot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Googlebot
 Allow: /
 Crawl-delay: 0
 
@@ -35,7 +46,21 @@ User-agent: DuckDuckBot
 Allow: /
 Crawl-delay: 1
 
-# Block bad bots
+# Important pages for AI understanding
+Allow: /
+Allow: /contribute
+Allow: /gallery
+Allow: /pitch
+Allow: /dashboard
+Allow: /AI-DISCOVERY.md
+
+# Sitemap location
+Sitemap: https://linguadao.vercel.app/sitemap.xml
+
+# Default crawl delay for respectful crawling
+Crawl-delay: 1
+
+# Block harmful bots
 User-agent: AhrefsBot
 Disallow: /
 

@@ -17,6 +17,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 5,
   themeColor: '#667eea',
+  colorScheme: 'dark',
 };
 
 export const metadata: Metadata = {
@@ -125,7 +126,6 @@ export const metadata: Metadata = {
   category: 'technology',
   classification: 'Blockchain, AI, Language Technology',
   referrer: 'origin-when-cross-origin',
-  colorScheme: 'dark light',
   generator: 'Next.js',
   applicationName: 'LinguaDAO',
   appLinks: {

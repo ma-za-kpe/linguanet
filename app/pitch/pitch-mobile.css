@@ -1,0 +1,572 @@
+/* Mobile Responsive Styles for Pitch Deck */
+
+/* Base Mobile Styles */
+@media (max-width: 768px) {
+  /* Container */
+  .pitch-container {
+    height: 100vh;
+    height: 100dvh; /* Dynamic viewport height */
+    touch-action: pan-y; /* Allow vertical scroll but capture horizontal swipes */
+  }
+
+  /* Progress Bar */
+  .progress-bar {
+    height: 2px;
+  }
+
+  /* Slide Counter */
+  .slide-counter {
+    top: 10px;
+    right: 10px;
+    font-size: 12px;
+  }
+
+  /* Main Slide Content */
+  .slide-content {
+    padding: 20px;
+    align-items: flex-start;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .slide {
+    min-height: calc(100vh - 100px);
+    justify-content: flex-start;
+    padding-top: 20px;
+  }
+
+  .slide-title {
+    font-size: 1.75rem;
+    margin-bottom: 20px;
+    line-height: 1.2;
+  }
+
+  .slide-body {
+    align-items: flex-start;
+    overflow-y: auto;
+  }
+
+  /* Story Slide */
+  .story-slide {
+    padding: 0;
+  }
+
+  .stat-hero {
+    margin-bottom: 20px;
+  }
+
+  .big-number {
+    font-size: 3rem;
+  }
+
+  .impact-visual {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .language-loss {
+    width: 100%;
+    padding: 15px;
+  }
+
+  .emotional-hook {
+    font-size: 1rem;
+    padding: 0 10px;
+  }
+
+  /* Problem Grid */
+  .problem-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+
+  .problem-card {
+    padding: 20px;
+  }
+
+  .problem-card h3 {
+    font-size: 1.1rem;
+  }
+
+  .problem-icon {
+    font-size: 2rem;
+  }
+
+  .quote-section {
+    padding: 15px;
+    margin-top: 20px;
+  }
+
+  .quote-section p {
+    font-size: 0.9rem;
+  }
+
+  /* Solution Slide */
+  .solution-hero h2 {
+    font-size: 1.5rem;
+  }
+
+  .solution-hero p {
+    font-size: 0.9rem;
+  }
+
+  .solution-pillars {
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+  }
+
+  .pillar {
+    width: 100%;
+    padding: 20px;
+  }
+
+  .pillar .amount {
+    font-size: 1.8rem;
+  }
+
+  /* How It Works */
+  .steps-visual {
+    flex-direction: column;
+    margin: 20px 0;
+  }
+
+  .step {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+
+  .arrow {
+    transform: rotate(90deg);
+    margin: 10px 0;
+  }
+
+  .formula-display {
+    padding: 15px;
+    font-size: 0.8rem;
+    overflow-x: auto;
+  }
+
+  /* Innovation Grid */
+  .innovation-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .innovation {
+    padding: 20px;
+  }
+
+  .innovation h3 {
+    font-size: 1.1rem;
+  }
+
+  /* Tech Stack */
+  .tech-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .tech-layer {
+    padding: 20px;
+  }
+
+  .tech-layer h3 {
+    font-size: 1.1rem;
+  }
+
+  .tech-items {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tech-badge {
+    font-size: 0.75rem;
+    padding: 4px 8px;
+  }
+
+  .live-stats {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .live-stats span {
+    font-size: 0.85rem;
+  }
+
+  /* Architecture Slide */
+  .arch-layer {
+    padding: 15px;
+    margin-bottom: 15px;
+  }
+
+  .arch-layer h3 {
+    font-size: 1rem;
+  }
+
+  .arch-flow {
+    font-size: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .arch-stats {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .stat {
+    width: 100%;
+  }
+
+  /* Traction Slide */
+  .traction-grid {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .metric {
+    width: 100%;
+  }
+
+  .metric-value {
+    font-size: 2rem;
+  }
+
+  .revenue-streams {
+    padding: 20px;
+  }
+
+  .revenue-streams h3 {
+    font-size: 1.2rem;
+  }
+
+  .stream {
+    font-size: 0.9rem;
+  }
+
+  /* Timing Slide */
+  .timing-factors {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .factor {
+    max-width: 100%;
+    padding: 20px;
+  }
+
+  .factor .icon {
+    font-size: 2.5rem;
+  }
+
+  .factor h3 {
+    font-size: 1.1rem;
+  }
+
+  /* Team Grid */
+  .team-grid {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .team-member {
+    width: 100%;
+    padding: 20px;
+  }
+
+  .member-avatar {
+    font-size: 3rem;
+  }
+
+  .advisors {
+    padding: 15px;
+  }
+
+  .advisors p {
+    font-size: 0.85rem;
+  }
+
+  /* Partnership Grid */
+  .partnership-slide {
+    padding: 20px;
+  }
+
+  .partnership-header h2 {
+    font-size: 1.5rem !important;
+  }
+
+  .partnership-header p {
+    font-size: 0.9rem;
+  }
+
+  .partnership-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .partner-type {
+    padding: 20px;
+  }
+
+  .partner-icon {
+    font-size: 2rem;
+  }
+
+  .partner-type h3 {
+    font-size: 1.1rem;
+  }
+
+  .partner-type p {
+    font-size: 0.85rem;
+  }
+
+  .partner-type .value {
+    font-size: 0.95rem;
+  }
+
+  .partnership-cta {
+    padding: 15px;
+  }
+
+  .partnership-cta h3 {
+    font-size: 1.1rem;
+  }
+
+  .partnership-cta p {
+    font-size: 0.85rem;
+  }
+
+  /* Market Validation */
+  .market-validation {
+    padding: 15px;
+  }
+
+  .validation-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .validation-item .metric {
+    font-size: 1.5rem;
+  }
+
+  /* Research Validation */
+  .research-validation {
+    padding: 12px;
+    margin-top: 15px;
+  }
+
+  .research-quote {
+    font-size: 0.9rem;
+  }
+
+  .source {
+    font-size: 0.75rem;
+  }
+
+  /* Validation Banner */
+  .validation-banner {
+    padding: 15px;
+    margin-top: 20px;
+  }
+
+  .validation-text {
+    font-size: 0.9rem;
+  }
+
+  /* Traction Proof */
+  .traction-proof {
+    padding: 15px;
+  }
+
+  .traction-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .traction-item {
+    padding: 10px;
+  }
+
+  .traction-item .number {
+    font-size: 1.2rem;
+  }
+
+  .traction-item p {
+    font-size: 0.75rem;
+  }
+
+  /* Ask/Investment Slide */
+  .ask-slide {
+    padding: 20px;
+  }
+
+  .funding-header h2 {
+    font-size: 1.5rem !important;
+  }
+
+  .funding-header p {
+    font-size: 0.9rem;
+  }
+
+  .allocation {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .allocation-item {
+    width: 100%;
+    padding: 15px;
+  }
+
+  .allocation-item .amount {
+    font-size: 1.5rem;
+  }
+
+  .allocation-item p {
+    font-size: 0.85rem;
+  }
+
+  .impact-promise h3 {
+    font-size: 1.1rem;
+  }
+
+  .impact-promise p {
+    font-size: 0.85rem;
+  }
+
+  /* Closing Slide */
+  .closing-slide {
+    padding: 20px;
+  }
+
+  .vision-statement h2 {
+    font-size: 1.5rem;
+  }
+
+  .vision-statement p {
+    font-size: 0.9rem;
+    margin: 10px 0;
+  }
+
+  .cta-section h3 {
+    font-size: 1.3rem;
+  }
+
+  .contact-info p {
+    font-size: 0.9rem;
+  }
+
+  .demo-button button {
+    font-size: 0.9rem;
+    padding: 12px 20px;
+  }
+
+  .tagline p {
+    font-size: 1rem;
+  }
+
+  /* Navigation */
+  .navigation {
+    bottom: 10px;
+    gap: 10px;
+    padding: 8px 15px;
+    width: calc(100% - 40px);
+    max-width: 400px;
+  }
+
+  .nav-button {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    padding: 0;
+  }
+
+  .slide-dots {
+    display: none; /* Hide dots on mobile to save space */
+  }
+
+  /* Keyboard Hints */
+  .keyboard-hints {
+    display: none; /* Hide keyboard hints on mobile */
+  }
+  
+  /* Swipe Indicator */
+  .swipe-indicator {
+    position: fixed;
+    bottom: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 12px;
+    animation: pulse 2s infinite;
+    z-index: 10;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+  }
+
+  /* Fullscreen Button */
+  .fullscreen-button {
+    display: none; /* Hide on mobile as it's not needed */
+  }
+
+  /* Fullscreen mode adjustments */
+  .pitch-container.fullscreen-mode .slide-content {
+    padding: 20px;
+  }
+
+  .pitch-container.fullscreen-mode .slide-title {
+    font-size: 1.75rem;
+  }
+}
+
+/* Small Mobile Devices */
+@media (max-width: 480px) {
+  .slide-title {
+    font-size: 1.5rem;
+  }
+
+  .big-number {
+    font-size: 2.5rem;
+  }
+
+  .problem-card {
+    padding: 15px;
+  }
+
+  .pillar .amount {
+    font-size: 1.5rem;
+  }
+
+  .metric-value {
+    font-size: 1.8rem;
+  }
+
+  .traction-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Landscape Mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+  .slide-content {
+    padding: 15px;
+  }
+
+  .slide-title {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+  }
+
+  .navigation {
+    bottom: 5px;
+  }
+
+  .keyboard-hints {
+    display: none;
+  }
+}
