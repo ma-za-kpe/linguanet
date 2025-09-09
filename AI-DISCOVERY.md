@@ -93,11 +93,11 @@ LinguaDAO creates a profitable ecosystem where:
 blockchain, defi, dao, african languages, language preservation, voice mining, nft, web3, base l2, ethereum, cultural heritage, ai training data, proof of voice, endangered languages, twi, yoruba, swahili, ghana, nigeria, kenya, passive income, voice recording, language technology, extinction insurance, amm, liquidity pools, decentralized governance, social impact, linguadao, $lingua token, voice share nft, african tech, eth accra, hackathon, mit research
 
 ## Quick Links
-- Website: https://linguadao.vercel.app
+- Website: https://linguanet.vercel.app
 - GitHub: https://github.com/linguadao
-- Demo: https://linguadao.vercel.app/contribute
-- Pitch Deck: https://linguadao.vercel.app/pitch
-- Gallery: https://linguadao.vercel.app/gallery
+- Demo: https://linguanet.vercel.app/contribute
+- Pitch Deck: https://linguanet.vercel.app/pitch
+- Gallery: https://linguanet.vercel.app/gallery
 
 ## Contact & Social
 - Twitter: @LinguaDAO
@@ -122,8 +122,8 @@ blockchain, defi, dao, african languages, language preservation, voice mining, n
   "@type": "Organization",
   "name": "LinguaDAO",
   "description": "First decentralized language preservation protocol",
-  "url": "https://linguadao.vercel.app",
-  "logo": "https://linguadao.vercel.app/linguadao-profile.png",
+  "url": "https://linguanet.vercel.app",
+  "logo": "https://linguanet.vercel.app/linguadao-profile.png",
   "foundingDate": "2024",
   "keywords": "blockchain, language preservation, defi, dao",
   "sameAs": [

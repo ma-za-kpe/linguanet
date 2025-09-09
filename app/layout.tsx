@@ -60,14 +60,14 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://linguadao.vercel.app'),
+  metadataBase: new URL('https://linguanet.vercel.app'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
     title: 'LinguaDAO - The First Decentralized Language Preservation Protocol',
     description: 'Save endangered African languages through blockchain. Earn rewards, own NFTs, preserve cultural heritage forever.',
-    url: 'https://linguadao.vercel.app',
+    url: 'https://linguanet.vercel.app',
     siteName: 'LinguaDAO',
     images: [
       {
@@ -130,7 +130,7 @@ export const metadata: Metadata = {
   applicationName: 'LinguaDAO',
   appLinks: {
     web: {
-      url: 'https://linguadao.vercel.app',
+      url: 'https://linguanet.vercel.app',
       should_fallback: true,
     },
   },
@@ -155,7 +155,7 @@ export default function RootLayout({
               '@type': 'WebApplication',
               name: 'LinguaDAO',
               description: 'The First Decentralized Language Preservation Protocol',
-              url: 'https://linguadao.vercel.app',
+              url: 'https://linguanet.vercel.app',
               applicationCategory: 'BusinessApplication',
               operatingSystem: 'Web',
               offers: {
@@ -171,7 +171,7 @@ export default function RootLayout({
               author: {
                 '@type': 'Organization',
                 name: 'LinguaDAO',
-                url: 'https://linguadao.vercel.app',
+                url: 'https://linguanet.vercel.app',
               },
             }),
           }}
