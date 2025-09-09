@@ -373,23 +373,21 @@ const pitchSlides = [
         <div className="team-grid">
           <div className="team-member">
             <div className="member-avatar">👨🏿‍💻</div>
-            <h3>Kwame Asante</h3>
-            <p className="role">CEO & Protocol Architect</p>
-            <div className="bio">
-              <p>• Ex-Google AI Research</p>
-              <p>• 8 years in blockchain</p>
-              <p>• Speaks 5 African languages</p>
+            <h3>
+              <a href="https://www.linkedin.com/in/maku-mazakpe/" target="_blank" rel="noopener noreferrer">
+                Maku Pauline Mazakpe
+              </a>
+            </h3>
+            <p className="role">Technical Co-founder, Startup Software Engineer</p>
+            <div className="social-links">
+              <a href="https://x.com/makumazakpe" target="_blank" rel="noopener noreferrer">🐦</a>
+              <a href="https://www.linkedin.com/in/maku-mazakpe/" target="_blank" rel="noopener noreferrer">💼</a>
             </div>
           </div>
           <div className="team-member">
             <div className="member-avatar">👩🏿‍💻</div>
-            <h3>Amara Okonkwo</h3>
-            <p className="role">CTO & Smart Contract Lead</p>
-            <div className="bio">
-              <p>• Ex-ConsenSys</p>
-              <p>• Solidity expert</p>
-              <p>• Built 3 DeFi protocols</p>
-            </div>
+            <h3>Theophilus David Nana Yaw Kyei-Charway</h3>
+            <p className="role">Blockchain Dev</p>
           </div>
         </div>
         <div className="advisors">
@@ -405,41 +403,41 @@ const pitchSlides = [
     content: (
       <div className="partnership-slide">
         <div className="partnership-header">
-          <h2 className="gradient-text">Join the Solution to a $2.8B Problem</h2>
-          <p>MIT research validates the urgent need for quality African language data</p>
+          <h2 className="gradient-text">$2.8B Market Opportunity</h2>
+          <p>MIT-validated African language data crisis</p>
         </div>
         <div className="partnership-grid">
           <div className="partner-type">
             <span className="partner-icon">🏛️</span>
             <h3>Research Institutions</h3>
-            <p>Access high-quality, culturally-appropriate datasets</p>
-            <span className="value">5.6% model improvement proven</span>
+            <p>Quality African datasets</p>
+            <span className="value">5.6% model boost</span>
           </div>
           <div className="partner-type">
             <span className="partner-icon">🤖</span>
             <h3>AI Companies</h3>
-            <p>Close the 20% performance gap in African markets</p>
-            <span className="value">160M new users unlocked</span>
+            <p>Close 20% performance gap</p>
+            <span className="value">160M users</span>
           </div>
           <div className="partner-type">
             <span className="partner-icon">🏦</span>
             <h3>Impact Investors</h3>
-            <p>Measurable social + financial returns</p>
-            <span className="value">$12B TAM by 2027</span>
+            <p>Social + financial returns</p>
+            <span className="value">$12B TAM</span>
           </div>
           <div className="partner-type">
             <span className="partner-icon">🌍</span>
             <h3>Governments</h3>
-            <p>Preserve national heritage profitably</p>
-            <span className="value">3,000 languages saved</span>
+            <p>Heritage preservation</p>
+            <span className="value">3,000 languages</span>
           </div>
         </div>
         <div className="partnership-cta">
-          <h3>Strategic Partnership Benefits:</h3>
-          <p>✓ First access to validated language datasets</p>
-          <p>✓ Co-branded research publications</p>
-          <p>✓ Priority API access and custom models</p>
-          <p>✓ Board advisory positions</p>
+          <h3>Partnership Benefits:</h3>
+          <p>✓ Priority dataset access</p>
+          <p>✓ Co-branded research</p>
+          <p>✓ Custom API models</p>
+          <p>✓ Advisory positions</p>
         </div>
       </div>
     )
@@ -509,12 +507,14 @@ const pitchSlides = [
         <div className="cta-section">
           <h3 className="gradient-text">Be the spark that saves 3,000 languages</h3>
           <div className="contact-info">
-            <p>🌍 linguadao.africa</p>
+            <p>🌍 linguanetai.vercel.app</p>
             <p>📧 team@linguadao.africa</p>
             <p>🐦 @LinguaDAO</p>
           </div>
           <div className="demo-button">
-            <button>Live Demo on Base Testnet →</button>
+            <a href="https://linguanetai.vercel.app" target="_blank" rel="noopener noreferrer">
+              <button>Live Demo on Base Testnet →</button>
+            </a>
           </div>
         </div>
         <div className="tagline">
