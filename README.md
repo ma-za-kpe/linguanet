@@ -18,6 +18,7 @@ The first protocol where preserving endangered languages pays better than abando
 - **📊 Interactive Pitch Deck**: [https://linguadao.vercel.app/pitch](https://linguadao.vercel.app/pitch) (Swipe-enabled mobile presentation)
 - **GitHub Repository**: [https://github.com/ma-za-kpe/linguanet](https://github.com/ma-za-kpe/linguanet)
 - **Demo Video**: [LinguaDAO Walkthrough](https://linguadao.vercel.app/demo) (3-minute overview)
+- **Demo Video**: [https://youtu.be/fWFL5xup3Bg]
 
 ### 📜 Deployed Smart Contracts (Base Sepolia)
 
