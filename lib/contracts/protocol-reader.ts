@@ -18,10 +18,11 @@ const VOICE_SHARES_ABI = [
   'function tokenOfOwnerByIndex(address, uint256) view returns (uint256)',
 ];
 
-const LINGUA_DAO_ABI = [
-  'function proposalCount() view returns (uint256)',
-  'function getProposal(uint256) view returns (tuple(string title, uint256 forVotes, uint256 againstVotes, bool executed))',
-];
+// Commented out for future use when DAO functions are needed
+// const LINGUA_DAO_ABI = [
+//   'function proposalCount() view returns (uint256)',
+//   'function getProposal(uint256) view returns (tuple(string title, uint256 forVotes, uint256 againstVotes, bool executed))',
+// ];
 
 const LANGUAGE_POOLS_ABI = [
   'function getPoolInfo(string) view returns (tuple(uint256 tvl, uint256 apy, uint256 volume24h))',
