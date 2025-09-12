@@ -31,15 +31,13 @@ export async function initializeW3Storage(): Promise<Client> {
       isInitialized = true;
     } else {
       console.log('No spaces found. You may need to login with your email to access your spaces.');
-      // For now, mark as initialized anyway to use mock uploads
       isInitialized = false;
     }
     
     return w3upClient;
   } catch (error) {
     console.error('Failed to initialize Web3.Storage client:', error);
-    // Don't throw - allow app to work with mock uploads
-    return w3upClient as Client;
+    throw error; // Require proper initialization
   }
 }
 
@@ -159,15 +157,13 @@ export async function uploadToW3Storage(
   walletAddress?: string
 ): Promise<string> {
   if (!w3upClient || !isInitialized) {
-    console.warn('Web3.Storage not initialized. Using mock upload.');
-    return generateMockIPFSHash(metadata, walletAddress);
+    throw new Error('Web3.Storage not initialized. Please set up your Web3.Storage account.');
   }
 
   try {
     const currentSpace = w3upClient.currentSpace();
     if (!currentSpace) {
-      console.warn('No space selected. Using mock upload.');
-      return generateMockIPFSHash(metadata, walletAddress);
+      throw new Error('No Web3.Storage space selected. Please configure your space.');
     }
 
     console.log('Uploading to Web3.Storage...');
@@ -191,7 +187,7 @@ export async function uploadToW3Storage(
     return cid.toString();
   } catch (error) {
     console.error('Web3.Storage upload failed:', error);
-    return generateMockIPFSHash(metadata, walletAddress);
+    throw error; // Propagate error instead of returning mock hash
   }
 }
 
@@ -213,29 +209,6 @@ function storeUploadRecord(cid: string, metadata: AudioMetadata, walletAddress?:
   }
 }
 
-/**
- * Generate a mock IPFS hash for demo/fallback
- */
-function generateMockIPFSHash(metadata: AudioMetadata, walletAddress?: string): string {
-  const seed = `${metadata.language}-${metadata.duration}-${metadata.timestamp}`;
-  let hash = 0;
-  for (let i = 0; i < seed.length; i++) {
-    const char = seed.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
-    hash = hash & hash;
-  }
-  
-  const chars = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-  let result = 'Qm';
-  
-  for (let i = 0; i < 44; i++) {
-    hash = ((hash * 1103515245) + 12345) & 0x7fffffff;
-    result += chars[hash % chars.length];
-  }
-  
-  storeUploadRecord(result, metadata, walletAddress);
-  return result;
-}
 
 /**
  * Check if Web3.Storage is ready
