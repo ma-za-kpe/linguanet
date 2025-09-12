@@ -137,6 +137,7 @@ export const metadata: Metadata = {
 };
 
 import { Providers } from '@/lib/providers';
+import { Analytics } from '@vercel/analytics/next';
 
 export default function RootLayout({
   children,
@@ -209,6 +210,7 @@ export default function RootLayout({
         <Providers>
           {children}
         </Providers>
+        <Analytics />
       </body>
     </html>
   );
