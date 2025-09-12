@@ -26,6 +26,20 @@ export const metadata: Metadata = {
     template: '%s | LinguaDAO'
   },
   description: 'LinguaDAO is the first decentralized language preservation protocol. Save endangered African languages through blockchain-powered voice mining. Earn $LINGUA tokens, own Voice Share NFTs, and participate in the future of linguistic heritage preservation.',
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon-96x96.png', sizes: '96x96', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+    other: [
+      { rel: 'mask-icon', url: '/favicon.svg', color: '#7c3aed' },
+    ],
+  },
   keywords: [
     'LinguaDAO',
     'decentralized language preservation',
@@ -97,25 +111,6 @@ export const metadata: Metadata = {
       'max-image-preview': 'large',
       'max-snippet': -1,
     },
-  },
-  icons: {
-    icon: [
-      { url: '/favicon.svg', type: 'image/svg+xml' },
-      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
-      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
-      { url: '/favicon-96x96.png', sizes: '96x96', type: 'image/png' },
-    ],
-    apple: [
-      { url: '/apple-icon.png' },
-      { url: '/apple-icon-180x180.png', sizes: '180x180' },
-    ],
-    other: [
-      {
-        rel: 'mask-icon',
-        url: '/safari-pinned-tab.svg',
-        color: '#667eea',
-      },
-    ],
   },
   manifest: '/site.webmanifest',
   verification: {

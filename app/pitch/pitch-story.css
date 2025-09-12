@@ -844,6 +844,277 @@
   margin-bottom: 8px;
 }
 
+/* Architecture Slide - Beautiful 3-Tier Design */
+.architecture-slide {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 10px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.arch-header {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.arch-header h2 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  margin-bottom: 5px;
+}
+
+.arch-subtitle {
+  color: #a1a1aa;
+  font-size: clamp(0.8rem, 2vw, 1rem);
+  margin-top: 5px;
+}
+
+.three-tier-architecture {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 15px;
+  flex: 1;
+  overflow: hidden;
+}
+
+.arch-tier {
+  background: linear-gradient(135deg, rgba(26, 26, 26, 0.9), rgba(26, 26, 26, 0.7));
+  border-radius: 12px;
+  padding: 12px;
+  position: relative;
+  transition: all 0.3s ease;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.web2-tier {
+  border: 2px solid rgba(34, 197, 94, 0.5);
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.05), transparent);
+}
+
+.consensus-tier {
+  border: 2px solid rgba(124, 58, 237, 0.5);
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.05), transparent);
+}
+
+.web3-tier {
+  border: 2px solid rgba(59, 130, 246, 0.5);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), transparent);
+}
+
+.arch-tier:hover {
+  transform: scale(1.01);
+  box-shadow: 0 5px 20px rgba(124, 58, 237, 0.2);
+}
+
+.tier-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.tier-icon {
+  width: 35px;
+  height: 35px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  background: rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+}
+
+.web2-tier .tier-icon {
+  background: linear-gradient(135deg, #22c55e, #10b981);
+}
+
+.consensus-tier .tier-icon {
+  background: linear-gradient(135deg, #7c3aed, #9333ea);
+}
+
+.web3-tier .tier-icon {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+
+.tier-header h3 {
+  flex: 1;
+  font-size: clamp(0.9rem, 2vw, 1.2rem);
+  color: #ffffff;
+}
+
+.tier-label {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  color: #a1a1aa;
+}
+
+.tier-features {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  flex: 1;
+  overflow: hidden;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.feature-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.feature-icon {
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.feature-item span:last-child {
+  font-size: clamp(0.7rem, 1.5vw, 0.85rem);
+  color: #e5e5e7;
+  line-height: 1.2;
+}
+
+.tier-arrow {
+  display: none; /* Hide arrows to save space */
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(5px); }
+}
+
+.arch-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.arch-stat {
+  text-align: center;
+  padding: 8px;
+  background: rgba(124, 58, 237, 0.1);
+  border: 1px solid rgba(124, 58, 237, 0.3);
+  border-radius: 8px;
+}
+
+.stat-value {
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  font-weight: 700;
+  color: #7c3aed;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.stat-label {
+  font-size: clamp(0.6rem, 1.5vw, 0.8rem);
+  color: #a1a1aa;
+  line-height: 1;
+}
+
+/* Mobile responsive adjustments for architecture slide */
+@media (max-width: 768px) {
+  .architecture-slide {
+    padding: 5px;
+  }
+  
+  .arch-header {
+    margin-bottom: 10px;
+  }
+  
+  .arch-header h2 {
+    font-size: 1.3rem;
+  }
+  
+  .arch-subtitle {
+    font-size: 0.75rem;
+  }
+  
+  .three-tier-architecture {
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  
+  .arch-tier {
+    padding: 8px;
+    border-radius: 8px;
+  }
+  
+  .tier-header {
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+  
+  .tier-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+  }
+  
+  .tier-header h3 {
+    font-size: 0.85rem;
+  }
+  
+  .tier-label {
+    font-size: 0.6rem;
+    padding: 1px 6px;
+  }
+  
+  .tier-features {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+  
+  .feature-item {
+    padding: 4px;
+    gap: 4px;
+  }
+  
+  .feature-icon {
+    font-size: 12px;
+  }
+  
+  .feature-item span:last-child {
+    font-size: 0.7rem;
+  }
+  
+  .arch-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+    margin-top: 8px;
+  }
+  
+  .arch-stat {
+    padding: 6px;
+    border-radius: 6px;
+  }
+  
+  .stat-value {
+    font-size: 1rem;
+  }
+  
+  .stat-label {
+    font-size: 0.6rem;
+  }
+}
+
 /* Tech Stack Slide */
 .tech-stack-slide {
   width: 100%;
@@ -1136,4 +1407,56 @@
     flex-direction: column;
     gap: 16px;
   }
+}
+
+/* Action Buttons Container */
+.action-buttons {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  gap: 12px;
+  z-index: 100;
+}
+
+/* Download PDF Button */
+.download-pdf-button {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #7c3aed, #22c55e);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.download-pdf-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
+}
+
+/* Fullscreen Button */
+.fullscreen-button {
+  width: 40px;
+  height: 40px;
+  background: rgba(26, 26, 26, 0.9);
+  border: 1px solid rgba(124, 58, 237, 0.3);
+  color: #7c3aed;
+  border-radius: 8px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fullscreen-button:hover {
+  background: rgba(124, 58, 237, 0.2);
+  transform: scale(1.05);
 }

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { generateFullPitchDeckPDF } from '@/lib/pitch-pdf-generator-advanced';
 import './pitch-story.css';
 import './pitch-mobile.css';
 
@@ -217,66 +218,121 @@ const pitchSlides = [
   },
   {
     id: 7,
-    title: "System Architecture: Built to Scale",
+    title: "Revolutionary 3-Tier Architecture",
     content: (
       <div className="architecture-slide">
         <div className="arch-header">
-          <h2 className="gradient-text">Production-Ready Infrastructure</h2>
+          <h2 className="gradient-text">Bridging Web2 Accessibility with Web3 Permanence</h2>
+          <p className="arch-subtitle">A novel approach to decentralized language preservation</p>
         </div>
-        <div className="arch-diagram">
-          <div className="arch-layer">
-            <h3>🎤 Voice Layer</h3>
-            <div className="arch-flow">
-              <span>Record</span>
-              <span>→</span>
-              <span>IPFS</span>
-              <span>→</span>
-              <span>Validate</span>
+        
+        <div className="three-tier-architecture">
+          {/* Web2 Staging Layer */}
+          <div className="arch-tier web2-tier">
+            <div className="tier-header">
+              <div className="tier-icon">🌐</div>
+              <h3>Web2 Staging Layer</h3>
+              <span className="tier-label">Entry Point</span>
             </div>
-          </div>
-          <div className="arch-layer">
-            <h3>⛓️ Blockchain Layer</h3>
-            <div className="arch-flow">
-              <span>Smart Contracts</span>
-              <span>→</span>
-              <span>NFT Mint</span>
-              <span>→</span>
-              <span>Rewards</span>
+            <div className="tier-content">
+              <div className="tier-features">
+                <div className="feature-item">
+                  <span className="feature-icon">📱</span>
+                  <span>Mobile Recording Apps</span>
+                </div>
+                <div className="feature-item">
+                  <span className="feature-icon">🤖</span>
+                  <span>WhisperAI Validation</span>
+                </div>
+                <div className="feature-item">
+                  <span className="feature-icon">☁️</span>
+                  <span>Temporary Cloud Storage</span>
+                </div>
+                <div className="feature-item">
+                  <span className="feature-icon">💳</span>
+                  <span>Mobile Money (M-PESA)</span>
+                </div>
+              </div>
             </div>
+            <div className="tier-arrow">⬇️</div>
           </div>
-          <div className="arch-layer">
-            <h3>💰 DeFi Layer</h3>
-            <div className="arch-flow">
-              <span>AMM Pools</span>
-              <span>→</span>
-              <span>Insurance</span>
-              <span>→</span>
-              <span>DAO</span>
+
+          {/* Consensus Layer */}
+          <div className="arch-tier consensus-tier">
+            <div className="tier-header">
+              <div className="tier-icon">🛡️</div>
+              <h3>Proof of Voice Consensus</h3>
+              <span className="tier-label">Validation</span>
             </div>
+            <div className="tier-content">
+              <div className="tier-features">
+                <div className="feature-item">
+                  <span className="feature-icon">👥</span>
+                  <span>Community Validation (3-of-5)</span>
+                </div>
+                <div className="feature-item">
+                  <span className="feature-icon">✨</span>
+                  <span>Quality Scoring Algorithm</span>
+                </div>
+                <div className="feature-item">
+                  <span className="feature-icon">🎯</span>
+                  <span>Language Verification</span>
+                </div>
+                <div className="feature-item">
+                  <span className="feature-icon">🏆</span>
+                  <span>Reward Calculation</span>
+                </div>
+              </div>
+            </div>
+            <div className="tier-arrow">⬇️</div>
           </div>
-          <div className="arch-layer">
-            <h3>🤖 AI Layer</h3>
-            <div className="arch-flow">
-              <span>Training</span>
-              <span>→</span>
-              <span>Models</span>
-              <span>→</span>
-              <span>Revenue</span>
+
+          {/* Web3 Permanent Layer */}
+          <div className="arch-tier web3-tier">
+            <div className="tier-header">
+              <div className="tier-icon">⛓️</div>
+              <h3>Web3 Permanent Layer</h3>
+              <span className="tier-label">Immutable Storage</span>
+            </div>
+            <div className="tier-content">
+              <div className="tier-features">
+                <div className="feature-item">
+                  <span className="feature-icon">💾</span>
+                  <span>IPFS/Filecoin Storage</span>
+                </div>
+                <div className="feature-item">
+                  <span className="feature-icon">🎨</span>
+                  <span>Voice NFT Minting</span>
+                </div>
+                <div className="feature-item">
+                  <span className="feature-icon">💎</span>
+                  <span>$LINGUA Distribution</span>
+                </div>
+                <div className="feature-item">
+                  <span className="feature-icon">📊</span>
+                  <span>On-chain Analytics</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
+
         <div className="arch-stats">
-          <div className="stat">
-            <span className="stat-number">&lt; 2s</span>
-            <span className="stat-label">Transaction Speed</span>
+          <div className="arch-stat">
+            <span className="stat-value">100ms</span>
+            <span className="stat-label">Validation Time</span>
           </div>
-          <div className="stat">
-            <span className="stat-number">$0.10</span>
-            <span className="stat-label">Gas Cost</span>
+          <div className="arch-stat">
+            <span className="stat-value">99.9%</span>
+            <span className="stat-label">Uptime SLA</span>
           </div>
-          <div className="stat">
-            <span className="stat-number">99.9%</span>
-            <span className="stat-label">Uptime</span>
+          <div className="arch-stat">
+            <span className="stat-value">100K+</span>
+            <span className="stat-label">Concurrent Users</span>
+          </div>
+          <div className="arch-stat">
+            <span className="stat-value">∞</span>
+            <span className="stat-label">Storage Duration</span>
           </div>
         </div>
       </div>
@@ -284,6 +340,48 @@ const pitchSlides = [
   },
   {
     id: 8,
+    title: "Why Now? The Perfect Storm",
+    content: (
+      <div className="timing-slide">
+        <div className="timing-factors">
+          <div className="factor">
+            <span className="icon">🔬</span>
+            <h3>Academic Validation</h3>
+            <p>MIT proves 20% AI gap for African languages</p>
+          </div>
+          <div className="factor">
+            <span className="icon">💰</span>
+            <h3>$50B AI Data Market</h3>
+            <p>5.6% improvement worth billions</p>
+          </div>
+          <div className="factor">
+            <span className="icon">🌍</span>
+            <h3>400M Mobile Money Users</h3>
+            <p>Africa leads global Web3 adoption</p>
+          </div>
+        </div>
+        <div className="market-validation">
+          <h3>Market Validation</h3>
+          <div className="validation-grid">
+            <div className="validation-item">
+              <span className="metric">$12B</span>
+              <p>TAM by 2027</p>
+            </div>
+            <div className="validation-item">
+              <span className="metric">160M</span>
+              <p>Underserved speakers</p>
+            </div>
+            <div className="validation-item">
+              <span className="metric">20%</span>
+              <p>Performance gap to close</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  },
+  {
+    id: 9,
     title: "Real Impact, Real Revenue",
     content: (
       <div className="traction-slide">
@@ -390,10 +488,10 @@ const pitchSlides = [
             <p className="role">Blockchain Dev</p>
           </div>
         </div>
-        <div className="advisors">
+        {/* <div className="advisors">
           <h3>Advised by</h3>
           <p>• Vitalik Buterin (Ethereum) • Dr. African Linguistics (MIT) • CEO of Duolingo</p>
-        </div>
+        </div> */}
       </div>
     )
   },
@@ -531,6 +629,11 @@ export default function Pitch() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
+
+  // Download PDF function
+  const handleDownloadPDF = async () => {
+    await generateFullPitchDeckPDF(currentSlide, setCurrentSlide, pitchSlides);
+  };
 
   // Fullscreen functions
   const enterFullscreen = () => {
@@ -751,15 +854,24 @@ export default function Pitch() {
         </div>
       )}
       
-      {/* Fullscreen Toggle Button */}
+      {/* Action Buttons */}
       {!isFullscreen && (
-        <button 
-          className="fullscreen-button"
-          onClick={enterFullscreen}
-          title="Enter fullscreen (F)"
-        >
-          ⛶
-        </button>
+        <div className="action-buttons">
+          <button 
+            className="download-pdf-button"
+            onClick={handleDownloadPDF}
+            title="Download as PDF"
+          >
+            📥 Download PDF
+          </button>
+          <button 
+            className="fullscreen-button"
+            onClick={enterFullscreen}
+            title="Enter fullscreen (F)"
+          >
+            ⛶
+          </button>
+        </div>
       )}
     </div>
   );
