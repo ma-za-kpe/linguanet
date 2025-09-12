@@ -96,6 +96,77 @@ const pitchSlides = [
   },
   {
     id: 4,
+    title: "Competitive Landscape: Why We Win",
+    content: (
+      <div className="competitor-slide">
+        <div className="landscape-header">
+          <h2 className="gradient-text">The $1B Language Data Market</h2>
+          <p>Current solutions fail communities - we change that</p>
+        </div>
+        
+        <div className="competitor-grid">
+          <div className="competitor-card charity">
+            <div className="competitor-header">
+              <h3>Traditional Players</h3>
+              <span className="model-type">Charity Model</span>
+            </div>
+            <div className="competitors-list">
+              <div className="competitor">
+                <span className="name">Mozilla Common Voice</span>
+                <span className="weakness">❌ Unpaid volunteers</span>
+              </div>
+              <div className="competitor">
+                <span className="name">Google Endangered Languages</span>
+                <span className="weakness">❌ No community ownership</span>
+              </div>
+              <div className="competitor">
+                <span className="name">Wikitongues</span>
+                <span className="weakness">❌ &lt;$250K annual budget</span>
+              </div>
+            </div>
+          </div>
+          
+          <div className="competitor-card linguadao">
+            <div className="competitor-header">
+              <h3>LinguaDAO</h3>
+              <span className="model-type">Web3 Economic Model</span>
+            </div>
+            <div className="advantages-list">
+              <div className="advantage">
+                <span className="feature">✅ $1,200/mo to speakers</span>
+              </div>
+              <div className="advantage">
+                <span className="feature">✅ NFT ownership + royalties</span>
+              </div>
+              <div className="advantage">
+                <span className="feature">✅ 70% revenue to community</span>
+              </div>
+              <div className="advantage">
+                <span className="feature">✅ Self-sustaining economics</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div className="differentiator-banner">
+          <div className="diff-stat">
+            <span className="number">100x</span>
+            <p>More compensation than alternatives</p>
+          </div>
+          <div className="diff-stat">
+            <span className="number">First</span>
+            <p>Decentralized language protocol</p>
+          </div>
+          <div className="diff-stat">
+            <span className="number">Only</span>
+            <p>Solution with DeFi integration</p>
+          </div>
+        </div>
+      </div>
+    )
+  },
+  {
+    id: 8,
     title: "How It Works",
     content: (
       <div className="how-slide">
@@ -128,7 +199,7 @@ const pitchSlides = [
     )
   },
   {
-    id: 5,
+    id: 6,
     title: "The Magic: DeFi Meets Culture",
     content: (
       <div className="innovation-slide">
@@ -156,7 +227,7 @@ const pitchSlides = [
     )
   },
   {
-    id: 6,
+    id: 7,
     title: "Built on Battle-Tested Technology",
     content: (
       <div className="tech-stack-slide">
@@ -217,7 +288,7 @@ const pitchSlides = [
     )
   },
   {
-    id: 7,
+    id: 9,
     title: "Revolutionary 3-Tier Architecture",
     content: (
       <div className="architecture-slide">
@@ -339,7 +410,7 @@ const pitchSlides = [
     )
   },
   {
-    id: 8,
+    id: 10,
     title: "Why Now? The Perfect Storm",
     content: (
       <div className="timing-slide">
@@ -381,7 +452,7 @@ const pitchSlides = [
     )
   },
   {
-    id: 9,
+    id: 11,
     title: "Real Impact, Real Revenue",
     content: (
       <div className="traction-slide">
@@ -422,7 +493,7 @@ const pitchSlides = [
     )
   },
   {
-    id: 8,
+    id: 10,
     title: "Why Now? The Perfect Storm",
     content: (
       <div className="timing-slide">
@@ -464,7 +535,7 @@ const pitchSlides = [
     )
   },
   {
-    id: 9,
+    id: 11,
     title: "The Team",
     content: (
       <div className="team-slide">
@@ -496,7 +567,7 @@ const pitchSlides = [
     )
   },
   {
-    id: 10,
+    id: 12,
     title: "Research-Backed Partnership Opportunities",
     content: (
       <div className="partnership-slide">
@@ -541,7 +612,7 @@ const pitchSlides = [
     )
   },
   {
-    id: 11,
+    id: 13,
     title: "Investment Opportunity",
     content: (
       <div className="ask-slide">
@@ -592,7 +663,7 @@ const pitchSlides = [
     )
   },
   {
-    id: 12,
+    id: 14,
     title: "Join Us in Making History",
     content: (
       <div className="closing-slide">

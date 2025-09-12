@@ -590,6 +590,148 @@
   color: #22c55e;
 }
 
+/* Competitor Landscape Slide */
+.competitor-slide {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp(1rem, 3vh, 2rem);
+  gap: clamp(0.75rem, 2vh, 1.5rem);
+}
+
+.landscape-header {
+  text-align: center;
+  margin-bottom: clamp(0.5rem, 1vh, 1rem);
+}
+
+.landscape-header h2 {
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  margin-bottom: 0.5rem;
+}
+
+.landscape-header p {
+  color: #a1a1aa;
+  font-size: clamp(0.875rem, 2vw, 1.125rem);
+}
+
+.competitor-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(1rem, 2vw, 2rem);
+  flex: 1;
+  min-height: 0;
+}
+
+.competitor-card {
+  background: rgba(26, 26, 26, 0.9);
+  border: 2px solid rgba(124, 58, 237, 0.3);
+  border-radius: 16px;
+  padding: clamp(1rem, 2vh, 1.5rem);
+  display: flex;
+  flex-direction: column;
+  backdrop-filter: blur(10px);
+}
+
+.competitor-card.charity {
+  border-color: rgba(239, 68, 68, 0.3);
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.05), rgba(26, 26, 26, 0.9));
+}
+
+.competitor-card.linguadao {
+  border-color: rgba(34, 197, 94, 0.5);
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(124, 58, 237, 0.1));
+  box-shadow: 0 0 30px rgba(34, 197, 94, 0.2);
+}
+
+.competitor-header {
+  margin-bottom: clamp(0.75rem, 1.5vh, 1rem);
+  padding-bottom: clamp(0.5rem, 1vh, 0.75rem);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.competitor-header h3 {
+  font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.model-type {
+  font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+  color: #71717a;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.competitors-list,
+.advantages-list {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.5rem, 1vh, 0.75rem);
+  flex: 1;
+}
+
+.competitor,
+.advantage {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.competitor .name {
+  font-size: clamp(0.875rem, 1.8vw, 1rem);
+  color: #e5e5e7;
+  font-weight: 600;
+}
+
+.competitor .weakness {
+  font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+  color: #ef4444;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.advantage .feature {
+  font-size: clamp(0.875rem, 1.8vw, 1rem);
+  color: #22c55e;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.differentiator-banner {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(0.5rem, 1vw, 1rem);
+  padding: clamp(0.75rem, 1.5vh, 1rem);
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(34, 197, 94, 0.1));
+  border-radius: 12px;
+  border: 1px solid rgba(124, 58, 237, 0.3);
+}
+
+.diff-stat {
+  text-align: center;
+}
+
+.diff-stat .number {
+  display: block;
+  font-size: clamp(1.25rem, 3vw, 2rem);
+  font-weight: 700;
+  background: linear-gradient(135deg, #7c3aed, #22c55e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.25rem;
+}
+
+.diff-stat p {
+  font-size: clamp(0.625rem, 1.2vw, 0.75rem);
+  color: #a1a1aa;
+  line-height: 1.2;
+}
+
 /* Traction Slide */
 .traction-slide {
   width: 100%;
